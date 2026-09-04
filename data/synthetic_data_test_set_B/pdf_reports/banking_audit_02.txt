@@ -1,0 +1,7 @@
+FORENSIC BANKING AUDIT (PDF)
+Document ID: PDF-AUDIT-DELHI-02
+Subject: Mule Account Aggregation Analysis
+
+Audit Summary:
+Account ACC-DELHI-8877 controlled by Tushar Kapoor received 12 structured deposits within 6 hours. 
+Funds were rapidly disbursed to recruitment agent Naveen Tiwari.

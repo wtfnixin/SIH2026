@@ -1,0 +1,618 @@
+[
+  {
+    "report_id": "SURV-003",
+    "entity_type": "Vehicle",
+    "entity_value": "KA02CD5678",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-08-14 11:15:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-004",
+    "entity_type": "Person",
+    "entity_value": "Ravi Verma",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-08-18 16:30:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-175",
+    "entity_type": "Person",
+    "entity_value": "Vikram Deshmukh",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-08-16 07:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-176",
+    "entity_type": "Vehicle",
+    "entity_value": "Anil Patel",
+    "location": "HSR Layout, Bengaluru",
+    "timestamp": "2026-08-27 05:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-177",
+    "entity_type": "Person",
+    "entity_value": "Kiran Reddy",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-08-17 22:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-178",
+    "entity_type": "Person",
+    "entity_value": "Amit Sharma",
+    "location": "MG Road, Bengaluru",
+    "timestamp": "2026-08-19 00:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-179",
+    "entity_type": "Person",
+    "entity_value": "KA02VH5334",
+    "location": "HSR Layout, Bengaluru",
+    "timestamp": "2026-08-15 11:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-180",
+    "entity_type": "Vehicle",
+    "entity_value": "KA03GE9837",
+    "location": "Marathahalli, Bengaluru",
+    "timestamp": "2026-08-26 09:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-181",
+    "entity_type": "Person",
+    "entity_value": "Rahul Joshi",
+    "location": "Yelahanka, Bengaluru",
+    "timestamp": "2026-08-03 01:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-182",
+    "entity_type": "Vehicle",
+    "entity_value": "Aman Kumar",
+    "location": "Hebbal, Bengaluru",
+    "timestamp": "2026-08-02 07:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-183",
+    "entity_type": "Person",
+    "entity_value": "KA07UL2775",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-08-18 09:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-184",
+    "entity_type": "Vehicle",
+    "entity_value": "KA09MK8994",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-08-25 12:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-185",
+    "entity_type": "Vehicle",
+    "entity_value": "Priya Joshi",
+    "location": "Marathahalli, Bengaluru",
+    "timestamp": "2026-08-13 20:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-186",
+    "entity_type": "Person",
+    "entity_value": "Arjun Pandey",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-08-07 01:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-187",
+    "entity_type": "Person",
+    "entity_value": "Ramesh Pandey",
+    "location": "MG Road, Bengaluru",
+    "timestamp": "2026-08-25 08:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-188",
+    "entity_type": "Vehicle",
+    "entity_value": "Rahul Bhat",
+    "location": "Jayanagar, Bengaluru",
+    "timestamp": "2026-08-18 20:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-189",
+    "entity_type": "Person",
+    "entity_value": "Gaurav Rao",
+    "location": "Hebbal, Bengaluru",
+    "timestamp": "2026-08-08 07:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-190",
+    "entity_type": "Person",
+    "entity_value": "Manish Patel",
+    "location": "Yelahanka, Bengaluru",
+    "timestamp": "2026-08-25 08:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-191",
+    "entity_type": "Person",
+    "entity_value": "KA05BB5786",
+    "location": "MG Road, Bengaluru",
+    "timestamp": "2026-08-16 03:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-192",
+    "entity_type": "Person",
+    "entity_value": "Deepak Nair",
+    "location": "Marathahalli, Bengaluru",
+    "timestamp": "2026-08-09 01:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-193",
+    "entity_type": "Person",
+    "entity_value": "KA06QQ5465",
+    "location": "Koramangala, Bengaluru",
+    "timestamp": "2026-08-25 02:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-194",
+    "entity_type": "Vehicle",
+    "entity_value": "KA07TV4945",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-08-23 00:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-195",
+    "entity_type": "Vehicle",
+    "entity_value": "KA05XS9595",
+    "location": "HSR Layout, Bengaluru",
+    "timestamp": "2026-08-20 07:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-196",
+    "entity_type": "Vehicle",
+    "entity_value": "Sameer Singh",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-08-22 05:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-197",
+    "entity_type": "Vehicle",
+    "entity_value": "Ravi Pandey",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-08-10 20:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-198",
+    "entity_type": "Vehicle",
+    "entity_value": "KA05VR3588",
+    "location": "Hebbal, Bengaluru",
+    "timestamp": "2026-08-23 12:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-199",
+    "entity_type": "Person",
+    "entity_value": "Neeraj Bhat",
+    "location": "HSR Layout, Bengaluru",
+    "timestamp": "2026-08-17 12:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-200",
+    "entity_type": "Person",
+    "entity_value": "KA08RQ6632",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-08-15 19:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-201",
+    "entity_type": "Person",
+    "entity_value": "KA08PO6582",
+    "location": "Yelahanka, Bengaluru",
+    "timestamp": "2026-08-20 09:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-202",
+    "entity_type": "Person",
+    "entity_value": "Ramesh Verma",
+    "location": "HSR Layout, Bengaluru",
+    "timestamp": "2026-08-07 23:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-203",
+    "entity_type": "Vehicle",
+    "entity_value": "KA05IH2976",
+    "location": "MG Road, Bengaluru",
+    "timestamp": "2026-08-07 14:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-204",
+    "entity_type": "Vehicle",
+    "entity_value": "Suresh Yadav",
+    "location": "Yelahanka, Bengaluru",
+    "timestamp": "2026-08-23 14:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-205",
+    "entity_type": "Person",
+    "entity_value": "Ajay Patel",
+    "location": "Jayanagar, Bengaluru",
+    "timestamp": "2026-08-16 01:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-206",
+    "entity_type": "Vehicle",
+    "entity_value": "KA03GE9837",
+    "location": "Marathahalli, Bengaluru",
+    "timestamp": "2026-08-15 11:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-207",
+    "entity_type": "Vehicle",
+    "entity_value": "Vikram Kumar",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-08-14 09:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-208",
+    "entity_type": "Person",
+    "entity_value": "KA03FF2293",
+    "location": "Yelahanka, Bengaluru",
+    "timestamp": "2026-08-20 07:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-209",
+    "entity_type": "Vehicle",
+    "entity_value": "KA08RQ6632",
+    "location": "Koramangala, Bengaluru",
+    "timestamp": "2026-08-14 02:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-210",
+    "entity_type": "Vehicle",
+    "entity_value": "Neeraj Pandey",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-08-09 23:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-211",
+    "entity_type": "Vehicle",
+    "entity_value": "KA06DO2633",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-08-06 12:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-212",
+    "entity_type": "Person",
+    "entity_value": "Ravi Saxena",
+    "location": "MG Road, Bengaluru",
+    "timestamp": "2026-08-17 09:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-213",
+    "entity_type": "Person",
+    "entity_value": "Ravi Rao",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-08-21 15:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-214",
+    "entity_type": "Person",
+    "entity_value": "KA03BI8827",
+    "location": "Marathahalli, Bengaluru",
+    "timestamp": "2026-08-12 09:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-215",
+    "entity_type": "Vehicle",
+    "entity_value": "KA08NB4073",
+    "location": "HSR Layout, Bengaluru",
+    "timestamp": "2026-08-14 08:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-216",
+    "entity_type": "Vehicle",
+    "entity_value": "Rajesh Verma",
+    "location": "MG Road, Bengaluru",
+    "timestamp": "2026-08-18 06:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-217",
+    "entity_type": "Person",
+    "entity_value": "KA08OC1653",
+    "location": "HSR Layout, Bengaluru",
+    "timestamp": "2026-08-05 15:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-218",
+    "entity_type": "Vehicle",
+    "entity_value": "Pooja Das",
+    "location": "Jayanagar, Bengaluru",
+    "timestamp": "2026-08-03 19:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-219",
+    "entity_type": "Vehicle",
+    "entity_value": "Suresh Yadav",
+    "location": "Koramangala, Bengaluru",
+    "timestamp": "2026-08-11 05:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-220",
+    "entity_type": "Person",
+    "entity_value": "KA08PO6582",
+    "location": "Jayanagar, Bengaluru",
+    "timestamp": "2026-08-18 23:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-221",
+    "entity_type": "Person",
+    "entity_value": "Pankaj Pandey",
+    "location": "Marathahalli, Bengaluru",
+    "timestamp": "2026-08-15 04:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-222",
+    "entity_type": "Person",
+    "entity_value": "Deepak Joshi",
+    "location": "Koramangala, Bengaluru",
+    "timestamp": "2026-08-08 06:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-223",
+    "entity_type": "Vehicle",
+    "entity_value": "KA05ZO1546",
+    "location": "Hebbal, Bengaluru",
+    "timestamp": "2026-08-19 02:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-224",
+    "entity_type": "Person",
+    "entity_value": "Vijay Patel",
+    "location": "MG Road, Bengaluru",
+    "timestamp": "2026-08-08 02:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-225",
+    "entity_type": "Vehicle",
+    "entity_value": "Aman Yadav",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-08-19 15:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-226",
+    "entity_type": "Vehicle",
+    "entity_value": "KA02OL5901",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-08-27 06:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-227",
+    "entity_type": "Vehicle",
+    "entity_value": "KA06WO5438",
+    "location": "Koramangala, Bengaluru",
+    "timestamp": "2026-08-03 18:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-228",
+    "entity_type": "Vehicle",
+    "entity_value": "KA05TX5728",
+    "location": "Marathahalli, Bengaluru",
+    "timestamp": "2026-08-16 15:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-229",
+    "entity_type": "Vehicle",
+    "entity_value": "Vijay Verma",
+    "location": "Yelahanka, Bengaluru",
+    "timestamp": "2026-08-22 20:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-230",
+    "entity_type": "Vehicle",
+    "entity_value": "Ramesh Deshmukh",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-08-03 16:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-231",
+    "entity_type": "Vehicle",
+    "entity_value": "Ajay Chauhan",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-08-24 20:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-232",
+    "entity_type": "Vehicle",
+    "entity_value": "KA08WP2989",
+    "location": "Hebbal, Bengaluru",
+    "timestamp": "2026-08-15 19:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-233",
+    "entity_type": "Person",
+    "entity_value": "KA02OD3522",
+    "location": "Jayanagar, Bengaluru",
+    "timestamp": "2026-08-16 01:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-234",
+    "entity_type": "Person",
+    "entity_value": "KA04ND9922",
+    "location": "HSR Layout, Bengaluru",
+    "timestamp": "2026-08-04 03:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-235",
+    "entity_type": "Vehicle",
+    "entity_value": "KA09MK8994",
+    "location": "Jayanagar, Bengaluru",
+    "timestamp": "2026-08-25 10:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-236",
+    "entity_type": "Person",
+    "entity_value": "Aman Das",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-08-09 17:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-237",
+    "entity_type": "Vehicle",
+    "entity_value": "KA07IQ9847",
+    "location": "Jayanagar, Bengaluru",
+    "timestamp": "2026-08-09 21:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-238",
+    "entity_type": "Vehicle",
+    "entity_value": "Ajay Rao",
+    "location": "Hebbal, Bengaluru",
+    "timestamp": "2026-08-09 07:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-239",
+    "entity_type": "Person",
+    "entity_value": "Manish Reddy",
+    "location": "Hebbal, Bengaluru",
+    "timestamp": "2026-08-01 20:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-240",
+    "entity_type": "Vehicle",
+    "entity_value": "Arjun Reddy",
+    "location": "Marathahalli, Bengaluru",
+    "timestamp": "2026-08-11 21:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-241",
+    "entity_type": "Vehicle",
+    "entity_value": "KA04UE5352",
+    "location": "Koramangala, Bengaluru",
+    "timestamp": "2026-08-16 18:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-242",
+    "entity_type": "Vehicle",
+    "entity_value": "Aman Singh",
+    "location": "Marathahalli, Bengaluru",
+    "timestamp": "2026-08-19 15:00:00",
+    "observed_by": "Unit Charlie"
+  },
+  {
+    "report_id": "SURV-A-243",
+    "entity_type": "Vehicle",
+    "entity_value": "KA05WJ1359",
+    "location": "Jayanagar, Bengaluru",
+    "timestamp": "2026-08-12 11:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-244",
+    "entity_type": "Person",
+    "entity_value": "Varun Das",
+    "location": "MG Road, Bengaluru",
+    "timestamp": "2026-08-24 22:00:00",
+    "observed_by": "Unit Bravo"
+  },
+  {
+    "report_id": "SURV-A-245",
+    "entity_type": "Vehicle",
+    "entity_value": "Karan Mishra",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-08-26 21:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-246",
+    "entity_type": "Person",
+    "entity_value": "Varun Singh",
+    "location": "Hebbal, Bengaluru",
+    "timestamp": "2026-08-22 12:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-247",
+    "entity_type": "Vehicle",
+    "entity_value": "KA05BB5786",
+    "location": "Marathahalli, Bengaluru",
+    "timestamp": "2026-08-19 20:00:00",
+    "observed_by": "Unit Delta"
+  },
+  {
+    "report_id": "SURV-A-248",
+    "entity_type": "Person",
+    "entity_value": "Ajay Rao",
+    "location": "HSR Layout, Bengaluru",
+    "timestamp": "2026-08-21 04:00:00",
+    "observed_by": "Unit Alpha"
+  },
+  {
+    "report_id": "SURV-A-249",
+    "entity_type": "Person",
+    "entity_value": "Sachin Bhat",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-08-07 04:00:00",
+    "observed_by": "Unit Alpha"
+  }
+]

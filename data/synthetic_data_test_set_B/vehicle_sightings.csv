@@ -1,0 +1,151 @@
+vehicle_number,registered_owner,location,timestamp,camera_id
+DL01AX9999,Kabir Malhotra,"Connaught Place, Delhi",2026-09-01 18:30:00,DEL_CAM_01
+DL11VF5245,Mayank Kapoor,"Aerocity, Delhi",2026-09-06 09:00:00,DEL_CAM_15
+DL06JD2955,Ashish Kakkar,"Connaught Place, Delhi",2026-09-10 09:00:00,DEL_CAM_08
+DL05XS4797,Gaurav Aggarwal,"Connaught Place, Delhi",2026-09-03 09:00:00,DEL_CAM_11
+DL01DY3884,Deepankar Gulati,"Karol Bagh, Delhi",2026-09-11 09:00:00,DEL_CAM_12
+DL10MV5729,Pranav Sethi,"Cyber City, Gurugram",2026-09-01 09:00:00,DEL_CAM_11
+DL04ZZ2922,Farhan Wadhwa,"Vasant Kunj, Delhi",2026-09-08 09:00:00,DEL_CAM_10
+DL04YR6787,Dev Batra,"Sector 62, Noida",2026-09-09 09:00:00,DEL_CAM_13
+DL08HG3556,Naveen Malhotra,"Aerocity, Delhi",2026-09-06 09:00:00,DEL_CAM_06
+DL06WA8174,Chaganti Aggarwal,"Sector 62, Noida",2026-09-10 09:00:00,DEL_CAM_02
+DL08JK9760,Bhavya Grover,"Karol Bagh, Delhi",2026-09-05 09:00:00,DEL_CAM_07
+DL04QF7027,Dev Nangia,"Cyber City, Gurugram",2026-09-02 09:00:00,DEL_CAM_10
+DL12ER7713,Farhan Kakkar,"Sector 62, Noida",2026-09-03 09:00:00,DEL_CAM_02
+DL05SC7358,Bhavya Aggarwal,"Cyber City, Gurugram",2026-09-07 09:00:00,DEL_CAM_03
+DL04XZ7447,Harsh Kapoor,"Karol Bagh, Delhi",2026-09-01 09:00:00,DEL_CAM_01
+DL07FG2828,Chaganti Tiwari,"Rohini, Delhi",2026-09-11 09:00:00,DEL_CAM_04
+DL10MV5729,Bhavya Tiwari,"Cyber City, Gurugram",2026-09-05 09:00:00,DEL_CAM_11
+DL01ZR1489,Naveen Kakkar,"Sector 62, Noida",2026-09-01 09:00:00,DEL_CAM_07
+DL09GB7436,Nikhil Grover,"Sector 62, Noida",2026-09-07 09:00:00,DEL_CAM_04
+DL08WE1778,Nikhil Bhasin,"Rohini, Delhi",2026-09-07 09:00:00,DEL_CAM_14
+DL11HE8116,Rohan Bhasin,"Rohini, Delhi",2026-09-03 09:00:00,DEL_CAM_11
+DL04BG1903,Gaurav Gulati,"Rohini, Delhi",2026-09-11 09:00:00,DEL_CAM_05
+DL08DM2068,Yash Gulati,"Karol Bagh, Delhi",2026-09-07 09:00:00,DEL_CAM_07
+DL10MV5729,Vivek Bhasin,"Karol Bagh, Delhi",2026-09-11 09:00:00,DEL_CAM_04
+DL05XS4797,Tushar Khurana,"Cyber City, Gurugram",2026-09-04 09:00:00,DEL_CAM_13
+DL02TG8669,Siddharth Singhal,"Connaught Place, Delhi",2026-09-03 09:00:00,DEL_CAM_05
+DL03GB8224,Tushar Kapoor,"Sector 62, Noida",2026-09-05 09:00:00,DEL_CAM_14
+DL12CE7331,Ishaan Khurana,"Aerocity, Delhi",2026-09-07 09:00:00,DEL_CAM_05
+DL11ED8794,Eshwar Batra,"Hauz Khas, Delhi",2026-09-06 09:00:00,DEL_CAM_09
+DL01AC2849,Nikhil Khurana,"Aerocity, Delhi",2026-09-01 09:00:00,DEL_CAM_11
+DL01DY3884,Siddharth Chhabra,"Cyber City, Gurugram",2026-09-11 09:00:00,DEL_CAM_05
+DL12VN1875,Gaurav Grover,"Karol Bagh, Delhi",2026-09-05 09:00:00,DEL_CAM_07
+DL09GB7436,Yash Kakkar,"Vasant Kunj, Delhi",2026-09-05 09:00:00,DEL_CAM_01
+DL01DY3884,Siddharth Malhotra,"Karol Bagh, Delhi",2026-09-08 09:00:00,DEL_CAM_08
+DL08JK9760,Tushar Tiwari,"Connaught Place, Delhi",2026-09-07 09:00:00,DEL_CAM_12
+DL12WF6775,Deepankar Batra,"Sector 62, Noida",2026-09-05 09:00:00,DEL_CAM_11
+DL01IM6388,Nikhil Khurana,"Hauz Khas, Delhi",2026-09-04 09:00:00,DEL_CAM_07
+DL04XZ7447,Eshwar Kapoor,"Karol Bagh, Delhi",2026-09-10 09:00:00,DEL_CAM_05
+DL11HE8116,Nikhil Kakkar,"Karol Bagh, Delhi",2026-09-11 09:00:00,DEL_CAM_08
+DL12JB1408,Rohan Kapoor,"Karol Bagh, Delhi",2026-09-08 09:00:00,DEL_CAM_10
+DL05VR7038,Gaurav Kapoor,"Hauz Khas, Delhi",2026-09-08 09:00:00,DEL_CAM_14
+DL01AC2849,Yash Kakkar,"Connaught Place, Delhi",2026-09-06 09:00:00,DEL_CAM_09
+DL04QH7634,Bhavya Chhabra,"Hauz Khas, Delhi",2026-09-10 09:00:00,DEL_CAM_03
+DL04SE5431,Vivek Bhasin,"Connaught Place, Delhi",2026-09-01 09:00:00,DEL_CAM_07
+DL08GW6127,Eshwar Khurana,"Hauz Khas, Delhi",2026-09-10 09:00:00,DEL_CAM_05
+DL12AU6907,Kabir Sethi,"Hauz Khas, Delhi",2026-09-01 09:00:00,DEL_CAM_14
+DL04XZ7447,Mayank Malhotra,"Rohini, Delhi",2026-09-09 09:00:00,DEL_CAM_03
+DL09TR1430,Farhan Singhal,"Hauz Khas, Delhi",2026-09-06 09:00:00,DEL_CAM_15
+DL02SS7489,Gaurav Khurana,"Sector 62, Noida",2026-09-01 09:00:00,DEL_CAM_08
+DL01BX4407,Eshwar Bhasin,"Aerocity, Delhi",2026-09-11 09:00:00,DEL_CAM_13
+DL09SR6210,Dev Nangia,"Hauz Khas, Delhi",2026-09-10 09:00:00,DEL_CAM_10
+DL11LX8068,Dev Tiwari,"Vasant Kunj, Delhi",2026-09-06 09:00:00,DEL_CAM_12
+DL10XQ6333,Nikhil Grover,"Rohini, Delhi",2026-09-07 09:00:00,DEL_CAM_10
+DL12VN1875,Bhavya Tiwari,"Hauz Khas, Delhi",2026-09-09 09:00:00,DEL_CAM_09
+DL09YH1329,Vivek Bhasin,"Sector 62, Noida",2026-09-10 09:00:00,DEL_CAM_08
+DL11LX8068,Farhan Kakkar,"Vasant Kunj, Delhi",2026-09-05 09:00:00,DEL_CAM_10
+DL11NC8731,Chaganti Kapoor,"Rohini, Delhi",2026-09-08 09:00:00,DEL_CAM_14
+DL05IU2049,Eshwar Malhotra,"Vasant Kunj, Delhi",2026-09-06 09:00:00,DEL_CAM_03
+DL05HM7962,Siddharth Bansal,"Sector 62, Noida",2026-09-11 09:00:00,DEL_CAM_13
+DL09SR6210,Gaurav Gulati,"Sector 62, Noida",2026-09-10 09:00:00,DEL_CAM_02
+DL08HG3556,Pranav Grover,"Karol Bagh, Delhi",2026-09-06 09:00:00,DEL_CAM_01
+DL03JV6335,Dev Wadhwa,"Aerocity, Delhi",2026-09-03 09:00:00,DEL_CAM_03
+DL03JV6335,Mayank Batra,"Sector 62, Noida",2026-09-10 09:00:00,DEL_CAM_15
+DL04AQ6675,Harsh Chhabra,"Connaught Place, Delhi",2026-09-08 09:00:00,DEL_CAM_03
+DL05HM7962,Siddharth Gulati,"Vasant Kunj, Delhi",2026-09-08 09:00:00,DEL_CAM_08
+DL05HM7962,Farhan Kakkar,"Connaught Place, Delhi",2026-09-01 09:00:00,DEL_CAM_07
+DL11LX8068,Pranav Khurana,"Aerocity, Delhi",2026-09-02 09:00:00,DEL_CAM_10
+DL12LN3799,Vivek Bhasin,"Rohini, Delhi",2026-09-03 09:00:00,DEL_CAM_01
+DL05XS4797,Nikhil Aggarwal,"Hauz Khas, Delhi",2026-09-06 09:00:00,DEL_CAM_06
+DL01ZR1489,Siddharth Sethi,"Rohini, Delhi",2026-09-02 09:00:00,DEL_CAM_10
+DL04WH1448,Bhavya Khurana,"Vasant Kunj, Delhi",2026-09-03 09:00:00,DEL_CAM_02
+DL05WM2021,Bhavya Khurana,"Sector 62, Noida",2026-09-04 09:00:00,DEL_CAM_05
+DL05VR7038,Bhavya Grover,"Sector 62, Noida",2026-09-01 09:00:00,DEL_CAM_14
+DL05IU2049,Kabir Singhal,"Vasant Kunj, Delhi",2026-09-06 09:00:00,DEL_CAM_11
+DL11VM3899,Deepankar Tiwari,"Karol Bagh, Delhi",2026-09-07 09:00:00,DEL_CAM_03
+DL04QH7634,Naveen Kakkar,"Connaught Place, Delhi",2026-09-05 09:00:00,DEL_CAM_02
+DL04EC9132,Eshwar Nangia,"Aerocity, Delhi",2026-09-02 09:00:00,DEL_CAM_11
+DL10CC8370,Siddharth Sethi,"Rohini, Delhi",2026-09-11 09:00:00,DEL_CAM_06
+DL04FO5459,Ashish Nangia,"Hauz Khas, Delhi",2026-09-05 09:00:00,DEL_CAM_03
+DL08EF9410,Mayank Nangia,"Connaught Place, Delhi",2026-09-01 09:00:00,DEL_CAM_07
+DL04SE5431,Yash Tiwari,"Sector 62, Noida",2026-09-11 09:00:00,DEL_CAM_02
+DL09FG3973,Mayank Malhotra,"Rohini, Delhi",2026-09-08 09:00:00,DEL_CAM_01
+DL09FG3973,Ishaan Khurana,"Connaught Place, Delhi",2026-09-02 09:00:00,DEL_CAM_09
+DL09GB7436,Vivek Wadhwa,"Aerocity, Delhi",2026-09-11 09:00:00,DEL_CAM_14
+DL12KM4797,Gaurav Aggarwal,"Karol Bagh, Delhi",2026-09-10 09:00:00,DEL_CAM_14
+DL11LX8068,Eshwar Nangia,"Cyber City, Gurugram",2026-09-06 09:00:00,DEL_CAM_06
+DL07GD8722,Ishaan Bhasin,"Rohini, Delhi",2026-09-01 09:00:00,DEL_CAM_14
+DL01IM6388,Farhan Malhotra,"Karol Bagh, Delhi",2026-09-01 09:00:00,DEL_CAM_10
+DL01PY6939,Nikhil Tiwari,"Sector 62, Noida",2026-09-04 09:00:00,DEL_CAM_15
+DL01AC2849,Mayank Gulati,"Connaught Place, Delhi",2026-09-04 09:00:00,DEL_CAM_15
+DL04WH1448,Ashish Gulati,"Hauz Khas, Delhi",2026-09-02 09:00:00,DEL_CAM_11
+DL09UQ7492,Gaurav Gulati,"Rohini, Delhi",2026-09-01 09:00:00,DEL_CAM_08
+DL12LN3799,Siddharth Gulati,"Rohini, Delhi",2026-09-03 09:00:00,DEL_CAM_12
+DL06WA8174,Tushar Bhasin,"Hauz Khas, Delhi",2026-09-08 09:00:00,DEL_CAM_10
+DL05GO7256,Vivek Aggarwal,"Sector 62, Noida",2026-09-08 09:00:00,DEL_CAM_15
+DL01BX4407,Naveen Sethi,"Connaught Place, Delhi",2026-09-03 09:00:00,DEL_CAM_11
+DL11NC8731,Nikhil Bhasin,"Rohini, Delhi",2026-09-05 09:00:00,DEL_CAM_14
+DL01PY6939,Dev Malhotra,"Sector 62, Noida",2026-09-07 09:00:00,DEL_CAM_04
+DL01UL2924,Eshwar Khurana,"Aerocity, Delhi",2026-09-08 09:00:00,DEL_CAM_04
+DL08QG1426,Bhavya Khurana,"Cyber City, Gurugram",2026-09-09 09:00:00,DEL_CAM_12
+DL04TF8411,Ishaan Malhotra,"Aerocity, Delhi",2026-09-11 09:00:00,DEL_CAM_13
+DL09KV9041,Deepankar Wadhwa,"Vasant Kunj, Delhi",2026-09-10 09:00:00,DEL_CAM_06
+DL04WH1448,Harsh Kapoor,"Rohini, Delhi",2026-09-06 09:00:00,DEL_CAM_06
+DL09SR6210,Vivek Bhasin,"Cyber City, Gurugram",2026-09-10 09:00:00,DEL_CAM_04
+DL04QF7027,Pranav Sethi,"Connaught Place, Delhi",2026-09-07 09:00:00,DEL_CAM_02
+DL01XW6571,Nikhil Bhasin,"Connaught Place, Delhi",2026-09-06 09:00:00,DEL_CAM_09
+DL05HM7962,Mayank Grover,"Cyber City, Gurugram",2026-09-07 09:00:00,DEL_CAM_06
+DL11NC8731,Nikhil Tiwari,"Cyber City, Gurugram",2026-09-01 09:00:00,DEL_CAM_06
+DL11LX8068,Siddharth Singhal,"Cyber City, Gurugram",2026-09-11 09:00:00,DEL_CAM_08
+DL12YI1222,Yash Kakkar,"Cyber City, Gurugram",2026-09-02 09:00:00,DEL_CAM_08
+DL11VM3899,Harsh Bhasin,"Cyber City, Gurugram",2026-09-07 09:00:00,DEL_CAM_06
+DL06LT1049,Mayank Wadhwa,"Karol Bagh, Delhi",2026-09-07 09:00:00,DEL_CAM_01
+DL08WE1778,Bhavya Malhotra,"Hauz Khas, Delhi",2026-09-04 09:00:00,DEL_CAM_08
+DL08WE1778,Bhavya Singhal,"Aerocity, Delhi",2026-09-03 09:00:00,DEL_CAM_04
+DL05VR7038,Ishaan Kakkar,"Sector 62, Noida",2026-09-07 09:00:00,DEL_CAM_05
+DL09YH1329,Gaurav Grover,"Hauz Khas, Delhi",2026-09-01 09:00:00,DEL_CAM_06
+DL04OQ2280,Eshwar Khurana,"Vasant Kunj, Delhi",2026-09-05 09:00:00,DEL_CAM_07
+DL12LN3799,Pranav Khurana,"Aerocity, Delhi",2026-09-10 09:00:00,DEL_CAM_05
+DL02SC4632,Gaurav Wadhwa,"Cyber City, Gurugram",2026-09-07 09:00:00,DEL_CAM_11
+DL04SE5431,Harsh Kakkar,"Hauz Khas, Delhi",2026-09-03 09:00:00,DEL_CAM_09
+DL09YH1329,Farhan Gulati,"Vasant Kunj, Delhi",2026-09-08 09:00:00,DEL_CAM_03
+DL09TR1430,Kabir Singhal,"Vasant Kunj, Delhi",2026-09-08 09:00:00,DEL_CAM_14
+DL02TG8669,Mayank Kakkar,"Vasant Kunj, Delhi",2026-09-10 09:00:00,DEL_CAM_01
+DL11VM3899,Deepankar Kapoor,"Cyber City, Gurugram",2026-09-02 09:00:00,DEL_CAM_03
+DL09GB7436,Siddharth Malhotra,"Cyber City, Gurugram",2026-09-11 09:00:00,DEL_CAM_14
+DL01BX4407,Harsh Kakkar,"Aerocity, Delhi",2026-09-08 09:00:00,DEL_CAM_01
+DL05GO7256,Yash Gulati,"Vasant Kunj, Delhi",2026-09-05 09:00:00,DEL_CAM_04
+DL04AQ6675,Bhavya Chhabra,"Sector 62, Noida",2026-09-05 09:00:00,DEL_CAM_03
+DL09YH1329,Siddharth Sethi,"Vasant Kunj, Delhi",2026-09-04 09:00:00,DEL_CAM_15
+DL04BG1903,Rohan Kakkar,"Aerocity, Delhi",2026-09-11 09:00:00,DEL_CAM_08
+DL12FR9925,Nikhil Tiwari,"Hauz Khas, Delhi",2026-09-04 09:00:00,DEL_CAM_03
+DL04BG1903,Farhan Aggarwal,"Connaught Place, Delhi",2026-09-09 09:00:00,DEL_CAM_13
+DL01UL2924,Farhan Gulati,"Karol Bagh, Delhi",2026-09-05 09:00:00,DEL_CAM_05
+DL08WE1778,Rohan Bhasin,"Cyber City, Gurugram",2026-09-01 09:00:00,DEL_CAM_13
+DL04SE5431,Nikhil Tiwari,"Karol Bagh, Delhi",2026-09-09 09:00:00,DEL_CAM_02
+DL11VM3899,Pranav Chhabra,"Rohini, Delhi",2026-09-03 09:00:00,DEL_CAM_01
+DL07RR2461,Dev Malhotra,"Sector 62, Noida",2026-09-05 09:00:00,DEL_CAM_05
+DL07DI4477,Tushar Bansal,"Sector 62, Noida",2026-09-06 09:00:00,DEL_CAM_15
+DL06WI1861,Naveen Batra,"Karol Bagh, Delhi",2026-09-07 09:00:00,DEL_CAM_11
+DL08GW6127,Siddharth Chhabra,"Hauz Khas, Delhi",2026-09-01 09:00:00,DEL_CAM_10
+DL05GO7256,Gaurav Grover,"Sector 62, Noida",2026-09-05 09:00:00,DEL_CAM_07
+DL05QY5745,Harsh Wadhwa,"Vasant Kunj, Delhi",2026-09-09 09:00:00,DEL_CAM_10
+DL06WI1861,Chaganti Aggarwal,"Connaught Place, Delhi",2026-09-03 09:00:00,DEL_CAM_02
+DL04TF8411,Yash Chhabra,"Karol Bagh, Delhi",2026-09-09 09:00:00,DEL_CAM_13
+DL05HM7962,Vivek Aggarwal,"Rohini, Delhi",2026-09-09 09:00:00,DEL_CAM_10
+DL04SE5431,Farhan Wadhwa,"Connaught Place, Delhi",2026-09-04 09:00:00,DEL_CAM_03
+DL11VM3899,Deepankar Khurana,"Karol Bagh, Delhi",2026-09-03 09:00:00,DEL_CAM_02
+DL11HE8116,Ishaan Sethi,"Rohini, Delhi",2026-09-01 09:00:00,DEL_CAM_12
+DL08GW6127,Mayank Malhotra,"Aerocity, Delhi",2026-09-09 09:00:00,DEL_CAM_07
+DL06WI1861,Farhan Aggarwal,"Rohini, Delhi",2026-09-07 09:00:00,DEL_CAM_05

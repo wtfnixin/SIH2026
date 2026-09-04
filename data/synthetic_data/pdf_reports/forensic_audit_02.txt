@@ -1,0 +1,7 @@
+FORENSIC AUDIT REPORT (PDF ATTACHMENT)
+Document ID: PDF-AUDIT-2026-104
+Subject: High-Value Suspicious Transaction Analysis
+
+Summary of Findings:
+Financial audit revealed structured deposits initiated by Amit Kumar into account ACC-99441122. 
+The funds were subsequently withdrawn by Vikram Chauhan across multiple ATM branches in Bengaluru.

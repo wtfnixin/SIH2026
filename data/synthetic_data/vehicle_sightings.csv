@@ -1,0 +1,151 @@
+vehicle_number,registered_owner,location,timestamp,camera_id
+KA01AB1234,Rahul Sharma,"MG Road, Bengaluru",2026-08-12 19:45:00,ANPR_CAM_01
+KA02CD5678,Amit Kumar,"Whitefield, Bengaluru",2026-08-14 11:15:00,ANPR_CAM_04
+KA08FW5906,Anil Kumar,"Koramangala, Bengaluru",2026-08-17 23:29:00,ANPR_CAM_03
+KA01UT4920,Neeraj Sharma,"Yelahanka, Bengaluru",2026-08-18 10:34:00,ANPR_CAM_19
+KA05VR3588,Gaurav Nair,"Marathahalli, Bengaluru",2026-08-22 04:51:00,ANPR_CAM_06
+KA05VC3573,Manish Rao,"HSR Layout, Bengaluru",2026-08-16 15:02:00,ANPR_CAM_09
+KA07MV3492,Ramesh Roy,"Yelahanka, Bengaluru",2026-08-09 18:21:00,ANPR_CAM_17
+KA09MK8994,Vikram Joshi,"Whitefield, Bengaluru",2026-08-22 07:50:00,ANPR_CAM_15
+KA02HD7818,Deepak Singh,"Koramangala, Bengaluru",2026-08-09 11:34:00,ANPR_CAM_18
+KA05KX7807,Neeraj Pandey,"MG Road, Bengaluru",2026-08-17 02:42:00,ANPR_CAM_13
+KA07OK4090,Rajesh Chauhan,"MG Road, Bengaluru",2026-08-09 04:40:00,ANPR_CAM_04
+KA07UL2775,Manish Mishra,"Electronic City, Bengaluru",2026-08-17 18:39:00,ANPR_CAM_07
+KA05IH2976,Neeraj Rao,"Whitefield, Bengaluru",2026-08-26 01:40:00,ANPR_CAM_11
+KA08OJ8025,Rajesh Pandey,"Jayanagar, Bengaluru",2026-08-24 12:02:00,ANPR_CAM_12
+KA05KX7807,Manish Rao,"Hebbal, Bengaluru",2026-08-20 14:49:00,ANPR_CAM_08
+KA08YB4335,Karan Kumar,"Marathahalli, Bengaluru",2026-08-04 05:36:00,ANPR_CAM_11
+KA03CB3718,Ajay Yadav,"Jayanagar, Bengaluru",2026-08-09 00:20:00,ANPR_CAM_14
+KA03GG8933,Rahul Joshi,"MG Road, Bengaluru",2026-08-05 09:47:00,ANPR_CAM_15
+KA05RD8451,Ajay Sharma,"Electronic City, Bengaluru",2026-08-07 22:35:00,ANPR_CAM_09
+KA02OD3522,Pooja Reddy,"Electronic City, Bengaluru",2026-08-13 05:41:00,ANPR_CAM_12
+KA07XK5102,Vikram Reddy,"Koramangala, Bengaluru",2026-08-22 18:17:00,ANPR_CAM_10
+KA06XE2476,Rahul Singh,"Marathahalli, Bengaluru",2026-08-26 00:45:00,ANPR_CAM_19
+KA05RE5719,Ravi Rao,"Marathahalli, Bengaluru",2026-08-16 06:32:00,ANPR_CAM_17
+KA08NB4073,Ramesh Verma,"Indiranagar, Bengaluru",2026-08-22 06:57:00,ANPR_CAM_05
+KA08UI8529,Neeraj Roy,"MG Road, Bengaluru",2026-08-24 09:29:00,ANPR_CAM_05
+KA05RE5719,Varun Pandey,"MG Road, Bengaluru",2026-08-09 08:49:00,ANPR_CAM_20
+KA04LF5952,Rajesh Gupta,"Whitefield, Bengaluru",2026-08-04 13:18:00,ANPR_CAM_13
+KA09NC4681,Tarun Saxena,"Marathahalli, Bengaluru",2026-08-13 05:31:00,ANPR_CAM_18
+KA04UE5352,Ravi Nair,"Hebbal, Bengaluru",2026-08-04 08:44:00,ANPR_CAM_10
+KA03FF2293,Priya Gupta,"Jayanagar, Bengaluru",2026-08-16 10:33:00,ANPR_CAM_14
+KA03CB3718,Ravi Chauhan,"Indiranagar, Bengaluru",2026-08-14 12:49:00,ANPR_CAM_10
+KA08EO9824,Pooja Verma,"MG Road, Bengaluru",2026-08-23 16:36:00,ANPR_CAM_18
+KA05LL8056,Anil Patel,"Whitefield, Bengaluru",2026-08-04 08:07:00,ANPR_CAM_17
+KA04FR2229,Deepak Rao,"MG Road, Bengaluru",2026-08-08 15:10:00,ANPR_CAM_11
+KA04FR2229,Sameer Singh,"Hebbal, Bengaluru",2026-08-22 17:14:00,ANPR_CAM_01
+KA04FR2229,Deepak Kumar,"Indiranagar, Bengaluru",2026-08-10 20:42:00,ANPR_CAM_14
+KA02AS5658,Varun Sharma,"Yelahanka, Bengaluru",2026-08-20 23:42:00,ANPR_CAM_09
+KA05BB5786,Karan Verma,"MG Road, Bengaluru",2026-08-25 14:40:00,ANPR_CAM_02
+KA05VA8622,Varun Joshi,"HSR Layout, Bengaluru",2026-08-04 22:28:00,ANPR_CAM_20
+KA05BB5786,Ramesh Rao,"HSR Layout, Bengaluru",2026-08-20 02:09:00,ANPR_CAM_09
+KA02SU1878,Deepak Bhat,"Indiranagar, Bengaluru",2026-08-10 22:01:00,ANPR_CAM_10
+KA02VH5334,Varun Sharma,"Whitefield, Bengaluru",2026-08-05 05:12:00,ANPR_CAM_02
+KA01BK1919,Vikram Joshi,"Jayanagar, Bengaluru",2026-08-25 17:15:00,ANPR_CAM_05
+KA05SB3870,Pankaj Pandey,"Hebbal, Bengaluru",2026-08-13 06:24:00,ANPR_CAM_12
+KA08OC1653,Vikram Joshi,"Whitefield, Bengaluru",2026-08-06 22:23:00,ANPR_CAM_20
+KA02YG4457,Anil Sharma,"MG Road, Bengaluru",2026-08-01 15:17:00,ANPR_CAM_08
+KA05KX7807,Ravi Bhat,"Hebbal, Bengaluru",2026-08-08 07:53:00,ANPR_CAM_05
+KA04ND9922,Priya Joshi,"Marathahalli, Bengaluru",2026-08-10 08:52:00,ANPR_CAM_11
+KA07UE2225,Priya Joshi,"Indiranagar, Bengaluru",2026-08-11 10:56:00,ANPR_CAM_05
+KA07UE2225,Gaurav Patel,"Whitefield, Bengaluru",2026-08-11 16:06:00,ANPR_CAM_03
+KA07XR6419,Pankaj Mehta,"MG Road, Bengaluru",2026-08-21 12:01:00,ANPR_CAM_13
+KA08SE4804,Sunil Das,"Whitefield, Bengaluru",2026-08-09 07:25:00,ANPR_CAM_19
+KA07UE2225,Aman Rao,"MG Road, Bengaluru",2026-08-12 12:11:00,ANPR_CAM_03
+KA05RE5719,Rajesh Chauhan,"Hebbal, Bengaluru",2026-08-07 04:55:00,ANPR_CAM_14
+KA05WJ1359,Tarun Patel,"Koramangala, Bengaluru",2026-08-24 19:52:00,ANPR_CAM_07
+KA01WR3073,Tarun Nair,"Indiranagar, Bengaluru",2026-08-11 21:07:00,ANPR_CAM_04
+KA02HD7818,Ravi Pandey,"Whitefield, Bengaluru",2026-08-22 18:42:00,ANPR_CAM_20
+KA05WJ8438,Karan Gupta,"Yelahanka, Bengaluru",2026-08-10 16:47:00,ANPR_CAM_05
+KA09MK8994,Nitin Patel,"Whitefield, Bengaluru",2026-08-18 16:54:00,ANPR_CAM_11
+KA07WI8484,Alok Verma,"Marathahalli, Bengaluru",2026-08-25 18:34:00,ANPR_CAM_05
+KA02SU1878,Varun Sharma,"Indiranagar, Bengaluru",2026-08-25 04:39:00,ANPR_CAM_12
+KA05XS9595,Aman Verma,"Whitefield, Bengaluru",2026-08-10 03:37:00,ANPR_CAM_10
+KA04XC8110,Karan Kumar,"Koramangala, Bengaluru",2026-08-05 14:22:00,ANPR_CAM_18
+KA03KN9117,Pankaj Mehta,"Koramangala, Bengaluru",2026-08-13 00:03:00,ANPR_CAM_07
+KA09AV9889,Vikram Bhat,"Electronic City, Bengaluru",2026-08-21 13:32:00,ANPR_CAM_17
+KA05GM8916,Vikram Reddy,"MG Road, Bengaluru",2026-08-26 23:20:00,ANPR_CAM_02
+KA02ZM1228,Pooja Verma,"HSR Layout, Bengaluru",2026-08-04 02:43:00,ANPR_CAM_15
+KA09LT9167,Neeraj Sharma,"Electronic City, Bengaluru",2026-08-09 17:58:00,ANPR_CAM_05
+KA04ND9922,Karan Kumar,"Hebbal, Bengaluru",2026-08-24 06:30:00,ANPR_CAM_16
+KA05ST1986,Rohit Kumar,"Hebbal, Bengaluru",2026-08-10 16:36:00,ANPR_CAM_13
+KA05VA8622,Ramesh Verma,"Koramangala, Bengaluru",2026-08-02 17:27:00,ANPR_CAM_10
+KA09LT9167,Aman Rao,"MG Road, Bengaluru",2026-08-14 08:24:00,ANPR_CAM_19
+KA08NB4073,Vikram Joshi,"Indiranagar, Bengaluru",2026-08-13 17:34:00,ANPR_CAM_14
+KA01UT4920,Ramesh Rao,"Marathahalli, Bengaluru",2026-08-12 19:51:00,ANPR_CAM_07
+KA07UC6383,Vikram Das,"Yelahanka, Bengaluru",2026-08-09 01:22:00,ANPR_CAM_10
+KA07GT9327,Priya Joshi,"MG Road, Bengaluru",2026-08-19 11:08:00,ANPR_CAM_04
+KA05HM4986,Amit Rao,"MG Road, Bengaluru",2026-08-15 13:55:00,ANPR_CAM_12
+KA03CB3718,Pooja Saxena,"Koramangala, Bengaluru",2026-08-20 21:02:00,ANPR_CAM_03
+KA08CP6700,Pankaj Joshi,"MG Road, Bengaluru",2026-08-20 03:54:00,ANPR_CAM_08
+KA08LK9903,Rohit Yadav,"Hebbal, Bengaluru",2026-08-15 08:28:00,ANPR_CAM_19
+KA08LK9903,Aman Kumar,"Indiranagar, Bengaluru",2026-08-13 05:57:00,ANPR_CAM_04
+KA07PR4937,Vikram Deshmukh,"Hebbal, Bengaluru",2026-08-07 11:43:00,ANPR_CAM_13
+KA07OK4090,Pooja Reddy,"Koramangala, Bengaluru",2026-08-05 19:03:00,ANPR_CAM_08
+KA03EZ5978,Vijay Verma,"Yelahanka, Bengaluru",2026-08-10 15:43:00,ANPR_CAM_20
+KA03GE9837,Varun Sharma,"Hebbal, Bengaluru",2026-08-09 12:29:00,ANPR_CAM_18
+KA05WJ8438,Sameer Das,"Indiranagar, Bengaluru",2026-08-22 15:27:00,ANPR_CAM_03
+KA05WJ1359,Pooja Verma,"Yelahanka, Bengaluru",2026-08-10 02:26:00,ANPR_CAM_09
+KA04KD9779,Rajesh Nair,"Yelahanka, Bengaluru",2026-08-24 07:57:00,ANPR_CAM_12
+KA05DG5853,Kiran Singh,"Electronic City, Bengaluru",2026-08-16 07:32:00,ANPR_CAM_04
+KA04PA6374,Arjun Chauhan,"Koramangala, Bengaluru",2026-08-24 11:31:00,ANPR_CAM_10
+KA03JR1224,Suresh Kumar,"Indiranagar, Bengaluru",2026-08-16 07:06:00,ANPR_CAM_17
+KA02UU1645,Suresh Das,"Indiranagar, Bengaluru",2026-08-22 16:57:00,ANPR_CAM_01
+KA05VS7046,Neeraj Sharma,"Yelahanka, Bengaluru",2026-08-07 20:55:00,ANPR_CAM_05
+KA08JY4770,Nitin Pandey,"Whitefield, Bengaluru",2026-08-15 21:58:00,ANPR_CAM_09
+KA07PR4937,Ajay Yadav,"Hebbal, Bengaluru",2026-08-02 16:46:00,ANPR_CAM_13
+KA04KD9779,Rajesh Pandey,"Electronic City, Bengaluru",2026-08-04 10:10:00,ANPR_CAM_18
+KA08PO6582,Deepak Gupta,"HSR Layout, Bengaluru",2026-08-03 11:01:00,ANPR_CAM_12
+KA08WP2989,Manish Reddy,"Indiranagar, Bengaluru",2026-08-19 06:38:00,ANPR_CAM_06
+KA04XC8110,Vikram Deshmukh,"Hebbal, Bengaluru",2026-08-23 04:21:00,ANPR_CAM_19
+KA04ND9922,Aman Das,"HSR Layout, Bengaluru",2026-08-23 12:28:00,ANPR_CAM_14
+KA05ST1986,Rohit Kumar,"Hebbal, Bengaluru",2026-08-06 14:39:00,ANPR_CAM_07
+KA07WI8484,Suresh Yadav,"Hebbal, Bengaluru",2026-08-07 15:52:00,ANPR_CAM_15
+KA08ZI6546,Manish Kumar,"Indiranagar, Bengaluru",2026-08-23 22:33:00,ANPR_CAM_07
+KA09OA3361,Manish Patel,"Yelahanka, Bengaluru",2026-08-06 10:52:00,ANPR_CAM_12
+KA08ZA2524,Deepak Joshi,"MG Road, Bengaluru",2026-08-05 20:00:00,ANPR_CAM_16
+KA07ZR6992,Nitin Joshi,"Whitefield, Bengaluru",2026-08-09 14:57:00,ANPR_CAM_09
+KA09BT2121,Sachin Deshmukh,"Jayanagar, Bengaluru",2026-08-20 05:50:00,ANPR_CAM_13
+KA06DO2633,Sanjay Deshmukh,"Koramangala, Bengaluru",2026-08-16 10:23:00,ANPR_CAM_12
+KA08JY4770,Kiran Patel,"Whitefield, Bengaluru",2026-08-01 19:11:00,ANPR_CAM_01
+KA01WR3073,Neeraj Rao,"HSR Layout, Bengaluru",2026-08-07 10:35:00,ANPR_CAM_15
+KA05VR3588,Ajay Yadav,"Yelahanka, Bengaluru",2026-08-12 09:30:00,ANPR_CAM_20
+KA07UE2225,Deepak Gupta,"Marathahalli, Bengaluru",2026-08-15 15:06:00,ANPR_CAM_05
+KA08DO5982,Anil Sharma,"Koramangala, Bengaluru",2026-08-09 10:47:00,ANPR_CAM_10
+KA03CI7798,Sanjay Deshmukh,"MG Road, Bengaluru",2026-08-25 13:43:00,ANPR_CAM_15
+KA09AV9889,Karan Das,"Yelahanka, Bengaluru",2026-08-22 06:01:00,ANPR_CAM_17
+KA08WJ9337,Ravi Rao,"HSR Layout, Bengaluru",2026-08-23 08:00:00,ANPR_CAM_20
+KA05XS9595,Anil Patel,"Indiranagar, Bengaluru",2026-08-06 08:35:00,ANPR_CAM_16
+KA02YG4457,Varun Chauhan,"Whitefield, Bengaluru",2026-08-18 02:54:00,ANPR_CAM_09
+KA07UL2775,Karan Kumar,"Koramangala, Bengaluru",2026-08-21 04:44:00,ANPR_CAM_11
+KA06HU4115,Ravi Rao,"MG Road, Bengaluru",2026-08-05 15:13:00,ANPR_CAM_03
+KA08UW9041,Tarun Verma,"Yelahanka, Bengaluru",2026-08-26 03:33:00,ANPR_CAM_15
+KA07UL2775,Ramesh Roy,"Marathahalli, Bengaluru",2026-08-12 22:50:00,ANPR_CAM_20
+KA05GM8916,Kiran Nair,"Indiranagar, Bengaluru",2026-08-07 08:52:00,ANPR_CAM_18
+KA05VY3240,Rajesh Das,"MG Road, Bengaluru",2026-08-26 21:55:00,ANPR_CAM_01
+KA05NP8736,Deepak Deshmukh,"Hebbal, Bengaluru",2026-08-03 22:21:00,ANPR_CAM_01
+KA07IQ9847,Manish Kumar,"Hebbal, Bengaluru",2026-08-04 15:59:00,ANPR_CAM_01
+KA08BE9229,Ajay Verma,"HSR Layout, Bengaluru",2026-08-22 01:27:00,ANPR_CAM_16
+KA07GT9327,Arjun Pandey,"HSR Layout, Bengaluru",2026-08-23 23:20:00,ANPR_CAM_11
+KA03JR1224,Ravi Saxena,"Electronic City, Bengaluru",2026-08-02 02:21:00,ANPR_CAM_19
+KA08CP6700,Vijay Saxena,"Hebbal, Bengaluru",2026-08-11 09:18:00,ANPR_CAM_20
+KA02HD7818,Tarun Patel,"Indiranagar, Bengaluru",2026-08-08 20:26:00,ANPR_CAM_20
+KA06QQ5465,Karan Verma,"Jayanagar, Bengaluru",2026-08-05 22:11:00,ANPR_CAM_17
+KA06DY7622,Vikram Reddy,"Whitefield, Bengaluru",2026-08-18 11:18:00,ANPR_CAM_05
+KA05VC3573,Rajesh Nair,"Koramangala, Bengaluru",2026-08-22 01:17:00,ANPR_CAM_11
+KA05IH2976,Karan Joshi,"Hebbal, Bengaluru",2026-08-13 12:06:00,ANPR_CAM_16
+KA07TV4945,Rohit Pandey,"Hebbal, Bengaluru",2026-08-22 14:59:00,ANPR_CAM_10
+KA09OA3361,Vikram Rao,"Yelahanka, Bengaluru",2026-08-10 11:27:00,ANPR_CAM_13
+KA04OR3369,Amit Rao,"MG Road, Bengaluru",2026-08-16 01:57:00,ANPR_CAM_18
+KA05RE5719,Karan Mishra,"Jayanagar, Bengaluru",2026-08-20 00:47:00,ANPR_CAM_12
+KA08NB4073,Vijay Patel,"Marathahalli, Bengaluru",2026-08-10 03:04:00,ANPR_CAM_03
+KA08BE9229,Aman Kumar,"Jayanagar, Bengaluru",2026-08-16 04:09:00,ANPR_CAM_14
+KA06QQ5465,Gaurav Yadav,"HSR Layout, Bengaluru",2026-08-16 03:15:00,ANPR_CAM_19
+KA04OR3369,Rajesh Das,"Yelahanka, Bengaluru",2026-08-11 14:29:00,ANPR_CAM_16
+KA08BE9229,Rohit Singh,"Indiranagar, Bengaluru",2026-08-10 02:13:00,ANPR_CAM_04
+KA06WO5438,Ramesh Rao,"Hebbal, Bengaluru",2026-08-13 05:42:00,ANPR_CAM_20
+KA03CI7798,Amit Nair,"Hebbal, Bengaluru",2026-08-08 22:34:00,ANPR_CAM_01
+KA05TX5728,Tarun Patel,"MG Road, Bengaluru",2026-08-10 09:30:00,ANPR_CAM_19
+KA08CK5135,Nitin Pandey,"Electronic City, Bengaluru",2026-08-04 00:53:00,ANPR_CAM_15
+KA03KN9117,Aman Nair,"Yelahanka, Bengaluru",2026-08-06 21:57:00,ANPR_CAM_19
+KA04UV5708,Sameer Singh,"Koramangala, Bengaluru",2026-08-23 07:10:00,ANPR_CAM_16
