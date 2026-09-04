@@ -1,37 +1,19 @@
-# SIH26189: AI-Powered Criminal Network Analysis System
+# SIH26189: AI-Powered Criminal Network Analysis Platform
 
-An autonomous intelligence platform for law enforcement agencies (NCRB / Ministry of Home Affairs) to ingest, extract, resolve, and analyze complex criminal network entities across FIRs, Call Detail Records (CDRs), Bank Transactions, and Surveillance feeds.
-
----
-
-## 🚀 Quick Start (One-Command Setup via Docker)
-
-The entire system—including **Neo4j Graph DB**, **PostgreSQL Database**, **FastAPI Backend**, and **React Command Center UI**—is fully containerized and can be launched with a single command.
-
-### Prerequisites
-Make sure your system has the following installed:
-* [Docker Desktop](https://www.docker.com/products/docker-desktop/) or Docker Engine (v20.10+)
-* [Docker Compose](https://docs.docker.com/compose/) (v2.0+)
-* Git
+An autonomous intelligence platform built for law enforcement agencies (State Police Cyber Cells, NCRB, Ministry of Home Affairs) to ingest, extract, resolve, and analyze complex criminal network entities across FIRs, Call Detail Records (CDRs), Bank Transactions, and ANPR Surveillance feeds.
 
 ---
 
-### Step 1: Clone the Repository
+## 🚀 One-Command Docker Setup
+
+The complete polyglot persistence system—**Neo4j Graph DB**, **PostgreSQL Audit DB**, **FastAPI REST Engine**, and **React Command Center UI**—is fully containerized.
+
 ```bash
+# 1. Clone repo
 git clone https://github.com/your-org/sih2026-criminal-network-analysis.git
 cd sih2026-criminal-network-analysis
-```
 
-### Step 2: Configure Environment Variables
-Copy the example environment file:
-```bash
-cp .env.example .env
-```
-*(Default settings in `.env.example` work out-of-the-box for local development).*
-
-### Step 3: Launch Docker Containers
-Run Docker Compose to build and spin up all 4 microservices in detached mode:
-```bash
+# 2. Launch all microservices
 docker compose up -d --build
 ```
 
@@ -39,136 +21,132 @@ docker compose up -d --build
 
 ## 📍 Services & Dashboard Ports
 
-Once `docker compose up -d` completes, access the application services at the following URLs:
-
-| Service | Description | URL / Access | Default Credentials |
+| Service | Description | Access URL | Default Credentials |
 | :--- | :--- | :--- | :--- |
-| **Frontend Command Center** | React 18 SPA Investigation Dashboard | [http://localhost:3001](http://localhost:3001) | N/A |
-| **FastAPI Backend API** | REST API & Interactive Swagger Docs | [http://localhost:8000/docs](http://localhost:8000/docs) | N/A |
-| **Neo4j Browser UI** | Graph Database Visual Query Interface | [http://localhost:7474](http://localhost:7474) | User: `neo4j`<br>Pass: `sih2026password` |
-| **PostgreSQL Database** | Relational DB & Audit Logger | `localhost:5432` | DB: `sih_investigation`<br>User: `sih_admin`<br>Pass: `sih_secure_password` |
+| **Frontend Command Center** | React 18 Investigation SPA | [http://localhost:3001](http://localhost:3001) | N/A |
+| **FastAPI REST API** | Analytics REST Endpoints | [http://localhost:8000/docs](http://localhost:8000/docs) | N/A |
+| **Neo4j Browser UI** | Graph Visual Cypher Query Shell | [http://localhost:7474](http://localhost:7474) | User: `neo4j`<br>Pass: `sih2026password` |
+| **PostgreSQL Database** | Audit Log & User Auth Relational DB | `localhost:5432` | DB: `sih_investigation`<br>User: `sih_admin`<br>Pass: `sih_secure_password` |
 
 ---
 
-## 🛠️ Alternative: Local Development Setup (Without Docker Containers)
+## 🏗️ Intelligence Engines Architecture
 
-If you need to develop or debug frontend/backend services locally on your host machine without running Docker containers:
+```mermaid
+flowchart TD
+    subgraph Data Sources
+        A1[CDR Call Logs CSV]
+        A2[Bank Transactions CSV]
+        A3[ANPR Vehicle Sightings JSON]
+        A4[Unstructured FIR Police Narratives TXT]
+    end
 
-### 1. Backend Setup (Python FastAPI)
-Requirements: Python 3.11+
+    subgraph Intelligence Core Engines
+        B[Engine 1: Multi-Source Data Ingestion & spaCy NLP]
+        C[Engine 2: RapidFuzz / Jellyfish Entity Resolution & SAME_AS Merging]
+        D[Engine 3: Graph Intelligence & Centrality - PageRank Kingpins, Louvain Cells]
+        E[Engine 4: Deterministic Threat Anomaly Detectors - Hawala, Burner SIMs, Convoys]
+    end
 
-```bash
-# Navigate to backend directory
-cd backend
+    subgraph Storage & Audit Layer
+        F[(Neo4j 5 Graph DB)]
+        G[(PostgreSQL 16 Relational DB)]
+    end
 
-# Create a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
+    subgraph Frontend Workspace
+        H[React 18 Cytoscape Command Center UI]
+    end
 
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Download spaCy English NLP model
-python -m spacy download en_core_web_sm
-
-# Start FastAPI development server
-uvicorn app.main:app --reload --port 8000
-```
-Backend will be available at: `http://localhost:8000`
-
-### 2. Frontend Setup (React 18 + Vite)
-Requirements: Node.js 18+ & npm
-
-```bash
-# Navigate to frontend directory
-cd frontend
-
-# Install node dependencies
-npm install
-
-# Start Vite local development server
-npm run dev
-```
-Frontend will be available at: `http://localhost:3000`
-
----
-
-## 🔍 Health Check Verification
-
-To verify all database connections and backend services are active, run:
-```bash
-curl http://localhost:8000/api/health
-```
-**Expected Response:**
-```json
-{
-  "status": "healthy",
-  "database_connections": {
-    "neo4j": "configured",
-    "postgresql": "configured"
-  }
-}
+    A1 & A2 & A3 & A4 --> B --> C --> F
+    F --> D & E
+    D & E -->|FastAPI REST API| H
+    H -->|Officer Search Activity| G
 ```
 
 ---
 
 ## 📁 Repository Directory Structure
 
-├── SIH 2026/
-├── docker-compose.yml          # Container orchestration (Neo4j, Postgres, FastAPI, React)
-├── .env.example                # Environment template
-├── .gitignore                  # Git tracking exclusions (venv, node_modules, logs)
-├── README.md                   # Installation & Setup guide (This file)
-├── data/                       # Synthetic test evidence (calls.csv, transactions.csv, vehicle_sightings.csv, surveillance.json, firs/)
-├── backend/
-│   ├── Dockerfile              # Python 3.11 container environment
-│   ├── requirements.txt        # FastAPI, spaCy, RapidFuzz, NetworkX, Neo4j driver
+```text
+SIH 2026/
+├── docker-compose.yml              # Microservice orchestration (Neo4j, Postgres, FastAPI, React/Nginx)
+├── .env.example                    # Environment configuration template
+├── README.md                       # Main project documentation & setup instructions
+├── data/                           # Ingestion data benchmarks & synthetic police evidence
+│   ├── calls.csv                   # CDR call detail logs
+│   ├── transactions.csv            # Hawala/Bank transfer records
+│   ├── vehicle_sightings.csv       # ANPR toll camera logs
+│   ├── surveillance.json           # Geofence location telemetry
+│   └── firs/                       # Raw police FIR narratives (.txt)
+│
+├── backend/                        # Python FastAPI Backend Architecture
+│   ├── Dockerfile                  # Python 3.11 container setup
+│   ├── requirements.txt            # Dependencies (FastAPI, SQLAlchemy, Neo4j, RapidFuzz, NetworkX)
 │   └── app/
-│       ├── main.py             # FastAPI application entrypoint
-│       ├── config.py           # Environment loader settings
-│       ├── db/                 # Neo4j driver and session context managers
-│       ├── ingestion/          # Multi-source Data Ingestion Engine (cleaner, parsers, NLP extractor, graph loader)
-│       ├── entity_res/         # Fuzzy string & phonetic matching (In Progress)
-│       └── graph_engine/       # Neo4j Cypher queries & GDS algorithms (In Progress)
-└── frontend/
-    ├── Dockerfile              # Production Node/Nginx container setup (Port 3001:80)
-    ├── package.json            # React 18, Vite, Cytoscape.js, Leaflet, Tailwind CSS
+│       ├── main.py                 # FastAPI application router & database health checks
+│       ├── config.py               # Environment configuration settings
+│       ├── db/
+│       │   ├── neo4j_driver.py     # Neo4j Cypher session driver
+│       │   └── postgres_driver.py  # SQLAlchemy PostgreSQL connection pooling
+│       ├── models/
+│       │   └── audit.py            # User and AuditLog SQLAlchemy models
+│       ├── ingestion/
+│       │   ├── multi_source_parser.py # CDR, Bank, ANPR parsers
+│       │   ├── nlp_extractor.py       # spaCy NER entity extraction engine
+│       │   └── graph_loader.py        # Batch Cypher graph node loader
+│       ├── entity_res/
+│       │   └── entity_resolver.py     # Fuzzy string & graph context SAME_AS merge engine
+│       ├── graph_engine/
+│       │   └── network_analytics.py   # PageRank, Betweenness Centrality, Louvain clustering
+│       ├── threat_engine/
+│       │   └── anomaly_detector.py    # Hawala smurfing, burner SIM, convoy detectors
+│       └── api/v1/
+│           ├── ingestion_routes.py    # Evidence upload API
+│           ├── graph_routes.py        # Visual network graph API
+│           ├── entity_routes.py       # Suspect dossier & global search API
+│           └── analytics_routes.py    # Real-time threat alerts feed API
+│
+└── frontend/                       # React 18 Command Center Architecture
+    ├── Dockerfile                  # Node build & Nginx alpine production image
+    ├── package.json                # Dependencies (React, Cytoscape.js, Lucide-React)
+    ├── vite.config.js              # Vite bundler & API proxy configuration
     └── src/
-        ├── App.jsx             # Command Center Dashboard shell & navigation
-        ├── index.css           # Tailwind directives & dark theme styling
-        └── main.jsx            # React root entrypoint
+        ├── App.jsx                 # Master Command Workspace UI & state handlers
+        ├── index.css               # Handcrafted pure CSS Cyberpunk dark design system
+        ├── main.jsx                # React DOM entrypoint
+        └── components/
+            ├── NetworkGraph.jsx    # Cytoscape force-directed visual canvas with glowing nodes
+            ├── ThreatAlertsFeed.jsx # Real-time Hawala, Burner SIM & Convoy alert stream
+            ├── EntityDossierModal.jsx # 360° Suspect Intelligence Dossier modal
+            └── FileUploadModal.jsx # Evidence drag & drop file upload modal
+```
 
 ---
 
-## 🛠️ Useful Docker Commands for Teammates
+## 🔍 Verification & Health Check
 
-* **Check running containers**:
-  ```bash
-  docker ps
-  ```
-* **View backend logs**:
-  ```bash
-  docker logs sih_backend -f
-  ```
-* **View frontend logs**:
-  ```bash
-  docker logs sih_frontend -f
-  ```
-* **Stop all containers**:
-  ```bash
-  docker compose down
-  ```
-* **Stop containers and wipe volumes (Reset Database)**:
-  ```bash
-  docker compose down -v
-  ```
+Verify all microservice database connections:
+```bash
+curl http://localhost:8000/api/health
+```
+
+**Expected JSON Response:**
+```json
+{
+  "status": "healthy",
+  "database_connections": {
+    "neo4j": "healthy",
+    "postgresql": "healthy"
+  }
+}
+```
 
 ---
 
 ## 👥 Tech Stack Overview
 
-* **Frontend**: React 18, Vite, Tailwind CSS, Cytoscape.js (Graph UI), Leaflet.js (Map UI), Lucide Icons.
-* **Backend**: Python 3.11, FastAPI, Pydantic v2, spaCy NLP, RapidFuzz, Jellyfish.
-* **Graph DB**: Neo4j 5 Community + Graph Data Science (GDS) Plugin + APOC.
-* **Relational DB**: PostgreSQL 16 (Case metadata & SHA-256 Hash Chain Audit Logs).
-* **Containerization**: Docker & Docker Compose.
+* **Frontend**: React 18, Cytoscape.js (Interactive Graph Canvas), Pure CSS Glassmorphic Design System, Lucide Icons.
+* **Backend**: Python 3.11, FastAPI, SQLAlchemy, spaCy NLP, RapidFuzz, Jellyfish, NetworkX.
+* **Graph Database**: Neo4j 5 Community + APOC & Graph Data Science (GDS) Plugin.
+* **Relational Audit Database**: PostgreSQL 16 (Officer Audit Trail & Role-Based Access Control).
+* **Orchestration**: Docker & Docker Compose.

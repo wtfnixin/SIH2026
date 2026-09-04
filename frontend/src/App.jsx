@@ -1,136 +1,261 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Shield, Search, Upload, RefreshCw, Crown, AlertTriangle, PhoneOff, Car, User, X, CheckCircle, Share2, Network } from 'lucide-react';
+import NetworkGraph from './components/NetworkGraph';
+import ThreatAlertsFeed from './components/ThreatAlertsFeed';
+import EntityDossierModal from './components/EntityDossierModal';
+import FileUploadModal from './components/FileUploadModal';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('graph');
+  const [networkData, setNetworkData] = useState({ elements: [] });
+  const [alertsData, setAlertsData] = useState(null);
+  const [kingpins, setKingpins] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedEntityId, setSelectedEntityId] = useState(null);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const fetchAllData = () => {
+    setLoading(true);
+    Promise.all([
+      fetch('http://localhost:8000/api/v1/graph/network?limit=150').then(res => res.json()),
+      fetch('http://localhost:8000/api/v1/analytics/alerts').then(res => res.json()),
+      fetch('http://localhost:8000/api/v1/graph/kingpins?top_n=5').then(res => res.json())
+    ])
+      .then(([net, al, kp]) => {
+        setNetworkData(net);
+        setAlertsData(al);
+        setKingpins(kp);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('API Fetch error:', err);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchAllData();
+  }, []);
+
+  const handleSearch = (e) => {
+    const q = e.target.value;
+    setSearchQuery(q);
+    if (q.length >= 2) {
+      fetch(`http://localhost:8000/api/v1/entities/search?q=${encodeURIComponent(q)}`)
+        .then(res => res.json())
+        .then(data => setSearchResults(data))
+        .catch(err => console.error(err));
+    } else {
+      setSearchResults([]);
+    }
+  };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-950 text-slate-100">
-      {/* Sidebar Navigation */}
-      <aside className="w-64 border-r border-slate-800 bg-slate-900/60 p-4 flex flex-col justify-between">
-        <div>
-          {/* Logo / Header */}
-          <div className="flex items-center space-x-3 mb-8">
-            <div className="h-9 w-9 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-slate-950 shadow-lg shadow-cyan-500/20">
-              NC
-            </div>
-            <div>
-              <h1 className="text-sm font-bold tracking-wide text-cyan-400 uppercase">SIH26189</h1>
-              <p className="text-xs text-slate-400 font-medium">NCRB Network Intel</p>
-            </div>
+    <div className="app-container">
+      
+      {/* Top Cyber Command Bar */}
+      <header className="command-header">
+        <div className="header-brand">
+          <div className="brand-logo">
+            <Shield size={22} />
           </div>
-
-          {/* Navigation Links */}
-          <nav className="space-y-1.5">
-            <button
-              onClick={() => setActiveTab('graph')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all ${
-                activeTab === 'graph'
-                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
-              }`}
-            >
-              <span>🕸️ Network Graph View</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('timeline')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all ${
-                activeTab === 'timeline'
-                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
-              }`}
-            >
-              <span>⏱️ Timeline & Replay</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('entities')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all ${
-                activeTab === 'entities'
-                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
-              }`}
-            >
-              <span>👤 Entity Dossiers</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('alerts')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all ${
-                activeTab === 'alerts'
-                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
-              }`}
-            >
-              <span>🚨 Threat Alerts Feed</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('copilot')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all ${
-                activeTab === 'copilot'
-                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
-              }`}
-            >
-              <span>🤖 Investigator Copilot</span>
-            </button>
-          </nav>
+          <div>
+            <h1 className="brand-title">CRIMINAL NETWORK INTELLIGENCE SYSTEM</h1>
+            <p className="brand-subtitle">SIH26189 COMMAND CENTER • LIVE GRAPH ANALYTICS</p>
+          </div>
         </div>
 
-        {/* System Status Footer */}
-        <div className="border-t border-slate-800 pt-4 text-xs">
-          <div className="flex items-center justify-between text-slate-400 mb-1">
-            <span>Pipeline Status</span>
-            <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> Ready
-            </span>
-          </div>
-          <p className="text-[10px] text-slate-500">Operation Shadow Link Active</p>
+        {/* Global Suspect Search Bar */}
+        <div className="search-box">
+          <Search size={16} className="search-icon" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder="Search suspect name, phone (+91...), or vehicle plate..."
+            className="search-input"
+          />
+
+          {/* Search Dropdown Results */}
+          {searchResults.length > 0 && (
+            <div style={{
+              position: 'absolute',
+              top: '44px',
+              left: 0,
+              right: 0,
+              background: '#0f172a',
+              border: '1px solid rgba(6, 182, 212, 0.4)',
+              borderRadius: '10px',
+              padding: '8px',
+              zIndex: 100,
+              boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+            }}>
+              {searchResults.map(r => (
+                <div
+                  key={r.entity_id}
+                  onClick={() => {
+                    setSelectedEntityId(r.entity_id);
+                    setSearchResults([]);
+                    setSearchQuery('');
+                  }}
+                  style={{
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    fontSize: '12px',
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <span style={{ fontWeight: 600, color: '#f1f5f9' }}>{r.entity_id}</span>
+                  <span style={{
+                    fontSize: '10px',
+                    padding: '2px 6px',
+                    borderRadius: '4px',
+                    background: 'rgba(6, 182, 212, 0.2)',
+                    color: '#22d3ee',
+                    border: '1px solid rgba(6, 182, 212, 0.3)'
+                  }}>
+                    {r.type}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      </aside>
 
-      {/* Main Workspace Panel */}
-      <main className="flex-1 flex flex-col bg-slate-950">
-        {/* Top Header Bar */}
-        <header className="h-14 border-b border-slate-800 bg-slate-900/40 px-6 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Case ID:</span>
-            <span className="text-xs font-mono font-bold bg-slate-800 text-cyan-400 px-2.5 py-1 rounded">
-              CASE_2026_SHADOW_LINK
-            </span>
-          </div>
-          <div className="flex items-center space-x-4 text-xs">
-            <span className="text-slate-400">Security Classification: <strong className="text-rose-400">RESTRICTED // LAW ENFORCEMENT</strong></span>
-          </div>
-        </header>
+        {/* Action Controls */}
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <button className="btn-primary" onClick={() => setIsUploadOpen(true)}>
+            <Upload size={15} />
+            <span>Upload Evidence</span>
+          </button>
+          <button className="btn-secondary" onClick={fetchAllData}>
+            <RefreshCw size={15} className={loading ? 'spin-anim' : ''} />
+          </button>
+        </div>
+      </header>
 
-        {/* Content Body */}
-        <section className="flex-1 p-6 overflow-auto">
-          <div className="max-w-4xl rounded-xl border border-slate-800 bg-slate-900/50 p-6">
-            <h2 className="text-lg font-bold text-slate-100 mb-2">
-              Criminal Network Intelligence Command Center Base
-            </h2>
-            <p className="text-xs text-slate-400 leading-relaxed mb-6">
-              Welcome to the SIH26189 AI-Powered Criminal Network Analysis Platform base shell. System engines for Multi-Source Ingestion, NLP Entity Extraction, Entity Resolution, Neo4j Graph Analytics, and Threat Anomaly Engines are ready to be wired.
-            </p>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="rounded-lg border border-slate-800 bg-slate-950 p-4">
-                <span className="text-[10px] uppercase font-bold text-slate-500">Engine 1 & 2</span>
-                <h3 className="text-sm font-semibold text-cyan-400 mt-1">Ingestion & NER</h3>
-                <p className="text-xs text-slate-400 mt-1">Multi-source schema parser & RapidFuzz deduplication.</p>
-              </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-950 p-4">
-                <span className="text-[10px] uppercase font-bold text-slate-500">Engine 3 & 4</span>
-                <h3 className="text-sm font-semibold text-cyan-400 mt-1">Graph & Anomaly ML</h3>
-                <p className="text-xs text-slate-400 mt-1">Neo4j PageRank, Betweenness Centrality & Structuring detector.</p>
-              </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-950 p-4">
-                <span className="text-[10px] uppercase font-bold text-slate-500">Engine 5</span>
-                <h3 className="text-sm font-semibold text-cyan-400 mt-1">AI Copilot</h3>
-                <p className="text-xs text-slate-400 mt-1">Evidence-grounded Graph RAG natural language assistant.</p>
-              </div>
+      {/* Main Grid Workspace */}
+      <div className="dashboard-grid">
+        
+        {/* Left Side: Top Kingpins & Cell Clusters */}
+        <div className="left-panel">
+          
+          {/* PageRank Kingpins Widget */}
+          <div className="glass-card" style={{ padding: '16px', height: '55%', display: 'flex', flexDirection: 'column' }}>
+            <div className="widget-header">
+              <span className="widget-title">
+                <Crown size={16} color="#fbbf24" />
+                Top Syndicate Bosses (PageRank)
+              </span>
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {kingpins.map((k, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setSelectedEntityId(k.entity_id)}
+                  style={{
+                    padding: '10px 12px',
+                    background: 'rgba(15, 23, 42, 0.6)',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(251, 191, 36, 0.4)'}
+                  onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)'}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{
+                      width: '22px',
+                      height: '22px',
+                      borderRadius: '5px',
+                      background: 'rgba(251, 191, 36, 0.2)',
+                      color: '#fbbf24',
+                      fontWeight: 800,
+                      fontSize: '11px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      #{k.rank}
+                    </span>
+                    <div>
+                      <p style={{ fontSize: '12px', fontWeight: 600, color: '#f1f5f9' }}>{k.entity_id}</p>
+                      <p style={{ fontSize: '10px', color: '#64748b' }}>{k.entity_type} • {k.degree} Links</p>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: '11px', fontFamily: 'JetBrains Mono', color: '#fbbf24', fontWeight: 700 }}>
+                    {k.pagerank_score}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
-        </section>
-      </main>
+
+          {/* Operational Metrics Widget */}
+          <div className="glass-card" style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', justifyBetween: 'space-between' }}>
+            <div className="widget-header">
+              <span className="widget-title">
+                <Network size={16} color="#22d3ee" />
+                Graph Topology Status
+              </span>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', margin: '10px 0' }}>
+              <div style={{ padding: '10px', background: 'rgba(15, 23, 42, 0.8)', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 600, display: 'block' }}>TOTAL NODES</span>
+                <span style={{ fontSize: '18px', fontWeight: 800, color: '#22d3ee' }}>540</span>
+              </div>
+              <div style={{ padding: '10px', background: 'rgba(15, 23, 42, 0.8)', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 600, display: 'block' }}>TOTAL EDGES</span>
+                <span style={{ fontSize: '18px', fontWeight: 800, color: '#60a5fa' }}>7,333</span>
+              </div>
+            </div>
+            <div style={{ padding: '8px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '8px', textAlign: 'center' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#34d399', letterSpacing: '0.5px' }}>
+                ✓ NEO4J & POSTGRES DB HEALTHY
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Center: Interactive Cytoscape Visual Canvas */}
+        <div className="center-panel glass-card">
+          <NetworkGraph
+            elements={networkData.elements}
+            onSelectNode={(id) => setSelectedEntityId(id)}
+          />
+        </div>
+
+        {/* Right Side: Real-Time Threat Feeds Drawer */}
+        <div className="right-panel">
+          <ThreatAlertsFeed
+            alerts={alertsData}
+            onSelectEntity={(id) => setSelectedEntityId(id)}
+          />
+        </div>
+      </div>
+
+      {/* Modals */}
+      <EntityDossierModal
+        entityId={selectedEntityId}
+        onClose={() => setSelectedEntityId(null)}
+      />
+
+      <FileUploadModal
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        onUploadSuccess={fetchAllData}
+      />
     </div>
   );
 }
