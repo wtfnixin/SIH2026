@@ -41,6 +41,11 @@ def extract_entities_from_text(text: str, fir_id: str = "FIR-UNKNOWN") -> Dict[s
         "phones": [],
         "vehicles": [],
         "locations": [],
+        "organizations": [],
+        "money": [],
+        "dates": [],
+        "events": [],
+        "relations": [],
         "raw_text": text
     }
 
@@ -74,6 +79,35 @@ def extract_entities_from_text(text: str, fir_id: str = "FIR-UNKNOWN") -> Dict[s
     # 4. spaCy Named Entity Recognition (NER) for Persons and Locations
     if nlp:
         doc = nlp(text)
+        
+        # Relation and Event Extraction (Dependency Parsing)
+        for sent in doc.sents:
+            for token in sent:
+                if token.pos_ == "VERB":
+                    entities["events"].append(token.lemma_)
+                    
+                    subjects = [child.text for child in token.children if child.dep_ in ("nsubj", "nsubjpass")]
+                    objects = [child.text for child in token.children if child.dep_ in ("dobj", "pobj", "attr")]
+                    
+                    if subjects and objects:
+                        for sub in subjects:
+                            for obj in objects:
+                                entities["relations"].append({
+                                    "subject": clean_name(sub) or sub,
+                                    "action": token.lemma_,
+                                    "object": clean_name(obj) or obj,
+                                    "evidence": sent.text.strip(),
+                                    "confidence": 0.85
+                                })
+                    else:
+                        entities["relations"].append({
+                            "relation": None,
+                            "confidence": 0.0
+                        })
+        
+        # Deduplicate events
+        entities["events"] = list(set(entities["events"]))
+
         for ent in doc.ents:
             if ent.label_ == "PERSON":
                 c_name = clean_name(ent.text)
@@ -87,6 +121,22 @@ def extract_entities_from_text(text: str, fir_id: str = "FIR-UNKNOWN") -> Dict[s
                 if loc_name and loc_name not in entities["locations"]:
                     if not any(k in loc_name.upper() for k in ["POLICE", "FIR"]):
                         entities["locations"].append(loc_name)
+
+            elif ent.label_ == "ORG":
+                org_name = ent.text.strip()
+                if org_name and org_name not in entities["organizations"]:
+                    if not any(k in org_name.upper() for k in ["POLICE", "STATION", "GOVERNMENT"]):
+                        entities["organizations"].append(org_name)
+
+            elif ent.label_ == "MONEY":
+                money_val = ent.text.strip()
+                if money_val and money_val not in entities["money"]:
+                    entities["money"].append(money_val)
+
+            elif ent.label_ in {"DATE", "TIME"}:
+                date_val = ent.text.strip()
+                if date_val and date_val not in entities["dates"]:
+                    entities["dates"].append(date_val)
 
     return entities
 
