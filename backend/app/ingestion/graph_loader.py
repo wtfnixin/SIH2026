@@ -116,7 +116,9 @@ def load_firs_to_neo4j(firs: List[Dict[str, Any]]) -> int:
     MERGE (f:FIR {fir_no: row.fir_no})
     SET f.police_station = row.police_station,
         f.incident_date = row.incident_date,
-        f.source_file = row.source_file
+        f.source_file = row.source_file,
+        f.money_values = COALESCE(row.money, []),
+        f.dates_mentioned = COALESCE(row.dates, [])
 
     FOREACH (p_name IN row.persons |
         MERGE (p:Person {name: p_name})
@@ -136,6 +138,28 @@ def load_firs_to_neo4j(firs: List[Dict[str, Any]]) -> int:
     FOREACH (loc_name IN row.locations |
         MERGE (l:Location {name: loc_name})
         MERGE (f)-[:OCCURRED_AT]->(l)
+    )
+    
+    FOREACH (org_name IN COALESCE(row.organizations, []) |
+        MERGE (o:Organization {name: org_name})
+        MERGE (o)-[:MENTIONED_IN]->(f)
+    )
+
+    FOREACH (event_name IN COALESCE(row.events, []) |
+        MERGE (e:Event {name: event_name})
+        MERGE (e)-[:MENTIONED_IN]->(f)
+    )
+    
+    FOREACH (rel IN COALESCE(row.relations, []) |
+        FOREACH (ignoreMe IN CASE WHEN rel.subject IS NOT NULL AND rel.object IS NOT NULL THEN [1] ELSE [] END |
+            MERGE (sub:Person {name: rel.subject})
+            MERGE (obj:Person {name: rel.object})
+            MERGE (sub)-[r:INTERACTED_WITH {action: rel.action}]->(obj)
+            SET r.evidence = rel.evidence,
+                r.confidence = rel.confidence
+            MERGE (sub)-[:MENTIONED_IN]->(f)
+            MERGE (obj)-[:MENTIONED_IN]->(f)
+        )
     )
     """
     with get_neo4j_session() as session:
