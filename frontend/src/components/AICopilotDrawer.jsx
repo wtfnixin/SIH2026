@@ -1,0 +1,368 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { Bot, Send, X, Sparkles, User, ShieldAlert, ArrowRight, CornerDownLeft } from 'lucide-react';
+
+export default function AICopilotDrawer({ onNavigateGraph }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [inputMsg, setInputMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [chatHistory, setChatHistory] = useState([
+    {
+      sender: 'ai',
+      text: "👋 Welcome Officer! I am your AI Cyber Intelligence Copilot. Ask me to search suspects, analyze Hawala rings, or locate burner SIMs. I will guide you and open their network graph automatically.",
+      multipleMatches: []
+    }
+  ]);
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      scrollToBottom();
+    }
+  }, [chatHistory, isOpen]);
+
+  const handleSendMessage = (customText = null, targetIdOverride = null) => {
+    const textToSend = customText || inputMsg;
+    if (!textToSend.trim() && !targetIdOverride) return;
+
+    if (!targetIdOverride) {
+      setChatHistory(prev => [...prev, { sender: 'user', text: textToSend }]);
+      setInputMsg('');
+    }
+
+    setLoading(true);
+
+    fetch('http://localhost:8000/api/v1/copilot/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: textToSend,
+        selected_target_id: targetIdOverride
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        setChatHistory(prev => [
+          ...prev,
+          {
+            sender: 'ai',
+            text: data.response,
+            multipleMatches: data.multiple_matches || []
+          }
+        ]);
+        setLoading(false);
+
+        // Execute automated UI action navigation if returned!
+        if (data.ui_action && data.ui_action.type === 'NAVIGATE_GRAPH' && data.ui_action.target_id) {
+          if (onNavigateGraph) {
+            onNavigateGraph(data.ui_action.target_id);
+          }
+        }
+      })
+      .catch(err => {
+        console.error('Copilot API error:', err);
+        setChatHistory(prev => [
+          ...prev,
+          {
+            sender: 'ai',
+            text: "⚠️ System Offline: Unable to reach Copilot backend service.",
+            multipleMatches: []
+          }
+        ]);
+        setLoading(false);
+      });
+  };
+
+  const suggestionChips = [
+    "Search Vikrant Sharma",
+    "Show Hawala Smurfing Ring",
+    "Lookup +91-98765-43210",
+    "Find Hebbal Syndicate"
+  ];
+
+  return (
+    <>
+      {/* Floating Toggle Button */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            zIndex: 9999,
+            background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '50px',
+            padding: '14px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            boxShadow: '0 10px 25px rgba(6, 182, 212, 0.4)',
+            cursor: 'pointer',
+            fontWeight: 700,
+            fontSize: '13px',
+            letterSpacing: '0.5px',
+            transition: 'transform 0.2s, cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
+          className="copilot-toggle-btn"
+        >
+          <Bot size={20} />
+          <span>AI INTEL COPILOT</span>
+          <span style={{
+            background: 'rgba(255, 255, 255, 0.25)',
+            padding: '2px 6px',
+            borderRadius: '10px',
+            fontSize: '10px'
+          }}>GROQ</span>
+        </button>
+      )}
+
+      {/* Copilot Drawer Window */}
+      {isOpen && (
+        <div style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          width: '420px',
+          height: '600px',
+          maxHeight: '85vh',
+          maxWidth: '90vw',
+          zIndex: 9999,
+          background: 'rgba(15, 23, 42, 0.95)',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(6, 182, 212, 0.4)',
+          borderRadius: '16px',
+          boxShadow: '0 20px 50px rgba(0,0,0,0.7)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden'
+        }}>
+          {/* Header */}
+          <div style={{
+            padding: '14px 16px',
+            background: 'rgba(30, 41, 59, 0.8)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                background: 'rgba(6, 182, 212, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#22d3ee'
+              }}>
+                <Bot size={18} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '13px', fontWeight: 700, color: '#f1f5f9', margin: 0 }}>
+                  AI CYBER INTELLIGENCE COPILOT
+                </h3>
+                <p style={{ fontSize: '10px', color: '#34d399', margin: 0, fontWeight: 600 }}>
+                  ● LIVE GRAPH SEARCH & NAVIGATION
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setIsOpen(false)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#94a3b8',
+                cursor: 'pointer',
+                padding: '4px',
+                borderRadius: '6px'
+              }}
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          {/* Quick Suggestion Chips */}
+          <div style={{
+            padding: '8px 12px',
+            background: 'rgba(15, 23, 42, 0.6)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+            display: 'flex',
+            gap: '6px',
+            overflowX: 'auto',
+            whiteSpace: 'nowrap'
+          }}>
+            {suggestionChips.map((chip, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleSendMessage(chip)}
+                style={{
+                  background: 'rgba(6, 182, 212, 0.1)',
+                  border: '1px solid rgba(6, 182, 212, 0.25)',
+                  color: '#22d3ee',
+                  fontSize: '11px',
+                  borderRadius: '12px',
+                  padding: '4px 10px',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  flexShrink: 0
+                }}
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+
+          {/* Chat Messages Body */}
+          <div style={{
+            flex: 1,
+            padding: '14px',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px'
+          }}>
+            {chatHistory.map((msg, index) => (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: msg.sender === 'user' ? 'flex-end' : 'flex-start'
+                }}
+              >
+                <div style={{
+                  maxWidth: '85%',
+                  padding: '10px 14px',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  lineHeight: '1.5',
+                  background: msg.sender === 'user' 
+                    ? 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)' 
+                    : 'rgba(30, 41, 59, 0.8)',
+                  color: '#f8fafc',
+                  border: msg.sender === 'user' 
+                    ? 'none' 
+                    : '1px solid rgba(255, 255, 255, 0.08)'
+                }}>
+                  <div style={{ whiteSpace: 'pre-wrap' }}>{msg.text}</div>
+
+                  {/* Render Disambiguation Candidate Cards if Multiple Matches Returned */}
+                  {msg.multipleMatches && msg.multipleMatches.length > 0 && (
+                    <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <p style={{ fontSize: '10px', color: '#fbbf24', fontWeight: 700, margin: '0 0 4px 0' }}>
+                        SELECT TARGET TO OPEN GRAPH:
+                      </p>
+                      {msg.multipleMatches.map((cand, cIdx) => (
+                        <div
+                          key={cIdx}
+                          onClick={() => handleSendMessage(`Selected target ${cand.entity_id}`, cand.entity_id)}
+                          style={{
+                            padding: '8px 10px',
+                            background: 'rgba(15, 23, 42, 0.8)',
+                            border: '1px solid rgba(6, 182, 212, 0.4)',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            transition: 'background 0.2s'
+                          }}
+                          className="candidate-card"
+                        >
+                          <div>
+                            <span style={{ fontWeight: 700, color: '#f1f5f9', fontSize: '12px' }}>
+                              {cand.entity_id}
+                            </span>
+                            <p style={{ fontSize: '10px', color: '#94a3b8', margin: 0 }}>
+                              {cand.details}
+                            </p>
+                          </div>
+                          <button style={{
+                            background: '#06b6d4',
+                            color: '#0f172a',
+                            border: 'none',
+                            borderRadius: '4px',
+                            padding: '4px 8px',
+                            fontSize: '10px',
+                            fontWeight: 800,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            cursor: 'pointer'
+                          }}>
+                            Target <ArrowRight size={10} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {loading && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#22d3ee', fontSize: '12px' }}>
+                <Sparkles size={14} className="spin-anim" />
+                <span>AI is analyzing graph data & navigating...</span>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Footer */}
+          <div style={{
+            padding: '12px',
+            background: 'rgba(30, 41, 59, 0.9)',
+            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            display: 'flex',
+            gap: '8px',
+            alignItems: 'center'
+          }}>
+            <input
+              type="text"
+              value={inputMsg}
+              onChange={(e) => setInputMsg(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="Ask AI to search suspect name, phone, plate..."
+              style={{
+                flex: 1,
+                background: 'rgba(15, 23, 42, 0.8)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                padding: '10px 12px',
+                color: '#f8fafc',
+                fontSize: '12px',
+                outline: 'none'
+              }}
+            />
+            <button
+              onClick={() => handleSendMessage()}
+              style={{
+                background: '#06b6d4',
+                color: '#0f172a',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                cursor: 'pointer',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Send size={15} />
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

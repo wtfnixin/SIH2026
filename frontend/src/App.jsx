@@ -38,6 +38,7 @@ import FileUploadModal from './components/FileUploadModal';
 import NetworkGraph from './components/NetworkGraph';
 import SyndicateLeaderboard from './components/SyndicateLeaderboard';
 import AuditLoggerPanel from './components/AuditLoggerPanel';
+import AICopilotDrawer from './components/AICopilotDrawer';
 import TargetedGraphCanvas from './components/TargetedGraphCanvas';
 
 export default function App() {
@@ -984,6 +985,15 @@ export default function App() {
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
         onUploadSuccess={fetchAllData}
+      />
+
+      {/* AI Intelligence Copilot Floating Drawer */}
+      <AICopilotDrawer
+        onNavigateGraph={(targetId) => {
+          setSelectedEntityId(targetId);
+          setFocusedEntityId(targetId);
+          setActiveView('topology');
+        }}
       />
     </div>
   );
