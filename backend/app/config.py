@@ -14,11 +14,11 @@ class Settings(BaseSettings):
     # PostgreSQL settings
     POSTGRES_URI: str = os.getenv(
         "POSTGRES_URI", 
-        "postgresql://sih_admin:sih_secure_password@sih_postgres:5432/sih_investigation"
+        "postgresql://sih_admin:sih_secure_password@localhost:5432/sih_investigation"
     )
     SQLALCHEMY_DATABASE_URI: str = os.getenv(
         "POSTGRES_URI", 
-        "postgresql://sih_admin:sih_secure_password@sih_postgres:5432/sih_investigation"
+        "postgresql://sih_admin:sih_secure_password@localhost:5432/sih_investigation"
     )
 
     class Config:

@@ -12,7 +12,9 @@ import {
   Activity,
   DollarSign,
   Radio,
-  Clock
+  Clock,
+  Network,
+  FileText
 } from 'lucide-react';
 
 // Default realistic sample threat alerts if DB is empty or fresh
@@ -115,10 +117,13 @@ const DEFAULT_SAMPLE_COLOCATIONS = [
   }
 ];
 
-export default function ThreatAlertsFeed({ alerts, onSelectEntity, onFocusEntity }) {
-  const [activeTab, setActiveTab] = useState('all');
+export default function ThreatAlertsFeed({ alerts, onSelectEntity, onFocusEntity, onInvestigateGraph, activeTab: propTab, onTabChange }) {
+  const [localTab, setLocalTab] = useState('all');
+  const activeTab = propTab !== undefined ? propTab : localTab;
+  const setActiveTab = onTabChange || setLocalTab;
   const [searchQuery, setSearchQuery] = useState('');
   const [severityFilter, setSeverityFilter] = useState('ALL');
+
 
   // Extract raw backend arrays, supporting both nested and flat structures
   const rawStructuring = alerts?.alerts?.financial_structuring || alerts?.financial_structuring || [];
@@ -260,33 +265,19 @@ export default function ThreatAlertsFeed({ alerts, onSelectEntity, onFocusEntity
 
       {/* Control Bar: Categories, Severity, and Live Search */}
       <div className="threat-controls-row">
-        {/* Category Tabs */}
-        <div className="threat-category-tabs">
-          <button
-            onClick={() => setActiveTab('all')}
-            className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`}
-          >
-            All Threats ({totalCount})
-          </button>
-          <button
-            onClick={() => setActiveTab('structuring')}
-            className={`tab-btn ${activeTab === 'structuring' ? 'active' : ''}`}
-          >
-            <AlertTriangle size={13} /> Hawala ({structuring.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('burners')}
-            className={`tab-btn ${activeTab === 'burners' ? 'active' : ''}`}
-          >
-            <PhoneOff size={13} /> Burners ({burners.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('colocations')}
-            className={`tab-btn ${activeTab === 'colocations' ? 'active' : ''}`}
-          >
-            <Car size={13} /> Convoys ({colocations.length})
-          </button>
+        {/* Active Filter Label */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 800, color: '#ffffff', letterSpacing: '0.6px', textTransform: 'uppercase' }}>
+            {activeTab === 'all' && 'All Threat Feeds'}
+            {activeTab === 'structuring' && 'Hawala & Smurfing Alerts'}
+            {activeTab === 'burners' && 'Burner SIM Anomalies'}
+            {activeTab === 'colocations' && 'ANPR Convoy Sightings'}
+          </span>
+          <span style={{ fontSize: '10px', fontFamily: 'JetBrains Mono', color: '#a1a1aa', background: 'rgba(255,255,255,0.08)', padding: '2px 7px', borderRadius: '4px', fontWeight: 700 }}>
+            {totalFilteredCount} Alerts
+          </span>
         </div>
+
 
         {/* Search & Severity Filter */}
         <div className="threat-filter-tools">
@@ -378,17 +369,17 @@ export default function ThreatAlertsFeed({ alerts, onSelectEntity, onFocusEntity
                         className="action-link-btn"
                         title="Open Full Criminal Dossier"
                       >
-                        <ExternalLink size={12} /> Dossier
+                        <FileText size={12} /> Dossier
                       </button>
                       <button
                         onClick={() => {
-                          if (onFocusEntity) onFocusEntity(a.sender_suspect);
-                          if (onSelectEntity) onSelectEntity(a.sender_suspect);
+                          if (onInvestigateGraph) onInvestigateGraph(a.sender_suspect);
+                          else if (onFocusEntity) onFocusEntity(a.sender_suspect);
                         }}
                         className="action-link-btn highlight"
-                        title="Locate in Network Map"
+                        title="Investigate in Targeted Graph Canvas"
                       >
-                        <MapPin size={12} /> Focus Map
+                        <Network size={12} /> Investigate Graph
                       </button>
                     </div>
                   </div>
@@ -437,17 +428,17 @@ export default function ThreatAlertsFeed({ alerts, onSelectEntity, onFocusEntity
                         className="action-link-btn"
                         title="Open Suspect Dossier"
                       >
-                        <ExternalLink size={12} /> Dossier
+                        <FileText size={12} /> Dossier
                       </button>
                       <button
                         onClick={() => {
-                          if (onFocusEntity) onFocusEntity(b.phone_number);
-                          if (onSelectEntity) onSelectEntity(b.phone_number);
+                          if (onInvestigateGraph) onInvestigateGraph(b.phone_number);
+                          else if (onFocusEntity) onFocusEntity(b.phone_number);
                         }}
                         className="action-link-btn highlight"
-                        title="Locate in Network Map"
+                        title="Investigate in Targeted Graph Canvas"
                       >
-                        <MapPin size={12} /> Focus Map
+                        <Network size={12} /> Investigate Graph
                       </button>
                     </div>
                   </div>
@@ -504,17 +495,17 @@ export default function ThreatAlertsFeed({ alerts, onSelectEntity, onFocusEntity
                         className="action-link-btn"
                         title="Open Vehicle Dossier"
                       >
-                        <ExternalLink size={12} /> Dossier
+                        <FileText size={12} /> Dossier
                       </button>
                       <button
                         onClick={() => {
-                          if (onFocusEntity) onFocusEntity(c.vehicle_1);
-                          if (onSelectEntity) onSelectEntity(c.vehicle_1);
+                          if (onInvestigateGraph) onInvestigateGraph(c.vehicle_1);
+                          else if (onFocusEntity) onFocusEntity(c.vehicle_1);
                         }}
                         className="action-link-btn highlight"
-                        title="Locate in Network Map"
+                        title="Investigate in Targeted Graph Canvas"
                       >
-                        <MapPin size={12} /> Focus Map
+                        <Network size={12} /> Investigate Graph
                       </button>
                     </div>
                   </div>

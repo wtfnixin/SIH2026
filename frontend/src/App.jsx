@@ -9,22 +9,53 @@ import {
   PhoneOff, 
   Car, 
   User, 
+  Users,
   X, 
   CheckCircle, 
   Share2, 
   Network,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  ShieldAlert,
+  UploadCloud,
+  Layers,
+  Activity,
+  Database,
+  CreditCard,
+  FileText,
+  Phone,
+  MapPin,
+  ArrowUpRight,
+  ArrowDownLeft,
+  DollarSign,
+  Filter,
+  ChevronDown
 } from 'lucide-react';
 import FloatingMapWindow from './components/FloatingMapWindow';
 import ThreatAlertsFeed from './components/ThreatAlertsFeed';
 import EntityDossierModal from './components/EntityDossierModal';
 import FileUploadModal from './components/FileUploadModal';
+import NetworkGraph from './components/NetworkGraph';
+import SyndicateLeaderboard from './components/SyndicateLeaderboard';
+import AuditLoggerPanel from './components/AuditLoggerPanel';
+import TargetedGraphCanvas from './components/TargetedGraphCanvas';
 
 export default function App() {
   const [networkData, setNetworkData] = useState({ elements: [] });
   const [alertsData, setAlertsData] = useState(null);
   const [kingpins, setKingpins] = useState([]);
+  const [criminals, setCriminals] = useState([]);
+  const [totalCriminals, setTotalCriminals] = useState(0);
+  const [criminalFilter, setCriminalFilter] = useState('all');
+  const [criminalSearch, setCriminalSearch] = useState('');
+  
+  // Dossier Workspace State
+  const [selectedDossierEntity, setSelectedDossierEntity] = useState(null);
+  const [dossierData, setDossierData] = useState(null);
+  const [loadingDossier, setLoadingDossier] = useState(false);
+  const [dossierSearch, setDossierSearch] = useState('');
+
+  // Global search & modal state
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedEntityId, setSelectedEntityId] = useState(null);
@@ -32,18 +63,29 @@ export default function App() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [activeView, setActiveView] = useState('threats');
+  const [threatCategory, setThreatCategory] = useState('all');
+  const [isThreatDropdownOpen, setIsThreatDropdownOpen] = useState(true);
+  const [targetedGraphEntity, setTargetedGraphEntity] = useState(null);
 
   const fetchAllData = () => {
     setLoading(true);
     Promise.all([
       fetch('http://localhost:8000/api/v1/graph/network?limit=150').then(res => res.json()),
       fetch('http://localhost:8000/api/v1/analytics/alerts').then(res => res.json()),
-      fetch('http://localhost:8000/api/v1/graph/kingpins?top_n=5').then(res => res.json())
+      fetch('http://localhost:8000/api/v1/graph/kingpins?top_n=10').then(res => res.json()),
+      fetch('http://localhost:8000/api/v1/entities/criminals?limit=250').then(res => res.json())
     ])
-      .then(([net, al, kp]) => {
+      .then(([net, al, kp, crim]) => {
         setNetworkData(net);
         setAlertsData(al);
-        setKingpins(kp);
+        setKingpins(kp || []);
+        const crimList = crim?.criminals || [];
+        setCriminals(crimList);
+        setTotalCriminals(crim?.total || crimList.length);
+        if (crimList.length > 0 && !selectedDossierEntity) {
+          setSelectedDossierEntity(crimList[0].entity_id);
+        }
         setLoading(false);
       })
       .catch(err => {
@@ -55,6 +97,22 @@ export default function App() {
   useEffect(() => {
     fetchAllData();
   }, []);
+
+  // Fetch single dossier when selectedDossierEntity changes
+  useEffect(() => {
+    if (!selectedDossierEntity) return;
+    setLoadingDossier(true);
+    fetch(`http://localhost:8000/api/v1/entities/dossier/${encodeURIComponent(selectedDossierEntity)}`)
+      .then(res => res.json())
+      .then(data => {
+        setDossierData(data);
+        setLoadingDossier(false);
+      })
+      .catch(err => {
+        console.error("Dossier fetch error:", err);
+        setLoadingDossier(false);
+      });
+  }, [selectedDossierEntity]);
 
   const handleSearch = (e) => {
     const q = e.target.value;
@@ -68,6 +126,105 @@ export default function App() {
       setSearchResults([]);
     }
   };
+
+  // Global Ctrl+K Shortcut to focus Search Bar
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const input = document.getElementById('global-search-input');
+        if (input) input.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const openTargetedGraph = (entityId) => {
+    setTargetedGraphEntity(entityId);
+    setSelectedEntityId(entityId);
+    setFocusedEntityId(entityId);
+    setActiveView('graph_canvas');
+    setSearchResults([]);
+    setSearchQuery('');
+  };
+
+  const openDossier = (entityId) => {
+    setSelectedEntityId(null);
+    setFocusedEntityId(null);
+    setTargetedGraphEntity(null);
+    setSelectedDossierEntity(entityId);
+    setDossierSearch('');
+    setActiveView('dossiers');
+    setSearchResults([]);
+    setSearchQuery('');
+    setLoadingDossier(true);
+    fetch(`http://localhost:8000/api/v1/entities/dossier/${encodeURIComponent(entityId)}`)
+      .then(res => res.json())
+      .then(data => {
+        setDossierData(data);
+        setLoadingDossier(false);
+      })
+      .catch(err => {
+        console.error("Dossier fetch error:", err);
+        setLoadingDossier(false);
+      });
+  };
+
+  const handleSelectSearchResult = (entityId) => {
+    openDossier(entityId);
+  };
+
+  const getThreatClass = (level) => {
+    switch (level) {
+      case 'CRITICAL': return 'threat-badge-critical';
+      case 'HIGH RISK': return 'threat-badge-high';
+      case 'ELEVATED': return 'threat-badge-elevated';
+      default: return 'threat-badge-monitored';
+    }
+  };
+
+  // Filtered criminals for the Criminal Database view
+  const filteredCriminals = criminals.filter(c => {
+    if (criminalFilter === 'fir' && (!c.fir_count || c.fir_count === 0)) return false;
+    if (criminalFilter === 'high_risk' && c.threat_level !== 'CRITICAL' && c.threat_level !== 'HIGH RISK') return false;
+    if (criminalFilter === 'vehicles' && (!c.vehicle_count || c.vehicle_count === 0)) return false;
+
+    if (criminalSearch.trim()) {
+      const q = criminalSearch.toLowerCase();
+      const matchName = c.name?.toLowerCase().includes(q);
+      const matchFir = c.firs?.some(f => f.toLowerCase().includes(q));
+      const matchVeh = c.vehicles?.some(v => v.toLowerCase().includes(q));
+      const matchLoc = c.locations?.some(l => l.toLowerCase().includes(q));
+      return matchName || matchFir || matchVeh || matchLoc;
+    }
+    return true;
+  });
+
+  // Filtered suspects for the Dossier Workspace left selector
+  const filteredDossierSuspects = criminals.filter(c => {
+    if (!dossierSearch.trim()) return true;
+    const q = dossierSearch.toLowerCase();
+    return (
+      c.name?.toLowerCase().includes(q) ||
+      c.firs?.some(f => f.toLowerCase().includes(q)) ||
+      c.vehicles?.some(v => v.toLowerCase().includes(q))
+    );
+  });
+
+  const displayedDossierSuspects = [...filteredDossierSuspects];
+  if (
+    selectedDossierEntity &&
+    !displayedDossierSuspects.some(c => c.entity_id === selectedDossierEntity || c.name === selectedDossierEntity)
+  ) {
+    displayedDossierSuspects.unshift({
+      entity_id: selectedDossierEntity,
+      name: dossierData?.entity_id || selectedDossierEntity,
+      connection_count: dossierData?.total_connections || 0,
+      fir_count: dossierData?.summary?.fir_count || 0,
+      threat_level: dossierData?.threat_level || 'MONITORED'
+    });
+  }
 
   return (
     <div className="app-container">
@@ -87,7 +244,7 @@ export default function App() {
           </div>
           <div>
             <h1 className="brand-title">CRIMINAL NETWORK INTELLIGENCE SYSTEM</h1>
-            <p className="brand-subtitle">SIH26189 COMMAND CENTER • REAL-TIME THREAT & GRAPH SURVEILLANCE</p>
+            <p className="brand-subtitle">National Cyber Crime Coordination Centre (I4C) • Executive Command Center</p>
           </div>
         </div>
 
@@ -95,10 +252,16 @@ export default function App() {
         <div className="search-box">
           <Search size={16} className="search-icon" />
           <input
+            id="global-search-input"
             type="text"
             value={searchQuery}
             onChange={handleSearch}
-            placeholder="Search suspect name, phone (+91...), or vehicle plate..."
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && searchResults.length > 0) {
+                openDossier(searchResults[0].entity_id);
+              }
+            }}
+            placeholder="Search suspect name, phone (+91...), or vehicle plate (Ctrl+K)..."
             className="search-input"
           />
 
@@ -119,12 +282,7 @@ export default function App() {
               {searchResults.map(r => (
                 <div
                   key={r.entity_id}
-                  onClick={() => {
-                    setSelectedEntityId(r.entity_id);
-                    setFocusedEntityId(r.entity_id);
-                    setSearchResults([]);
-                    setSearchQuery('');
-                  }}
+                  onClick={() => openDossier(r.entity_id)}
                   style={{
                     padding: '8px 12px',
                     borderRadius: '6px',
@@ -137,18 +295,36 @@ export default function App() {
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.background = '#27272a'}
                   onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  title={`Open ${r.entity_id} in Suspect Dossiers section`}
                 >
-                  <span style={{ fontWeight: 600, color: '#f4f4f5' }}>{r.entity_id}</span>
-                  <span style={{
-                    fontSize: '10px',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    color: '#ffffff',
-                    border: '1px solid rgba(255, 255, 255, 0.18)'
-                  }}>
-                    {r.type}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <User size={13} color="#93c5fd" />
+                    <span style={{ fontWeight: 600, color: '#f4f4f5' }}>{r.entity_id}</span>
+                    <span style={{
+                      fontSize: '10px',
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: '#ffffff',
+                      border: '1px solid rgba(255, 255, 255, 0.18)'
+                    }}>
+                      {r.type}
+                    </span>
+                  </div>
+
+                  <div className="search-item-actions">
+                    <button
+                      className="search-quick-btn search-btn-dossier"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openDossier(r.entity_id);
+                      }}
+                      title="Open in Suspect Dossiers Section"
+                    >
+                      <FileText size={11} />
+                      <span>Dossier</span>
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -170,102 +346,624 @@ export default function App() {
       {/* Main Grid Workspace */}
       <div className={`dashboard-grid ${isSidebarCollapsed ? 'sidebar-hidden' : ''}`}>
         
-        {/* Left Side: Top Kingpins & Cell Clusters */}
+        {/* Navigation Sidebar */}
         {!isSidebarCollapsed && (
-          <div className="left-panel">
-            
-            {/* PageRank Kingpins Widget */}
-            <div className="glass-card" style={{ padding: '16px', height: '52%', display: 'flex', flexDirection: 'column' }}>
-              <div className="widget-header">
-                <span className="widget-title">
-                  <Crown size={16} color="#fbbf24" />
-                  Top Syndicate Bosses (PageRank)
-                </span>
-              </div>
-              <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {kingpins.map((k, idx) => (
+          <aside className="standard-sidebar">
+            <div className="sidebar-scrollable-content">
+              
+              {/* SECTION: THREAT INTELLIGENCE */}
+              <div className="sidebar-group">
+                <div className="sidebar-group-title">
+                  <span>THREAT INTELLIGENCE</span>
+                  <span className="sidebar-item-badge">{alertsData?.total_alerts || 0}</span>
+                </div>
+                <div className="sidebar-nav-list">
+                  {/* Parent Dropdown: Live Threat Feed */}
                   <div
-                    key={idx}
+                    className={`sidebar-nav-item ${
+                      activeView === 'threats' && threatCategory === 'all'
+                        ? 'active'
+                        : activeView === 'threats'
+                        ? 'active-parent'
+                        : ''
+                    }`}
                     onClick={() => {
-                      setSelectedEntityId(k.entity_id);
-                      setFocusedEntityId(k.entity_id);
+                      setActiveView('threats');
+                      if (activeView === 'threats' && threatCategory === 'all') {
+                        setIsThreatDropdownOpen(!isThreatDropdownOpen);
+                      } else {
+                        setThreatCategory('all');
+                        setIsThreatDropdownOpen(true);
+                      }
                     }}
-                    style={{
-                      padding: '10px 12px',
-                      background: 'rgba(15, 23, 42, 0.6)',
-                      border: '1px solid rgba(255, 255, 255, 0.05)',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(251, 191, 36, 0.4)'}
-                    onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)'}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{
-                        width: '22px',
-                        height: '22px',
-                        borderRadius: '5px',
-                        background: 'rgba(251, 191, 36, 0.2)',
-                        color: '#fbbf24',
-                        fontWeight: 800,
-                        fontSize: '11px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        #{k.rank}
-                      </span>
-                      <div>
-                        <p style={{ fontSize: '12px', fontWeight: 600, color: '#f1f5f9' }}>{k.entity_id}</p>
-                        <p style={{ fontSize: '10px', color: '#64748b' }}>{k.entity_type} • {k.degree} Links</p>
+                    <div className="sidebar-item-left">
+                      <ShieldAlert size={15} />
+                      <span>Live Threat Feed</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span className="sidebar-item-badge">{alertsData?.total_alerts || 0}</span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsThreatDropdownOpen(!isThreatDropdownOpen);
+                        }}
+                        className="sidebar-chevron-btn"
+                        title={isThreatDropdownOpen ? "Collapse threat categories" : "Expand threat categories"}
+                      >
+                        <ChevronDown
+                          size={13}
+                          style={{
+                            transform: isThreatDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: 'transform 0.2s ease',
+                            display: 'block'
+                          }}
+                        />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Collapsible Dropdown Sub-Items: Threat Categories */}
+                  {isThreatDropdownOpen && (
+                    <div className="sidebar-sub-nav-list">
+                      <div
+                        className={`sidebar-sub-nav-item ${activeView === 'threats' && threatCategory === 'structuring' ? 'active' : ''}`}
+                        onClick={() => {
+                          setActiveView('threats');
+                          setThreatCategory('structuring');
+                        }}
+                      >
+                        <div className="sidebar-item-left">
+                          <CreditCard size={13} />
+                          <span>Hawala & Smurfing</span>
+                        </div>
+                        <span className="sidebar-item-badge">{alertsData?.breakdown?.financial_structuring_count || 0}</span>
+                      </div>
+
+                      <div
+                        className={`sidebar-sub-nav-item ${activeView === 'threats' && threatCategory === 'burners' ? 'active' : ''}`}
+                        onClick={() => {
+                          setActiveView('threats');
+                          setThreatCategory('burners');
+                        }}
+                      >
+                        <div className="sidebar-item-left">
+                          <PhoneOff size={13} />
+                          <span>Burner SIM Lines</span>
+                        </div>
+                        <span className="sidebar-item-badge">{alertsData?.breakdown?.burner_phone_count || 0}</span>
+                      </div>
+
+                      <div
+                        className={`sidebar-sub-nav-item ${activeView === 'threats' && threatCategory === 'colocations' ? 'active' : ''}`}
+                        onClick={() => {
+                          setActiveView('threats');
+                          setThreatCategory('colocations');
+                        }}
+                      >
+                        <div className="sidebar-item-left">
+                          <Car size={13} />
+                          <span>ANPR Toll Convoys</span>
+                        </div>
+                        <span className="sidebar-item-badge">{alertsData?.breakdown?.anpr_colocation_count || 0}</span>
                       </div>
                     </div>
-                    <span style={{ fontSize: '11px', fontFamily: 'JetBrains Mono', color: '#fbbf24', fontWeight: 700 }}>
-                      {k.pagerank_score}
+                  )}
+                </div>
+              </div>
+
+              {/* SECTION: SUSPECT DOSSIERS */}
+              <div className="sidebar-group">
+                <div className="sidebar-group-title">
+                  <span>SUSPECT DOSSIERS</span>
+                  <span className="sidebar-item-badge">360°</span>
+                </div>
+                <div className="sidebar-nav-list">
+                  <div
+                    className={`sidebar-nav-item ${activeView === 'dossiers' ? 'active' : ''}`}
+                    onClick={() => {
+                      setActiveView('dossiers');
+                      if (!selectedDossierEntity && criminals.length > 0) {
+                        setSelectedDossierEntity(criminals[0].entity_id);
+                      }
+                    }}
+                    title="View suspect forensic dossiers workspace"
+                  >
+                    <div className="sidebar-item-left">
+                      <FileText size={15} />
+                      <span>Suspect Dossiers</span>
+                    </div>
+                    <span className="sidebar-item-badge">{totalCriminals || criminals.length || 0}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* SECTION: CRIME SYNDICATES */}
+              <div className="sidebar-group">
+                <div className="sidebar-group-title">
+                  <span>CRIME SYNDICATES</span>
+                  <span className="sidebar-item-badge">TOP</span>
+                </div>
+                <div className="sidebar-nav-list">
+                  <div
+                    className={`sidebar-nav-item ${activeView === 'syndicates' ? 'active' : ''}`}
+                    onClick={() => setActiveView('syndicates')}
+                    title="View Top Syndicate Bosses & PageRank Hierarchy"
+                  >
+                    <div className="sidebar-item-left">
+                      <Crown size={15} color="#fbbf24" />
+                      <span>Syndicate Bosses</span>
+                    </div>
+                    <span className="sidebar-item-badge" style={{ background: 'rgba(251, 191, 36, 0.14)', color: '#fbbf24', borderColor: 'rgba(251, 191, 36, 0.25)' }}>
+                      {kingpins.length > 0 ? `Top ${kingpins.length}` : 'Ranked'}
                     </span>
                   </div>
-                ))}
+                </div>
               </div>
+
             </div>
 
-            {/* Operational Metrics Widget */}
-            <div className="glass-card" style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <div className="widget-header">
-                <span className="widget-title">
-                  <Network size={16} color="#ffffff" />
-                  Graph Topology Status
-                </span>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', margin: '10px 0' }}>
-                <div style={{ padding: '10px', background: 'rgba(18, 18, 22, 0.85)', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                  <span style={{ fontSize: '10px', color: '#a1a1aa', fontWeight: 600, display: 'block' }}>TOTAL NODES</span>
-                  <span style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff' }}>540</span>
-                </div>
-                <div style={{ padding: '10px', background: 'rgba(18, 18, 22, 0.85)', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                  <span style={{ fontSize: '10px', color: '#a1a1aa', fontWeight: 600, display: 'block' }}>TOTAL EDGES</span>
-                  <span style={{ fontSize: '18px', fontWeight: 800, color: '#d4d4d8' }}>7,333</span>
-                </div>
-              </div>
-              <div style={{ padding: '8px', background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '8px', textAlign: 'center' }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#ffffff', letterSpacing: '0.5px' }}>
-                  ✓ NEO4J & POSTGRES DB HEALTHY
-                </span>
+            {/* Sidebar Footer: System Status */}
+            <div className="sidebar-footer">
+              <div className="sidebar-status-pill">
+                <div className="status-indicator-dot" />
+                <span className="status-text">NEO4J & POSTGRES ONLINE</span>
               </div>
             </div>
-          </div>
+          </aside>
         )}
 
-        {/* Main Stage: Real-Time Threat Feed covering most of the screen */}
+        {/* Main Stage: Dynamic View Switcher */}
         <div className="main-threat-stage">
-          <ThreatAlertsFeed
-            alerts={alertsData}
-            onSelectEntity={(id) => setSelectedEntityId(id)}
-            onFocusEntity={(id) => setFocusedEntityId(id)}
-          />
+          
+          {/* VIEW: EXECUTIVE COMMAND CENTER (DEFAULT LANDING VIEW) */}
+          {activeView === 'threats' && (
+            <div className="executive-dashboard-wrapper">
+              {/* Full-Width Live Threat Intelligence Feed */}
+              <div className="executive-threats-container">
+                <ThreatAlertsFeed
+                  alerts={alertsData}
+                  onSelectEntity={(id) => openDossier(id)}
+                  onFocusEntity={(id) => setFocusedEntityId(id)}
+                  onInvestigateGraph={(id) => openTargetedGraph(id)}
+                  activeTab={threatCategory}
+                  onTabChange={(tab) => setThreatCategory(tab)}
+                />
+              </div>
+
+              {/* Evidence Ingestion Audit Logger (Full-Width Bottom Panel) */}
+              <AuditLoggerPanel onOpenUpload={() => setIsUploadOpen(true)} />
+            </div>
+          )}
+
+          {/* VIEW: TOP SYNDICATE BOSSES & CENTRALITY HIERARCHY */}
+          {activeView === 'syndicates' && (
+            <div className="syndicates-view-wrapper">
+              <SyndicateLeaderboard
+                kingpins={kingpins}
+                onInspectDossier={(id) => openDossier(id)}
+                onInvestigateGraph={(id) => openTargetedGraph(id)}
+                isFullPage={true}
+              />
+            </div>
+          )}
+
+          {/* VIEW: TARGETED GRAPH INVESTIGATION CANVAS */}
+          {activeView === 'graph_canvas' && (
+            <TargetedGraphCanvas
+              targetEntity={targetedGraphEntity || (criminals.length > 0 ? criminals[0].entity_id : 'Rahul Sharma')}
+              onBackToDashboard={() => setActiveView('threats')}
+              onOpenDossier={(id) => openDossier(id)}
+            />
+          )}
+
+          {/* VIEW: CRIMINAL DATABASE (100% DYNAMIC FROM NEO4J) */}
+          {activeView === 'criminals' && (
+            <div className="criminal-db-wrapper glass-card">
+              {/* Dynamic Controls Bar */}
+              <div className="criminal-controls-bar">
+                <div className="criminal-search-box">
+                  <Search size={15} color="#a1a1aa" />
+                  <input
+                    type="text"
+                    placeholder="Search suspects by name, FIR case no, or vehicle plate..."
+                    value={criminalSearch}
+                    onChange={(e) => setCriminalSearch(e.target.value)}
+                  />
+                  {criminalSearch && (
+                    <button onClick={() => setCriminalSearch('')} style={{ background: 'transparent', border: 'none', color: '#71717a', cursor: 'pointer' }}>
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+
+                <div className="criminal-filter-group">
+                  <button
+                    className={`criminal-filter-btn ${criminalFilter === 'all' ? 'active' : ''}`}
+                    onClick={() => setCriminalFilter('all')}
+                  >
+                    All ({criminals.length})
+                  </button>
+                  <button
+                    className={`criminal-filter-btn ${criminalFilter === 'fir' ? 'active' : ''}`}
+                    onClick={() => setCriminalFilter('fir')}
+                  >
+                    FIR-Linked ({criminals.filter(c => c.fir_count > 0).length})
+                  </button>
+                  <button
+                    className={`criminal-filter-btn ${criminalFilter === 'high_risk' ? 'active' : ''}`}
+                    onClick={() => setCriminalFilter('high_risk')}
+                  >
+                    High Risk / Critical ({criminals.filter(c => c.threat_level === 'CRITICAL' || c.threat_level === 'HIGH RISK').length})
+                  </button>
+                  <button
+                    className={`criminal-filter-btn ${criminalFilter === 'vehicles' ? 'active' : ''}`}
+                    onClick={() => setCriminalFilter('vehicles')}
+                  >
+                    Vehicle Owners ({criminals.filter(c => c.vehicle_count > 0).length})
+                  </button>
+                </div>
+              </div>
+
+              {/* KPI Metrics Row */}
+              <div className="criminal-kpi-row">
+                <div className="criminal-kpi-card">
+                  <span className="criminal-kpi-label">Tracked In Database</span>
+                  <span className="criminal-kpi-value">{totalCriminals}</span>
+                </div>
+                <div className="criminal-kpi-card">
+                  <span className="criminal-kpi-label">Active Surveillance</span>
+                  <span className="criminal-kpi-value">{criminals.filter(c => c.status === 'UNDER ACTIVE SURVEILLANCE').length}</span>
+                </div>
+                <div className="criminal-kpi-card">
+                  <span className="criminal-kpi-label">FIR Named Suspects</span>
+                  <span className="criminal-kpi-value">{criminals.filter(c => c.fir_count > 0).length}</span>
+                </div>
+                <div className="criminal-kpi-card">
+                  <span className="criminal-kpi-label">Graph Interconnects</span>
+                  <span className="criminal-kpi-value">{criminals.reduce((acc, c) => acc + (c.connection_count || 0), 0)}</span>
+                </div>
+              </div>
+
+              {/* Suspects Card Grid */}
+              <div className="criminal-cards-scroll-area">
+                <div className="criminal-cards-grid">
+                  {filteredCriminals.map((c, idx) => (
+                    <div key={idx} className="criminal-card">
+                      <div className="criminal-card-header">
+                        <span className={`threat-badge ${getThreatClass(c.threat_level)}`}>
+                          {c.threat_level}
+                        </span>
+                        <span style={{ fontSize: '11px', fontFamily: 'JetBrains Mono', color: '#a1a1aa', fontWeight: 700 }}>
+                          Risk: {c.threat_score}/100
+                        </span>
+                      </div>
+
+                      <div>
+                        <h3 className="criminal-card-name">{c.name}</h3>
+                        <p className="criminal-card-meta">
+                          {c.entity_type} • <strong style={{ color: '#ffffff' }}>{c.connection_count}</strong> Direct Network Relationships
+                        </p>
+                      </div>
+
+                      {/* Evidence Pills */}
+                      <div className="criminal-evidence-pills">
+                        {c.firs && c.firs.map((f, i) => (
+                          <span key={i} className="evidence-pill" style={{ borderColor: 'rgba(239, 68, 68, 0.3)', color: '#fca5a5' }}>
+                            <FileText size={11} />
+                            {f}
+                          </span>
+                        ))}
+                        {c.vehicles && c.vehicles.map((v, i) => (
+                          <span key={i} className="evidence-pill" style={{ borderColor: 'rgba(96, 165, 250, 0.3)', color: '#93c5fd' }}>
+                            <Car size={11} />
+                            {v}
+                          </span>
+                        ))}
+                        {c.locations && c.locations.slice(0, 1).map((loc, i) => (
+                          <span key={i} className="evidence-pill" style={{ borderColor: 'rgba(192, 132, 252, 0.3)', color: '#d8b4fe' }}>
+                            <MapPin size={11} />
+                            {loc}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="criminal-card-status-bar">
+                        <span>Surveillance:</span>
+                        <span style={{ color: '#ffffff', fontWeight: 700 }}>{c.status}</span>
+                      </div>
+
+                      <div className="criminal-card-actions">
+                        <button
+                          className="btn-primary"
+                          style={{ flex: 1, padding: '7px 12px', fontSize: '11px', justifyContent: 'center' }}
+                          onClick={() => {
+                            setSelectedDossierEntity(c.entity_id);
+                            setActiveView('dossiers');
+                          }}
+                        >
+                          <User size={13} />
+                          <span>Open Dossier</span>
+                        </button>
+                        <button
+                          className="btn-secondary"
+                          style={{ padding: '7px 12px', fontSize: '11px' }}
+                          onClick={() => {
+                            setFocusedEntityId(c.entity_id);
+                            setSelectedEntityId(c.entity_id);
+                            setActiveView('topology');
+                          }}
+                          title="Locate suspect on network topology"
+                        >
+                          <Network size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* VIEW: SUSPECT DOSSIERS WORKSPACE (DEDICATED FULL VIEW) */}
+          {activeView === 'dossiers' && (
+            <div className="dossier-workspace-layout">
+              
+              {/* Left Suspect Selector Pane */}
+              <div className="dossier-selector-pane">
+                <div className="dossier-selector-header">
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 800, color: '#ffffff', letterSpacing: '0.6px' }}>
+                      SUSPECT DIRECTORY
+                    </span>
+                    <span className="sidebar-item-badge">{criminals.length}</span>
+                  </div>
+                  <div className="criminal-search-box" style={{ maxWidth: '100%' }}>
+                    <Search size={14} color="#71717a" />
+                    <input
+                      type="text"
+                      placeholder="Filter suspects..."
+                      value={dossierSearch}
+                      onChange={(e) => setDossierSearch(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="dossier-selector-list">
+                  {displayedDossierSuspects.map((s, idx) => (
+                    <div
+                      key={idx}
+                      className={`dossier-selector-item ${selectedDossierEntity === s.entity_id ? 'active' : ''}`}
+                      onClick={() => setSelectedDossierEntity(s.entity_id)}
+                    >
+                      <div>
+                        <div className="dossier-item-name">{s.name}</div>
+                        <div className="dossier-item-sub">
+                          {s.connection_count} links • {s.fir_count} FIRs
+                        </div>
+                      </div>
+                      <span className={`threat-badge ${getThreatClass(s.threat_level)}`} style={{ fontSize: '8px', padding: '2px 6px' }}>
+                        {s.threat_level}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Dossier Detail Pane */}
+              <div className="dossier-detail-pane">
+                {loadingDossier ? (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '10px', color: '#a1a1aa' }}>
+                    <div className="w-5 h-5 border-2 border-white/60 border-t-transparent rounded-full animate-spin" />
+                    <span style={{ fontFamily: 'JetBrains Mono', fontSize: '12px' }}>Loading Intelligence Dossier...</span>
+                  </div>
+                ) : dossierData ? (
+                  <>
+                    {/* Dossier Banner */}
+                    <div className="dossier-banner">
+                      <div className="dossier-banner-left">
+                        <div className="dossier-avatar-box">
+                          <User size={26} />
+                        </div>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <h2 className="dossier-banner-title">{dossierData.entity_id}</h2>
+                            <span className={`threat-badge ${getThreatClass(dossierData.threat_level)}`}>
+                              {dossierData.threat_level}
+                            </span>
+                          </div>
+                          <div className="dossier-banner-sub">
+                            {dossierData.entity_type} • {dossierData.status} • {dossierData.graph_status}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          className="btn-secondary"
+                          onClick={() => {
+                            setFocusedEntityId(dossierData.entity_id);
+                            setSelectedEntityId(dossierData.entity_id);
+                            setActiveView('topology');
+                          }}
+                        >
+                          <Network size={14} />
+                          <span>View on Graph</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* KPI Metrics */}
+                    <div className="dossier-kpi-grid">
+                      <div className="dossier-metric-box">
+                        <span className="criminal-kpi-label">Total Connections</span>
+                        <span className="dossier-metric-num">{dossierData.total_connections}</span>
+                      </div>
+                      <div className="dossier-metric-box">
+                        <span className="criminal-kpi-label">Police FIR Cases</span>
+                        <span className="dossier-metric-num">{dossierData.summary?.fir_count || 0}</span>
+                      </div>
+                      <div className="dossier-metric-box">
+                        <span className="criminal-kpi-label">Registered Vehicles</span>
+                        <span className="dossier-metric-num">{dossierData.summary?.vehicle_count || 0}</span>
+                      </div>
+                      <div className="dossier-metric-box">
+                        <span className="criminal-kpi-label">Known Associates</span>
+                        <span className="dossier-metric-num">{dossierData.summary?.associate_count || 0}</span>
+                      </div>
+                    </div>
+
+                    {/* FIR Cases Section */}
+                    {dossierData.firs && dossierData.firs.length > 0 && (
+                      <div className="dossier-section">
+                        <div className="dossier-section-title">
+                          <FileText size={15} />
+                          <span>Linked Police First Information Reports ({dossierData.firs.length})</span>
+                        </div>
+                        <div className="dossier-evidence-grid">
+                          {dossierData.firs.map((fir, i) => (
+                            <div key={i} className="dossier-evidence-card">
+                              <span className="dossier-evidence-card-title">{fir.fir_no}</span>
+                              <span className="dossier-evidence-card-meta">{fir.police_station}</span>
+                              <span style={{ fontSize: '9px', color: '#71717a' }}>Incident Date: {fir.incident_date}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Vehicles Section */}
+                    {dossierData.vehicles && dossierData.vehicles.length > 0 && (
+                      <div className="dossier-section">
+                        <div className="dossier-section-title">
+                          <Car size={15} />
+                          <span>Motor Vehicles & Plates ({dossierData.vehicles.length})</span>
+                        </div>
+                        <div className="dossier-evidence-grid">
+                          {dossierData.vehicles.map((v, i) => (
+                            <div key={i} className="dossier-evidence-card">
+                              <span className="dossier-evidence-card-title">{v.registration_number}</span>
+                              <span className="dossier-evidence-card-meta">Relationship: {v.relationship}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Financial Transfers Table */}
+                    {dossierData.transactions && dossierData.transactions.length > 0 && (
+                      <div className="dossier-section">
+                        <div className="dossier-section-title">
+                          <DollarSign size={15} />
+                          <span>Financial Intelligence Trail & Hawala Intercepts ({dossierData.transactions.length})</span>
+                        </div>
+                        <div style={{ maxHeight: '220px', overflowY: 'auto', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                          <table className="dossier-tx-table">
+                            <thead>
+                              <tr>
+                                <th>TX ID</th>
+                                <th>Direction</th>
+                                <th>Counterparty</th>
+                                <th>Amount</th>
+                                <th>Mode</th>
+                                <th>Timestamp</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {dossierData.transactions.map((tx, idx) => (
+                                <tr key={idx}>
+                                  <td style={{ color: '#ffffff' }}>{tx.transaction_id}</td>
+                                  <td>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                      {tx.direction === 'Outgoing' ? <ArrowUpRight size={11} color="#fca5a5" /> : <ArrowDownLeft size={11} color="#93c5fd" />}
+                                      {tx.direction}
+                                    </span>
+                                  </td>
+                                  <td>{tx.counterparty}</td>
+                                  <td style={{ color: tx.is_structured ? '#f87171' : '#ffffff', fontWeight: 700 }}>
+                                    ₹{tx.amount.toLocaleString()}
+                                  </td>
+                                  <td>
+                                    {tx.is_structured ? (
+                                      <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5' }}>
+                                        STRUCTURED
+                                      </span>
+                                    ) : tx.mode}
+                                  </td>
+                                  <td style={{ color: '#71717a' }}>{tx.timestamp}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Relational Network Connections */}
+                    <div className="dossier-section">
+                      <div className="dossier-section-title">
+                        <Share2 size={15} />
+                        <span>All Connected Evidence Entities ({dossierData.connected_evidence?.length || 0})</span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '200px', overflowY: 'auto' }}>
+                        {dossierData.connected_evidence?.map((conn, idx) => (
+                          <div
+                            key={idx}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '8px 12px',
+                              background: 'rgba(255, 255, 255, 0.02)',
+                              borderRadius: '6px',
+                              border: '1px solid rgba(255, 255, 255, 0.05)',
+                              fontSize: '11px'
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              {conn.connected_type === 'Phone' && <Phone size={13} color="#fbbf24" />}
+                              {conn.connected_type === 'Vehicle' && <Car size={13} color="#60a5fa" />}
+                              {conn.connected_type === 'Location' && <MapPin size={13} color="#c084fc" />}
+                              {conn.connected_type === 'FIR' && <FileText size={13} color="#f87171" />}
+                              {conn.connected_type === 'Person' && <User size={13} color="#ffffff" />}
+                              <span style={{ fontFamily: 'JetBrains Mono', color: '#ffffff' }}>{conn.connected_entity}</span>
+                              <span style={{ fontSize: '10px', color: '#71717a' }}>({conn.connected_type})</span>
+                            </div>
+                            <span style={{ padding: '2px 8px', fontSize: '9px', fontWeight: 700, background: 'rgba(255, 255, 255, 0.06)', color: '#d4d4d8', borderRadius: '4px', fontFamily: 'JetBrains Mono' }}>
+                              {conn.relationship}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#71717a' }}>
+                    Select a suspect from the directory to inspect their forensic dossier.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* VIEW: TOPOLOGY */}
+          {activeView === 'topology' && (
+            <div className="glass-card" style={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 10, background: 'rgba(10, 10, 14, 0.85)', padding: '8px 14px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.15)' }}>
+                <h3 style={{ fontSize: '12px', fontWeight: 800, color: '#ffffff' }}>NETWORK GRAPH TOPOLOGY</h3>
+                <p style={{ fontSize: '10px', color: '#a1a1aa', fontFamily: 'JetBrains Mono' }}>
+                  Interactive Cytoscape Visual Canvas • {networkData.elements.length} Elements
+                </p>
+              </div>
+              <NetworkGraph
+                elements={networkData.elements}
+                onSelectNode={(id) => setSelectedEntityId(id)}
+                selectedEntityId={focusedEntityId || selectedEntityId}
+                isCompact={false}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -290,4 +988,3 @@ export default function App() {
     </div>
   );
 }
-
