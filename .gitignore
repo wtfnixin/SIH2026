@@ -40,5 +40,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Docker local data mounts
+# Docker local data mounts & uploads
 .docker/
+data/uploads/
