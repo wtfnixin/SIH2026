@@ -1,6 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Shield, Search, Upload, RefreshCw, Crown, AlertTriangle, PhoneOff, Car, User, X, CheckCircle, Share2, Network } from 'lucide-react';
-import NetworkGraph from './components/NetworkGraph';
+import { 
+  Shield, 
+  Search, 
+  Upload, 
+  RefreshCw, 
+  Crown, 
+  AlertTriangle, 
+  PhoneOff, 
+  Car, 
+  User, 
+  X, 
+  CheckCircle, 
+  Share2, 
+  Network,
+  PanelLeftClose,
+  PanelLeftOpen
+} from 'lucide-react';
+import FloatingMapWindow from './components/FloatingMapWindow';
 import ThreatAlertsFeed from './components/ThreatAlertsFeed';
 import EntityDossierModal from './components/EntityDossierModal';
 import FileUploadModal from './components/FileUploadModal';
@@ -12,8 +28,10 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedEntityId, setSelectedEntityId] = useState(null);
+  const [focusedEntityId, setFocusedEntityId] = useState(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const fetchAllData = () => {
     setLoading(true);
@@ -57,12 +75,19 @@ export default function App() {
       {/* Top Cyber Command Bar */}
       <header className="command-header">
         <div className="header-brand">
+          <button 
+            className="sidebar-toggle-btn"
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          >
+            {isSidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+          </button>
           <div className="brand-logo">
             <Shield size={22} />
           </div>
           <div>
             <h1 className="brand-title">CRIMINAL NETWORK INTELLIGENCE SYSTEM</h1>
-            <p className="brand-subtitle">SIH26189 COMMAND CENTER • LIVE GRAPH ANALYTICS</p>
+            <p className="brand-subtitle">SIH26189 COMMAND CENTER • REAL-TIME THREAT & GRAPH SURVEILLANCE</p>
           </div>
         </div>
 
@@ -84,18 +109,19 @@ export default function App() {
               top: '44px',
               left: 0,
               right: 0,
-              background: '#0f172a',
-              border: '1px solid rgba(6, 182, 212, 0.4)',
+              background: '#121216',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
               borderRadius: '10px',
               padding: '8px',
               zIndex: 100,
-              boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+              boxShadow: '0 10px 30px rgba(0,0,0,0.8)'
             }}>
               {searchResults.map(r => (
                 <div
                   key={r.entity_id}
                   onClick={() => {
                     setSelectedEntityId(r.entity_id);
+                    setFocusedEntityId(r.entity_id);
                     setSearchResults([]);
                     setSearchQuery('');
                   }}
@@ -109,17 +135,17 @@ export default function App() {
                     fontSize: '12px',
                     transition: 'background 0.2s'
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = '#1e293b'}
+                  onMouseEnter={(e) => e.currentTarget.style.background = '#27272a'}
                   onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                 >
-                  <span style={{ fontWeight: 600, color: '#f1f5f9' }}>{r.entity_id}</span>
+                  <span style={{ fontWeight: 600, color: '#f4f4f5' }}>{r.entity_id}</span>
                   <span style={{
                     fontSize: '10px',
                     padding: '2px 6px',
                     borderRadius: '4px',
-                    background: 'rgba(6, 182, 212, 0.2)',
-                    color: '#22d3ee',
-                    border: '1px solid rgba(6, 182, 212, 0.3)'
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#ffffff',
+                    border: '1px solid rgba(255, 255, 255, 0.18)'
                   }}>
                     {r.type}
                   </span>
@@ -135,115 +161,120 @@ export default function App() {
             <Upload size={15} />
             <span>Upload Evidence</span>
           </button>
-          <button className="btn-secondary" onClick={fetchAllData}>
+          <button className="btn-secondary" onClick={fetchAllData} title="Refresh Live Feeds">
             <RefreshCw size={15} className={loading ? 'spin-anim' : ''} />
           </button>
         </div>
       </header>
 
       {/* Main Grid Workspace */}
-      <div className="dashboard-grid">
+      <div className={`dashboard-grid ${isSidebarCollapsed ? 'sidebar-hidden' : ''}`}>
         
         {/* Left Side: Top Kingpins & Cell Clusters */}
-        <div className="left-panel">
-          
-          {/* PageRank Kingpins Widget */}
-          <div className="glass-card" style={{ padding: '16px', height: '55%', display: 'flex', flexDirection: 'column' }}>
-            <div className="widget-header">
-              <span className="widget-title">
-                <Crown size={16} color="#fbbf24" />
-                Top Syndicate Bosses (PageRank)
-              </span>
-            </div>
-            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {kingpins.map((k, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => setSelectedEntityId(k.entity_id)}
-                  style={{
-                    padding: '10px 12px',
-                    background: 'rgba(15, 23, 42, 0.6)',
-                    border: '1px solid rgba(255, 255, 255, 0.05)',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(251, 191, 36, 0.4)'}
-                  onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)'}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span style={{
-                      width: '22px',
-                      height: '22px',
-                      borderRadius: '5px',
-                      background: 'rgba(251, 191, 36, 0.2)',
-                      color: '#fbbf24',
-                      fontWeight: 800,
-                      fontSize: '11px',
+        {!isSidebarCollapsed && (
+          <div className="left-panel">
+            
+            {/* PageRank Kingpins Widget */}
+            <div className="glass-card" style={{ padding: '16px', height: '52%', display: 'flex', flexDirection: 'column' }}>
+              <div className="widget-header">
+                <span className="widget-title">
+                  <Crown size={16} color="#fbbf24" />
+                  Top Syndicate Bosses (PageRank)
+                </span>
+              </div>
+              <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {kingpins.map((k, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      setSelectedEntityId(k.entity_id);
+                      setFocusedEntityId(k.entity_id);
+                    }}
+                    style={{
+                      padding: '10px 12px',
+                      background: 'rgba(15, 23, 42, 0.6)',
+                      border: '1px solid rgba(255, 255, 255, 0.05)',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      #{k.rank}
-                    </span>
-                    <div>
-                      <p style={{ fontSize: '12px', fontWeight: 600, color: '#f1f5f9' }}>{k.entity_id}</p>
-                      <p style={{ fontSize: '10px', color: '#64748b' }}>{k.entity_type} • {k.degree} Links</p>
+                      justifyContent: 'space-between',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(251, 191, 36, 0.4)'}
+                    onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)'}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{
+                        width: '22px',
+                        height: '22px',
+                        borderRadius: '5px',
+                        background: 'rgba(251, 191, 36, 0.2)',
+                        color: '#fbbf24',
+                        fontWeight: 800,
+                        fontSize: '11px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        #{k.rank}
+                      </span>
+                      <div>
+                        <p style={{ fontSize: '12px', fontWeight: 600, color: '#f1f5f9' }}>{k.entity_id}</p>
+                        <p style={{ fontSize: '10px', color: '#64748b' }}>{k.entity_type} • {k.degree} Links</p>
+                      </div>
                     </div>
+                    <span style={{ fontSize: '11px', fontFamily: 'JetBrains Mono', color: '#fbbf24', fontWeight: 700 }}>
+                      {k.pagerank_score}
+                    </span>
                   </div>
-                  <span style={{ fontSize: '11px', fontFamily: 'JetBrains Mono', color: '#fbbf24', fontWeight: 700 }}>
-                    {k.pagerank_score}
-                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Operational Metrics Widget */}
+            <div className="glass-card" style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div className="widget-header">
+                <span className="widget-title">
+                  <Network size={16} color="#ffffff" />
+                  Graph Topology Status
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', margin: '10px 0' }}>
+                <div style={{ padding: '10px', background: 'rgba(18, 18, 22, 0.85)', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  <span style={{ fontSize: '10px', color: '#a1a1aa', fontWeight: 600, display: 'block' }}>TOTAL NODES</span>
+                  <span style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff' }}>540</span>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Operational Metrics Widget */}
-          <div className="glass-card" style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', justifyBetween: 'space-between' }}>
-            <div className="widget-header">
-              <span className="widget-title">
-                <Network size={16} color="#22d3ee" />
-                Graph Topology Status
-              </span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', margin: '10px 0' }}>
-              <div style={{ padding: '10px', background: 'rgba(15, 23, 42, 0.8)', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 600, display: 'block' }}>TOTAL NODES</span>
-                <span style={{ fontSize: '18px', fontWeight: 800, color: '#22d3ee' }}>540</span>
+                <div style={{ padding: '10px', background: 'rgba(18, 18, 22, 0.85)', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  <span style={{ fontSize: '10px', color: '#a1a1aa', fontWeight: 600, display: 'block' }}>TOTAL EDGES</span>
+                  <span style={{ fontSize: '18px', fontWeight: 800, color: '#d4d4d8' }}>7,333</span>
+                </div>
               </div>
-              <div style={{ padding: '10px', background: 'rgba(15, 23, 42, 0.8)', borderRadius: '8px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 600, display: 'block' }}>TOTAL EDGES</span>
-                <span style={{ fontSize: '18px', fontWeight: 800, color: '#60a5fa' }}>7,333</span>
+              <div style={{ padding: '8px', background: 'rgba(255, 255, 255, 0.06)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '8px', textAlign: 'center' }}>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: '#ffffff', letterSpacing: '0.5px' }}>
+                  ✓ NEO4J & POSTGRES DB HEALTHY
+                </span>
               </div>
             </div>
-            <div style={{ padding: '8px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '8px', textAlign: 'center' }}>
-              <span style={{ fontSize: '11px', fontWeight: 700, color: '#34d399', letterSpacing: '0.5px' }}>
-                ✓ NEO4J & POSTGRES DB HEALTHY
-              </span>
-            </div>
           </div>
-        </div>
+        )}
 
-        {/* Center: Interactive Cytoscape Visual Canvas */}
-        <div className="center-panel glass-card">
-          <NetworkGraph
-            elements={networkData.elements}
-            onSelectNode={(id) => setSelectedEntityId(id)}
-          />
-        </div>
-
-        {/* Right Side: Real-Time Threat Feeds Drawer */}
-        <div className="right-panel">
+        {/* Main Stage: Real-Time Threat Feed covering most of the screen */}
+        <div className="main-threat-stage">
           <ThreatAlertsFeed
             alerts={alertsData}
             onSelectEntity={(id) => setSelectedEntityId(id)}
+            onFocusEntity={(id) => setFocusedEntityId(id)}
           />
         </div>
       </div>
+
+      {/* Floatable Portable Network Map Window in the bottom right corner */}
+      <FloatingMapWindow
+        elements={networkData.elements}
+        onSelectNode={(id) => setSelectedEntityId(id)}
+        selectedEntityId={focusedEntityId || selectedEntityId}
+      />
 
       {/* Modals */}
       <EntityDossierModal
@@ -259,3 +290,4 @@ export default function App() {
     </div>
   );
 }
+
