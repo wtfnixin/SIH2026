@@ -1,6 +1,5 @@
-version: '3.8'
-
 services:
+
   # ---------------------------------------------------------
   # Graph Database: Neo4j 5 Community with GDS Plugin
   # ---------------------------------------------------------
@@ -65,7 +64,9 @@ services:
       dockerfile: Dockerfile
     container_name: sih_frontend
     ports:
+      - "3000:80"
       - "3001:80"
+
     depends_on:
       - backend
 

@@ -55,42 +55,35 @@ export default function NetworkGraph({ elements = [], onSelectNode, selectedEnti
             'height': isCompact ? '32px' : '42px',
             'border-width': '2px',
             'border-color': '#ffffff',
-            'border-opacity': 0.8,
-            'shadow-blur': 12,
-            'shadow-color': '#ffffff',
-            'shadow-opacity': 0.4
+            'border-opacity': 0.8
           }
         },
         {
           selector: 'node[node_type = "Person"]',
           style: {
             'background-color': '#ff4b4b',
-            'border-color': '#ff7676',
-            'shadow-color': '#ff4b4b'
+            'border-color': '#ff7676'
           }
         },
         {
           selector: 'node[node_type = "Phone"]',
           style: {
             'background-color': '#ffb703',
-            'border-color': '#ffd166',
-            'shadow-color': '#ffb703'
+            'border-color': '#ffd166'
           }
         },
         {
           selector: 'node[node_type = "Vehicle"]',
           style: {
             'background-color': '#38bdf8',
-            'border-color': '#7dd3fc',
-            'shadow-color': '#38bdf8'
+            'border-color': '#7dd3fc'
           }
         },
         {
           selector: 'node[node_type = "Location"]',
           style: {
             'background-color': '#a855f7',
-            'border-color': '#c084fc',
-            'shadow-color': '#a855f7'
+            'border-color': '#c084fc'
           }
         },
         {
@@ -118,10 +111,7 @@ export default function NetworkGraph({ elements = [], onSelectNode, selectedEnti
             'border-width': '4px',
             'border-color': '#ffffff',
             'width': isCompact ? '38px' : '50px',
-            'height': isCompact ? '38px' : '50px',
-            'shadow-blur': 22,
-            'shadow-color': '#ffffff',
-            'shadow-opacity': 0.9
+            'height': isCompact ? '38px' : '50px'
           }
         }
       ],
@@ -214,16 +204,16 @@ export default function NetworkGraph({ elements = [], onSelectNode, selectedEnti
           fontWeight: 600
         }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#f87171' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ff4b4b', boxShadow: '0 0 6px #ff4b4b' }} /> Suspect
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ff4b4b' }} /> Suspect
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#fbbf24' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ffb703', boxShadow: '0 0 6px #ffb703' }} /> Phone
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ffb703' }} /> Phone
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#7dd3fc' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#38bdf8', boxShadow: '0 0 6px #38bdf8' }} /> Vehicle
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#38bdf8' }} /> Vehicle
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#c084fc' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#a855f7', boxShadow: '0 0 6px #a855f7' }} /> Location
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#a855f7' }} /> Location
           </span>
         </div>
       </div>
