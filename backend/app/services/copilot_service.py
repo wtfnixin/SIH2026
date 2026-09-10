@@ -6,10 +6,26 @@ and automated UI navigation action payloads.
 import os
 import json
 from typing import Dict, Any, List
+from dotenv import load_dotenv
 from app.services.intent_parser import parse_intent_and_extract_entities
 from app.db.neo4j_driver import get_neo4j_session
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+# Load dotenv from current working directory or parent directories with override=True
+load_dotenv(override=True)
+for p in [".env", "/app/.env", "../.env"]:
+    if os.path.exists(p):
+        load_dotenv(p, override=True)
+
+def get_groq_api_key() -> str:
+    key = os.getenv("GROQ_API_KEY", "").strip()
+    if not key:
+        for env_path in [".env", "/app/.env", "../.env"]:
+            if os.path.exists(env_path):
+                load_dotenv(env_path, override=True)
+                key = os.getenv("GROQ_API_KEY", "").strip()
+                if key:
+                    break
+    return key
 
 
 def process_copilot_chat(user_message: str, selected_target_id: str = None) -> Dict[str, Any]:
@@ -88,9 +104,10 @@ def generate_single_entity_response(entity_id: str, user_message: str) -> Dict[s
     entity_data = fetch_entity_360_context(entity_id)
     
     # Try calling Groq API if key is set
+    groq_key = get_groq_api_key()
     ai_summary = ""
-    if GROQ_API_KEY:
-        ai_summary = call_groq_summary(entity_id, entity_data, user_message)
+    if groq_key:
+        ai_summary = call_groq_summary(entity_id, entity_data, user_message, groq_key)
     
     # Fallback / Local Rule Summary Generator
     if not ai_summary:
@@ -183,13 +200,13 @@ def generate_local_intelligence_summary(entity_id: str, data: Dict[str, Any]) ->
     return "\n\n".join(summary_lines)
 
 
-def call_groq_summary(entity_id: str, data: Dict[str, Any], user_message: str) -> str:
+def call_groq_summary(entity_id: str, data: Dict[str, Any], user_message: str, api_key: str) -> str:
     """Calls Groq API to generate intelligence summary."""
     try:
         import httpx
         url = "https://api.groq.com/openai/v1/chat/completions"
         headers = {
-            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
         prompt = f"""
@@ -201,19 +218,33 @@ def call_groq_summary(entity_id: str, data: Dict[str, Any], user_message: str) -
         End with a confirmation that you are opening the target's network graph.
         """
         payload = {
-            "model": "llama-3.3-70b-versatile",
+            "model": "qwen/qwen3.6-27b",
             "messages": [
-                {"role": "system", "content": "You are a Law Enforcement Intelligence Officer."},
+                {"role": "system", "content": "You are a Law Enforcement Cyber Crime Intelligence Officer. Do NOT output any <think> tags or reasoning. Output ONLY the final 3-bullet point intelligence briefing directly."},
                 {"role": "user", "content": prompt}
             ],
-            "max_tokens": 300,
-            "temperature": 0.2
+            "max_tokens": 600,
+            "temperature": 0.1
         }
-        with httpx.Client(timeout=5.0) as client:
+        with httpx.Client(timeout=8.0) as client:
             resp = client.post(url, headers=headers, json=payload)
             if resp.status_code == 200:
                 result = resp.json()
-                return result["choices"][0]["message"]["content"]
+                raw_text = result["choices"][0]["message"]["content"]
+                if "<think>" in raw_text:
+                    if "</think>" in raw_text:
+                        raw_text = raw_text.split("</think>")[-1].strip()
+                    else:
+                        # Extract bullet points if think block was truncated
+                        lines = raw_text.split("\n")
+                        bullet_lines = [l for l in lines if l.strip().startswith("*") or l.strip().startswith("-") or l.strip().startswith("•") or "Opening" in l]
+                        if bullet_lines:
+                            raw_text = "\n".join(bullet_lines)
+                        else:
+                            raw_text = re.sub(r'<think>.*', '', raw_text, flags=re.DOTALL).strip()
+                return raw_text if raw_text else generate_local_intelligence_summary(entity_id, data)
+            else:
+                print(f"Groq API error HTTP {resp.status_code}: {resp.text}")
     except Exception as e:
         print(f"Groq API call error: {e}")
     return ""
