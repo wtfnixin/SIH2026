@@ -55,6 +55,9 @@ services:
       - ./data:/app/data
       - ./backend/app:/app/app
       - ./.env:/app/.env
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     depends_on:
       - neo4j
       - postgres

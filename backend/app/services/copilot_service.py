@@ -1,20 +1,22 @@
 """
 AI Intelligence Copilot Service
-Integrates Groq API with Neo4j Intent Resolution to produce intelligence summaries
-and automated UI navigation action payloads.
+Integrates Groq API with Neo4j Intent Resolution to provide a full conversational
+Cyber Crime AI Assistant that can converse naturally AND navigate UI graph topology.
 """
 import os
 import json
+import re
 from typing import Dict, Any, List
 from dotenv import load_dotenv
 from app.services.intent_parser import parse_intent_and_extract_entities
 from app.db.neo4j_driver import get_neo4j_session
 
-# Load dotenv from current working directory or parent directories with override=True
+# Load dotenv with override=True
 load_dotenv(override=True)
 for p in [".env", "/app/.env", "../.env"]:
     if os.path.exists(p):
         load_dotenv(p, override=True)
+
 
 def get_groq_api_key() -> str:
     key = os.getenv("GROQ_API_KEY", "").strip()
@@ -30,32 +32,49 @@ def get_groq_api_key() -> str:
 
 def process_copilot_chat(user_message: str, selected_target_id: str = None) -> Dict[str, Any]:
     """
-    Processes user chat message:
-    1. If selected_target_id is provided, directly targets that entity.
-    2. Otherwise, parses intent to find candidates.
-    3. Handles multi-match disambiguation.
-    4. Generates AI summary & ui_action payload.
+    Processes user chat prompt:
+    1. Direct selection click on candidate card -> targets entity.
+    2. Intent & entity search.
+    3. General conversation (greetings, how-to, investigative guidance) -> Groq chat response.
+    4. Target entity search -> Groq conversational AI analysis + ui_action signal.
     """
+    groq_key = get_groq_api_key()
+
     # Case 1: Direct target specified by user click on disambiguation card
     if selected_target_id:
-        return generate_single_entity_response(selected_target_id, user_message)
+        return generate_single_entity_response(selected_target_id, user_message, groq_key)
 
-    # Case 2: Intent extraction
-    intent_result = parse_intent_and_extract_entities(user_message)
-    candidates = intent_result["candidates"]
-
-    # Case 2A: No matches found
-    if not candidates:
+    # Case 2: Check if prompt is a general conversational query (e.g. greeting, system question)
+    if is_general_conversation(user_message):
+        conv_response = call_groq_general_chat(user_message, groq_key)
         return {
-            "response": f"No entities found matching '{intent_result['search_term']}' in the intelligence graph. Please try searching by suspect name, phone number (+91...), vehicle plate, or FIR number.",
+            "response": conv_response,
             "multiple_matches": [],
             "ui_action": None
         }
 
-    # Case 2B: Multiple matches found (Disambiguation required!)
-    if len(candidates) > 1 and not is_exact_match(intent_result['search_term'], candidates):
+    # Case 3: Intent & Entity extraction
+    intent_result = parse_intent_and_extract_entities(user_message)
+    candidates = intent_result["candidates"]
+
+    # Case 3A: No entities found -> Conversational assistance with general advice
+    if not candidates:
+        conv_response = ""
+        if groq_key:
+            conv_response = call_groq_general_chat(user_message, groq_key)
+        if not conv_response:
+            conv_response = f"I am your AI Cyber Crime Intelligence Co-Pilot. I couldn't locate specific target entities matching '{intent_result.get('search_term', user_message)}' in the database. You can ask me general investigative questions (e.g. Hawala smurfing, ANPR convoy tracking) or search by suspect name, phone (+91...), or vehicle plate."
         return {
-            "response": f"I found **{len(candidates)} entities** matching '{intent_result['search_term']}'. Please select which suspect or entity you want to investigate:",
+            "response": conv_response,
+            "multiple_matches": [],
+            "ui_action": None
+        }
+
+    # Case 3B: Multiple matches found (Disambiguation candidate cards)
+    if len(candidates) > 1 and not is_exact_match(intent_result['search_term'], candidates):
+        intro_text = f"I retrieved **{len(candidates)} records** matching '{intent_result['search_term']}'. Select a target suspect card below to investigate their full network graph:"
+        return {
+            "response": intro_text,
             "multiple_matches": [
                 {
                     "entity_id": c["entity_id"],
@@ -67,9 +86,26 @@ def process_copilot_chat(user_message: str, selected_target_id: str = None) -> D
             "ui_action": None
         }
 
-    # Case 2C: Single best match found
+    # Case 3C: Single targeted entity
     target_entity = candidates[0]["entity_id"]
-    return generate_single_entity_response(target_entity, user_message)
+    return generate_single_entity_response(target_entity, user_message, groq_key)
+
+
+def is_general_conversation(text: str) -> bool:
+    """Detects if prompt is a greeting, general question, or analytical guidance query."""
+    text_lower = text.lower().strip()
+    
+    # Greetings & Introductions
+    greetings = {"hi", "hello", "hey", "who are you", "help", "what can you do", "thanks", "thank you"}
+    if text_lower in greetings or any(text_lower.startswith(g) for g in ["hi ", "hello ", "hey ", "who are"]):
+        return True
+
+    # General concept questions (no specific name/phone/plate specified)
+    general_keywords = ["how does", "what is", "explain hawala", "explain burner", "how to use", "what should i", "give me tips"]
+    if any(k in text_lower for k in general_keywords):
+        return True
+
+    return False
 
 
 def is_exact_match(search_term: str, candidates: List[Dict[str, Any]]) -> bool:
@@ -97,19 +133,16 @@ def format_candidate_details(candidate: Dict[str, Any]) -> str:
     return f"{t} • {candidate['degree']} connections"
 
 
-def generate_single_entity_response(entity_id: str, user_message: str) -> Dict[str, Any]:
+def generate_single_entity_response(entity_id: str, user_message: str, groq_key: str) -> Dict[str, Any]:
     """
-    Fetches 360-degree graph details for entity_id and generates AI summary + UI navigation action.
+    Fetches 360-degree graph details for entity_id and generates conversational AI intelligence response + UI navigation action.
     """
     entity_data = fetch_entity_360_context(entity_id)
     
-    # Try calling Groq API if key is set
-    groq_key = get_groq_api_key()
     ai_summary = ""
     if groq_key:
-        ai_summary = call_groq_summary(entity_id, entity_data, user_message, groq_key)
+        ai_summary = call_groq_entity_analysis(entity_id, entity_data, user_message, groq_key)
     
-    # Fallback / Local Rule Summary Generator
     if not ai_summary:
         ai_summary = generate_local_intelligence_summary(entity_id, entity_data)
 
@@ -169,7 +202,7 @@ def fetch_entity_360_context(entity_id: str) -> Dict[str, Any]:
 
 
 def generate_local_intelligence_summary(entity_id: str, data: Dict[str, Any]) -> str:
-    """Generates clean structured intelligence summary without external API dependency."""
+    """Generates structured fallback intelligence response."""
     etype = data.get("type", "Entity")
     degree = data.get("degree", 0)
     conns = data.get("connections", [])
@@ -181,8 +214,8 @@ def generate_local_intelligence_summary(entity_id: str, data: Dict[str, Any]) ->
     firs = [c["target"] for c in conns if c["type"] == "FIR"]
 
     summary_lines = [
-        f"🎯 **Target Located**: **{entity_id}** (`{etype}`)",
-        f"📊 **Graph Connections**: {degree} total links detected in intelligence network.",
+        f"🎯 **Target Intelligence Briefing**: **{entity_id}** (`{etype}`)",
+        f"I located **{entity_id}** in the graph topology with **{degree} connected links**.",
     ]
 
     if phones:
@@ -196,12 +229,12 @@ def generate_local_intelligence_summary(entity_id: str, data: Dict[str, Any]) ->
     if firs:
         summary_lines.append(f"📄 **Case FIRs**: {', '.join(firs[:3])}")
 
-    summary_lines.append("\n🚀 **Navigating to Graph Canvas and opening Dossier...**")
+    summary_lines.append("\n🚀 **Navigating your canvas to focus on this target and opening dossier...**")
     return "\n\n".join(summary_lines)
 
 
-def call_groq_summary(entity_id: str, data: Dict[str, Any], user_message: str, api_key: str) -> str:
-    """Calls Groq API to generate intelligence summary."""
+def call_groq_general_chat(user_message: str, api_key: str) -> str:
+    """Calls Groq API for general conversational queries (greetings, how-to, investigative guidance)."""
     try:
         import httpx
         url = "https://api.groq.com/openai/v1/chat/completions"
@@ -209,42 +242,88 @@ def call_groq_summary(entity_id: str, data: Dict[str, Any], user_message: str, a
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
-        prompt = f"""
-        You are an AI Cyber Crime Intelligence Officer.
-        Analyze this criminal intelligence data for target entity '{entity_id}' (Type: {data.get('type')}).
-        Context Data: {json.dumps(data, indent=2)}
-
-        Provide a concise 3-bullet point intelligence briefing highlighting key risk indicators, associates, and vehicles.
-        End with a confirmation that you are opening the target's network graph.
+        system_prompt = """
+        You are an expert AI Cyber Crime Intelligence Co-Pilot assisting law enforcement officers at the National Cyber Crime Command Center.
+        Speak conversationally, professionally, and authoritatively like an experienced senior intelligence analyst and active AI co-pilot assistant.
+        Do NOT reply with rigid templates or sterile summaries. Have an active, fluid, natural conversation.
+        Help officers understand Hawala smurfing, burner SIM anomalies, ANPR convoy tracking, or how to search and investigate suspects in the system.
         """
         payload = {
             "model": "qwen/qwen3.6-27b",
             "messages": [
-                {"role": "system", "content": "You are a Law Enforcement Cyber Crime Intelligence Officer. Do NOT output any <think> tags or reasoning. Output ONLY the final 3-bullet point intelligence briefing directly."},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message}
             ],
-            "max_tokens": 600,
-            "temperature": 0.1
+            "max_completion_tokens": 450,
+            "reasoning_effort": "none",
+            "temperature": 0.3
         }
-        with httpx.Client(timeout=8.0) as client:
+        with httpx.Client(timeout=15.0) as client:
             resp = client.post(url, headers=headers, json=payload)
             if resp.status_code == 200:
                 result = resp.json()
                 raw_text = result["choices"][0]["message"]["content"]
-                if "<think>" in raw_text:
-                    if "</think>" in raw_text:
-                        raw_text = raw_text.split("</think>")[-1].strip()
-                    else:
-                        # Extract bullet points if think block was truncated
-                        lines = raw_text.split("\n")
-                        bullet_lines = [l for l in lines if l.strip().startswith("*") or l.strip().startswith("-") or l.strip().startswith("•") or "Opening" in l]
-                        if bullet_lines:
-                            raw_text = "\n".join(bullet_lines)
-                        else:
-                            raw_text = re.sub(r'<think>.*', '', raw_text, flags=re.DOTALL).strip()
-                return raw_text if raw_text else generate_local_intelligence_summary(entity_id, data)
+                return clean_think_tags(raw_text)
             else:
-                print(f"Groq API error HTTP {resp.status_code}: {resp.text}")
+                print(f"Groq API error {resp.status_code}: {resp.text}")
     except Exception as e:
-        print(f"Groq API call error: {e}")
+        print(f"Groq General Chat error: {e}")
+
+    return "Hello Officer! I am your AI Cyber Crime Intelligence Co-Pilot. How can I assist you with your investigation today? You can ask me about Hawala smurfing, burner SIM detection, or search any suspect by name, phone (+91...), or vehicle plate."
+
+
+def call_groq_entity_analysis(entity_id: str, data: Dict[str, Any], user_message: str, api_key: str) -> str:
+    """Calls Groq API to generate conversational AI analysis of a specific targeted entity."""
+    try:
+        import httpx
+        url = "https://api.groq.com/openai/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        system_prompt = """
+        You are an AI Cyber Crime Intelligence Co-Pilot assisting a law enforcement investigator.
+        You are analyzing a specific target entity extracted from the Neo4j graph database.
+        Speak conversationally as a proactive AI co-pilot assistant. Discuss key connections, highlight potential criminal risks or anomalies, and explain what actions you are taking.
+        """
+        prompt = f"""
+        User Prompt: "{user_message}"
+        Target Entity: {entity_id} (Type: {data.get('type')})
+        Degree of Connections: {data.get('degree')}
+        Graph Context JSON: {json.dumps(data.get('connections', [])[:15], indent=2)}
+
+        Provide an active, conversational AI intelligence response explaining key findings for '{entity_id}', associates, vehicles/phones, and confirm that you are navigating to their network graph.
+        """
+        payload = {
+            "model": "qwen/qwen3.6-27b",
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt}
+            ],
+            "max_completion_tokens": 450,
+            "reasoning_effort": "none",
+            "temperature": 0.3
+        }
+        with httpx.Client(timeout=15.0) as client:
+            resp = client.post(url, headers=headers, json=payload)
+            if resp.status_code == 200:
+                result = resp.json()
+                raw_text = result["choices"][0]["message"]["content"]
+                return clean_think_tags(raw_text)
+            else:
+                print(f"Groq API entity error {resp.status_code}: {resp.text}")
+    except Exception as e:
+        print(f"Groq Entity Analysis error: {e}")
     return ""
+
+
+def clean_think_tags(raw_text: str) -> str:
+    """Strips internal <think> reasoning blocks from LLM responses."""
+    if not raw_text:
+        return ""
+    # Strip complete <think>...</think> blocks
+    cleaned = re.sub(r'<think>.*?</think>', '', raw_text, flags=re.DOTALL)
+    # Strip unclosed <think> blocks if any remain
+    cleaned = re.sub(r'<think>.*', '', cleaned, flags=re.DOTALL)
+    return cleaned.strip()
+
