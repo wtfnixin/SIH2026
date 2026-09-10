@@ -90,36 +90,36 @@ export default function AICopilotDrawer({ onNavigateGraph }) {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
+          title="AI Intel Copilot (Groq)"
           style={{
             position: 'fixed',
             bottom: '24px',
             right: '24px',
             zIndex: 9999,
+            width: '52px',
+            height: '52px',
+            borderRadius: '50%',
             background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
             color: '#ffffff',
             border: 'none',
-            borderRadius: '50px',
-            padding: '14px 20px',
             display: 'flex',
             alignItems: 'center',
-            gap: '10px',
-            boxShadow: '0 10px 25px rgba(6, 182, 212, 0.4)',
+            justifyContent: 'center',
+            boxShadow: '0 8px 20px rgba(6, 182, 212, 0.45)',
             cursor: 'pointer',
-            fontWeight: 700,
-            fontSize: '13px',
-            letterSpacing: '0.5px',
-            transition: 'transform 0.2s, cubic-bezier(0.4, 0, 0.2, 1)'
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.transform = 'scale(1.1)';
+            e.currentTarget.style.boxShadow = '0 12px 28px rgba(6, 182, 212, 0.65)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = '0 8px 20px rgba(6, 182, 212, 0.45)';
           }}
           className="copilot-toggle-btn"
         >
-          <Bot size={20} />
-          <span>AI INTEL COPILOT</span>
-          <span style={{
-            background: 'rgba(255, 255, 255, 0.25)',
-            padding: '2px 6px',
-            borderRadius: '10px',
-            fontSize: '10px'
-          }}>GROQ</span>
+          <Bot size={22} />
         </button>
       )}
 
