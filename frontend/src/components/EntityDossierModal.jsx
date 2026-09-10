@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { X, User, Phone, Car, MapPin, FileText, Share2, ShieldAlert, ArrowUpRight, ArrowDownLeft, DollarSign } from 'lucide-react';
+import { X, User, Phone, Car, MapPin, FileText, Share2, ShieldAlert, ArrowUpRight, ArrowDownLeft, DollarSign, Network } from 'lucide-react';
 
-export default function EntityDossierModal({ entityId, onClose }) {
+export default function EntityDossierModal({ entityId, onClose, onViewOnGraph }) {
   const [dossier, setDossier] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
@@ -56,13 +56,26 @@ export default function EntityDossierModal({ entityId, onClose }) {
               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="modal-close-btn"
-            title="Close Dossier"
-          >
-            <X size={16} />
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {onViewOnGraph && (
+              <button
+                onClick={() => onViewOnGraph(entityId)}
+                className="btn-secondary"
+                style={{ padding: '6px 12px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                title="View this suspect on interactive network graph"
+              >
+                <Network size={13} />
+                <span>View on Graph</span>
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="modal-close-btn"
+              title="Close Dossier"
+            >
+              <X size={16} />
+            </button>
+          </div>
         </div>
 
         {/* Modal Content Body */}

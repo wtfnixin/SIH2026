@@ -28,6 +28,17 @@ export default function TargetedGraphCanvas({
   const containerRef = useRef(null);
   const cyRef = useRef(null);
 
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onBackToDashboard) {
+        onBackToDashboard();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onBackToDashboard]);
+
   const [loading, setLoading] = useState(true);
   const [networkData, setNetworkData] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
@@ -344,7 +355,13 @@ export default function TargetedGraphCanvas({
             <Download size={14} />
             <span>Export Report</span>
           </button>
-          <button className="graph-close-btn" onClick={onBackToDashboard} title="Close Graph Canvas">
+          <button 
+            id="close-graph-canvas-btn"
+            className="graph-close-btn" 
+            onClick={onBackToDashboard} 
+            title="Close Graph (Esc)"
+            aria-label="Close graph"
+          >
             <X size={18} />
           </button>
         </div>
