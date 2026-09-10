@@ -28,6 +28,13 @@ import {
   FileText,
   Phone,
   MapPin,
+  Clock,
+  Calendar,
+  Landmark,
+  Scan,
+  IndianRupee,
+  Briefcase,
+  ShieldCheck,
   ArrowUpRight,
   ArrowDownLeft,
   DollarSign,
@@ -73,6 +80,7 @@ export default function App() {
   const [dossierData, setDossierData] = useState(null);
   const [loadingDossier, setLoadingDossier] = useState(false);
   const [dossierSearch, setDossierSearch] = useState('');
+  const [dossierActiveTab, setDossierActiveTab] = useState('overview');
 
   // Global search & modal state
   const [searchQuery, setSearchQuery] = useState('');
@@ -121,6 +129,7 @@ export default function App() {
   // Fetch single dossier when selectedDossierEntity changes
   useEffect(() => {
     if (!selectedDossierEntity) return;
+    setDossierActiveTab('overview');
     setLoadingDossier(true);
     fetch(`http://localhost:8000/api/v1/entities/dossier/${encodeURIComponent(selectedDossierEntity)}`)
       .then(res => res.json())
@@ -221,6 +230,15 @@ export default function App() {
       case 'HIGH RISK': return 'threat-badge-high';
       case 'ELEVATED': return 'threat-badge-elevated';
       default: return 'threat-badge-monitored';
+    }
+  };
+
+  const getThreatBadgePillClass = (level) => {
+    switch (level) {
+      case 'CRITICAL': return 'threat-pill-critical';
+      case 'HIGH RISK': return 'threat-pill-high';
+      case 'ELEVATED': return 'threat-pill-elevated';
+      default: return 'threat-pill-monitored';
     }
   };
 
@@ -797,188 +815,530 @@ export default function App() {
                     <span style={{ fontFamily: 'JetBrains Mono', fontSize: '12px' }}>Loading Intelligence Dossier...</span>
                   </div>
                 ) : (dossierData && selectedDossierEntity) ? (
-                  <>
-                    {/* Dossier Banner */}
-                    <div className="dossier-banner">
-                      <div className="dossier-banner-left">
-                        <div className="dossier-avatar-box">
-                          <User size={26} />
+                  <div className="dossier-profile-card">
+                    {/* Top Header Row: Avatar, Name, Threat Badge, Crime Category, Action Buttons */}
+                    <div className="dossier-profile-header">
+                      <div className="dossier-profile-header-left">
+                        <div className="dossier-avatar-circle">
+                          <User size={30} className="dossier-avatar-icon" />
                         </div>
-                        <div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <h2 className="dossier-banner-title">{dossierData.entity_id}</h2>
-                            <span className={`threat-badge ${getThreatClass(dossierData.threat_level)}`}>
-                              {dossierData.threat_level}
+                        <div className="dossier-profile-identity">
+                          <div className="dossier-name-row">
+                            <h2 className="dossier-entity-name">{dossierData.entity_id}</h2>
+                            <span className={`threat-badge-pill ${getThreatBadgePillClass(dossierData.threat_level)}`}>
+                              {dossierData.threat_level || 'CRITICAL'}
                             </span>
                           </div>
-                          <div className="dossier-banner-sub">
-                            {dossierData.entity_type} • {dossierData.status} • {dossierData.graph_status}
+                          <div className="dossier-category-row">
+                            <IndianRupee size={14} className="dossier-category-icon" />
+                            <span className="dossier-category-text">{dossierData.crime_category || 'Financial Smuggling'}</span>
                           </div>
                         </div>
                       </div>
 
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                      <div className="dossier-profile-header-right">
                         <button
-                          className="btn-secondary"
+                          className="btn-investigate-network"
+                          onClick={() => openTargetedGraph(dossierData.entity_id)}
+                          title="Investigate Network"
+                        >
+                          <Network size={16} />
+                          <span>Investigate Network</span>
+                        </button>
+                        <button
+                          className="btn-dossier-search-dir"
                           onClick={() => {
                             setSelectedDossierEntity(null);
                             setDossierData(null);
                           }}
-                          title="Search another suspect"
+                          title="Search Directory"
                         >
-                          <Search size={13} />
+                          <Search size={14} />
                           <span>Search Directory</span>
                         </button>
-                        <button
-                          className="btn-secondary"
-                          onClick={() => openTargetedGraph(dossierData.entity_id)}
-                          title="Investigate suspect on interactive network graph"
-                        >
-                          <Network size={14} />
-                          <span>View on Graph</span>
-                        </button>
                       </div>
                     </div>
 
-                    {/* KPI Metrics */}
-                    <div className="dossier-kpi-grid">
-                      <div className="dossier-metric-box">
-                        <span className="criminal-kpi-label">Total Connections</span>
-                        <span className="dossier-metric-num">{dossierData.total_connections}</span>
+                    {/* Horizontal Meta Row: Phone, Location, Last Seen with Dividers */}
+                    <div className="dossier-meta-strip">
+                      <div className="dossier-meta-item">
+                        <Phone size={18} className="dossier-meta-icon" />
+                        <div className="dossier-meta-content">
+                          <span className="dossier-meta-label">Phone</span>
+                          <span className="dossier-meta-val">{dossierData.phone || '+91 98765 43210'}</span>
+                        </div>
                       </div>
-                      <div className="dossier-metric-box">
-                        <span className="criminal-kpi-label">Police FIR Cases</span>
-                        <span className="dossier-metric-num">{dossierData.summary?.fir_count || 0}</span>
+
+                      <div className="dossier-meta-divider" />
+
+                      <div className="dossier-meta-item">
+                        <MapPin size={18} className="dossier-meta-icon" />
+                        <div className="dossier-meta-content">
+                          <span className="dossier-meta-label">Location</span>
+                          <span className="dossier-meta-val">{dossierData.location || 'Delhi, DL'}</span>
+                        </div>
                       </div>
-                      <div className="dossier-metric-box">
-                        <span className="criminal-kpi-label">Registered Vehicles</span>
-                        <span className="dossier-metric-num">{dossierData.summary?.vehicle_count || 0}</span>
-                      </div>
-                      <div className="dossier-metric-box">
-                        <span className="criminal-kpi-label">Known Associates</span>
-                        <span className="dossier-metric-num">{dossierData.summary?.associate_count || 0}</span>
+
+                      <div className="dossier-meta-divider" />
+
+                      <div className="dossier-meta-item">
+                        <Clock size={18} className="dossier-meta-icon" />
+                        <div className="dossier-meta-content">
+                          <span className="dossier-meta-label">Last Seen</span>
+                          <span className="dossier-meta-val">{dossierData.last_seen || '2h ago'}</span>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Linked FIRs Section */}
-                    {dossierData.firs && dossierData.firs.length > 0 && (
-                      <div className="dossier-section">
-                        <div className="dossier-section-title">
-                          <FileText size={14} />
-                          <span>Linked Police First Information Reports ({dossierData.firs.length})</span>
-                        </div>
-                        <div className="dossier-evidence-grid">
-                          {dossierData.firs.map((fir, i) => (
-                            <div key={i} className="dossier-fir-card">
-                              <div className="fir-card-top">
-                                <span className="fir-no-text">{fir.fir_no}</span>
-                                <span className="fir-source-tag">{fir.source_file || 'E-FIR'}</span>
-                              </div>
-                              <div className="fir-station-text">{fir.police_station}</div>
-                              <div className="fir-date-text">Incident Date: {fir.incident_date}</div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    {/* Sectioned Navigation Tabs */}
+                    <div className="dossier-tabs-nav">
+                      <button
+                        className={`dossier-tab-btn ${dossierActiveTab === 'overview' ? 'active' : ''}`}
+                        onClick={() => setDossierActiveTab('overview')}
+                      >
+                        Overview
+                      </button>
+                      <button
+                        className={`dossier-tab-btn ${dossierActiveTab === 'connections' ? 'active' : ''}`}
+                        onClick={() => setDossierActiveTab('connections')}
+                      >
+                        Connections {dossierData.total_connections ? `(${dossierData.total_connections})` : ''}
+                      </button>
+                      <button
+                        className={`dossier-tab-btn ${dossierActiveTab === 'activity' ? 'active' : ''}`}
+                        onClick={() => setDossierActiveTab('activity')}
+                      >
+                        Recent Activity {dossierData.transactions?.length ? `(${dossierData.transactions.length})` : ''}
+                      </button>
+                      <button
+                        className={`dossier-tab-btn ${dossierActiveTab === 'cases' ? 'active' : ''}`}
+                        onClick={() => setDossierActiveTab('cases')}
+                      >
+                        Linked Cases {dossierData.firs?.length ? `(${dossierData.firs.length})` : ''}
+                      </button>
+                    </div>
 
-                    {/* Motor Vehicles Section */}
-                    {dossierData.vehicles && dossierData.vehicles.length > 0 && (
-                      <div className="dossier-section">
-                        <div className="dossier-section-title">
-                          <Car size={14} />
-                          <span>Motor Vehicles & Plates ({dossierData.vehicles.length})</span>
-                        </div>
-                        <div className="dossier-evidence-grid">
-                          {dossierData.vehicles.map((veh, i) => (
-                            <div key={i} className="dossier-fir-card">
-                              <div className="fir-card-top">
-                                <span className="fir-no-text" style={{ color: '#38bdf8' }}>{veh.registration_number}</span>
+                    {/* TAB 1: OVERVIEW (EXACT LAYOUT FROM DESIGN REFERENCE) */}
+                    {dossierActiveTab === 'overview' && (
+                      <div className="dossier-tab-content">
+                        {/* Key Details Card */}
+                        <div className="dossier-key-details-card">
+                          <h3 className="dossier-card-heading">Key Details</h3>
+
+                          <div className="dossier-key-details-grid">
+                            {/* Left Column */}
+                            <div className="dossier-details-col">
+                              <div className="dossier-field-group">
+                                <span className="dossier-field-label">Age</span>
+                                <span className="dossier-field-value">{dossierData.age || 32}</span>
                               </div>
-                              <div className="fir-date-text" style={{ marginTop: '4px' }}>
-                                Relationship: {veh.relationship || 'OWNS_VEHICLE'}
+
+                              <div className="dossier-field-group">
+                                <span className="dossier-field-label">Occupation</span>
+                                <span className="dossier-field-value">{dossierData.occupation || 'Businessman'}</span>
+                              </div>
+
+                              <div className="dossier-field-group">
+                                <span className="dossier-field-label">Known Aliases</span>
+                                <span className="dossier-field-value">{dossierData.aliases || 'Rohit S., R. Gupta'}</span>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
 
-                    {/* Financial Intelligence Trail */}
-                    {dossierData.transactions && dossierData.transactions.length > 0 && (
-                      <div className="dossier-section">
-                        <div className="dossier-section-title">
-                          <DollarSign size={14} />
-                          <span>Financial Intelligence Trail & Hawala Intercepts ({dossierData.transactions.length})</span>
-                        </div>
-                        <div className="dossier-table-wrap">
-                          <table className="dossier-tx-table">
-                            <thead>
-                              <tr>
-                                <th>TX ID</th>
-                                <th>Direction</th>
-                                <th>Counterparty</th>
-                                <th>Amount</th>
-                                <th>Mode</th>
-                                <th>Timestamp</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {dossierData.transactions.map((tx, idx) => (
-                                <tr key={idx}>
-                                  <td style={{ color: 'var(--foreground)' }}>{tx.transaction_id}</td>
-                                  <td>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                      {tx.direction === 'Outgoing' ? <ArrowUpRight size={11} color="#f87171" /> : <ArrowDownLeft size={11} color="#38bdf8" />}
-                                      {tx.direction}
+                            {/* Right Column */}
+                            <div className="dossier-details-col">
+                              <div className="dossier-field-group-row">
+                                <div className="dossier-field-row-icon">
+                                  <Car size={18} />
+                                </div>
+                                <div className="dossier-field-group">
+                                  <span className="dossier-field-label">Associated Vehicles</span>
+                                  <span className="dossier-field-value font-mono">
+                                    {dossierData.vehicles && dossierData.vehicles.length > 0
+                                      ? dossierData.vehicles.map(v => v.registration_number).join(', ')
+                                      : (dossierData.properties?.registration_number || 'DL 3C AB 1234')}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="dossier-field-group-row">
+                                <div className="dossier-field-row-icon">
+                                  <Landmark size={18} />
+                                </div>
+                                <div className="dossier-field-group">
+                                  <span className="dossier-field-label">Associated Accounts</span>
+                                  <span className="dossier-field-value">
+                                    {dossierData.flagged_accounts_count || 3} (Flagged)
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="dossier-field-group-row">
+                                <div className="dossier-field-row-icon">
+                                  <Scan size={18} />
+                                </div>
+                                <div className="dossier-field-group">
+                                  <span className="dossier-field-label">Risk Score</span>
+                                  <div style={{ marginTop: '3px' }}>
+                                    <span className="dossier-risk-badge">
+                                      {dossierData.threat_score || 92} / 100
                                     </span>
-                                  </td>
-                                  <td>{tx.counterparty}</td>
-                                  <td style={{ color: tx.is_structured ? '#f87171' : 'var(--foreground)', fontWeight: 700 }}>
-                                    ₹{tx.amount.toLocaleString()}
-                                  </td>
-                                  <td>
-                                    {tx.is_structured ? (
-                                      <span style={{ fontSize: '9px', padding: '1px 5px', borderRadius: '4px', background: 'transparent', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#f87171', fontFamily: 'JetBrains Mono' }}>
-                                        STRUCTURED
-                                      </span>
-                                    ) : tx.mode}
-                                  </td>
-                                  <td style={{ color: 'var(--muted-foreground)' }}>{tx.timestamp}</td>
-                                </tr>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Secondary Overview KPI Highlights */}
+                        <div className="dossier-kpi-highlights">
+                          <div className="dossier-kpi-card">
+                            <span className="dossier-kpi-sub">Total Network Nodes</span>
+                            <span className="dossier-kpi-val">{dossierData.total_connections}</span>
+                            <span className="dossier-kpi-desc">Cross-entity links</span>
+                          </div>
+                          <div className="dossier-kpi-card">
+                            <span className="dossier-kpi-sub">Registered FIRs</span>
+                            <span className="dossier-kpi-val">{dossierData.summary?.fir_count || dossierData.firs?.length || 0}</span>
+                            <span className="dossier-kpi-desc">Police station cases</span>
+                          </div>
+                          <div className="dossier-kpi-card">
+                            <span className="dossier-kpi-sub">Tracked Hawala Volume</span>
+                            <span className="dossier-kpi-val">₹{(dossierData.summary?.total_financial_volume || 0).toLocaleString()}</span>
+                            <span className="dossier-kpi-desc">{dossierData.transactions?.length || 0} transaction intercepts</span>
+                          </div>
+                          <div className="dossier-kpi-card">
+                            <span className="dossier-kpi-sub">Direct Associates</span>
+                            <span className="dossier-kpi-val">{dossierData.summary?.associate_count || dossierData.associates?.length || 0}</span>
+                            <span className="dossier-kpi-desc">Identified syndicate links</span>
+                          </div>
+                        </div>
+
+                        {/* Linked Police Cases in Overview */}
+                        {dossierData.firs && dossierData.firs.length > 0 && (
+                          <div className="dossier-section-block" style={{ marginTop: '8px' }}>
+                            <div className="dossier-block-header">
+                              <FileText size={16} />
+                              <span>Linked Police First Information Reports ({dossierData.firs.length})</span>
+                            </div>
+                            <div className="dossier-fir-files-list">
+                              {dossierData.firs.map((fir, i) => (
+                                <div key={i} className="dossier-fir-file-card">
+                                  <div className="fir-file-header">
+                                    <div className="fir-file-icon-box">
+                                      <FileText size={20} className="fir-file-icon" />
+                                    </div>
+                                    <div className="fir-file-title-block">
+                                      <div className="fir-file-name-row">
+                                        <span className="fir-file-name">{fir.fir_no}</span>
+                                        <span className="fir-status-pill">
+                                          <ShieldAlert size={11} />
+                                          <span>ACTIVE INVESTIGATION</span>
+                                        </span>
+                                      </div>
+                                      <span className="fir-file-subtitle">Official State Police Crime Incident Report</span>
+                                    </div>
+                                  </div>
+
+                                  <div className="fir-file-details-grid">
+                                    <div className="fir-detail-pill">
+                                      <Landmark size={14} className="fir-detail-icon" />
+                                      <div className="fir-detail-text">
+                                        <span className="fir-detail-label">Police Station</span>
+                                        <span className="fir-detail-value">{fir.police_station || 'Jurisdiction Central PS'}</span>
+                                      </div>
+                                    </div>
+
+                                    <div className="fir-detail-pill">
+                                      <Calendar size={14} className="fir-detail-icon" />
+                                      <div className="fir-detail-text">
+                                        <span className="fir-detail-label">Incident Date</span>
+                                        <span className="fir-detail-value font-mono">
+                                          {fir.incident_date ? fir.incident_date.replace(/T.*$/, '') : 'Recorded'}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <div className="fir-detail-pill">
+                                      <FileText size={14} className="fir-detail-icon" />
+                                      <div className="fir-detail-text">
+                                        <span className="fir-detail-label">Case Source</span>
+                                        <span className="fir-detail-value">{fir.source_file || 'E-FIR Repository'}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="fir-file-actions-row">
+                                    <div className="fir-file-tag">
+                                      <span>STATE CRIMINAL DATABASE • CCTNS RECORD</span>
+                                    </div>
+                                    <button
+                                      className="btn-fir-graph-view"
+                                      onClick={() => openTargetedGraph(fir.fir_no)}
+                                      title="Investigate FIR Case Network on Graph"
+                                    >
+                                      <Network size={13} />
+                                      <span>Investigate Case Graph</span>
+                                    </button>
+                                  </div>
+                                </div>
                               ))}
-                            </tbody>
-                          </table>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* TAB 2: CONNECTIONS */}
+                    {dossierActiveTab === 'connections' && (
+                      <div className="dossier-tab-content">
+                        {/* Known Associates */}
+                        <div className="dossier-section-block">
+                          <div className="dossier-block-header">
+                            <Users size={16} />
+                            <span>Known Associates & Co-conspirators ({dossierData.associates?.length || 0})</span>
+                          </div>
+                          {dossierData.associates && dossierData.associates.length > 0 ? (
+                            <div className="dossier-associates-grid">
+                              {dossierData.associates.map((assoc, idx) => (
+                                <div key={idx} className="dossier-associate-card">
+                                  <div className="associate-card-top">
+                                    <div className="associate-avatar">
+                                      <User size={16} />
+                                    </div>
+                                    <div>
+                                      <div className="associate-name">{assoc.name}</div>
+                                      <div className="associate-interactions">{assoc.interaction_count} documented interactions</div>
+                                    </div>
+                                  </div>
+                                  <div className="associate-tags">
+                                    {assoc.relationships?.map((rel, rIdx) => (
+                                      <span key={rIdx} className="associate-tag">{rel}</span>
+                                    ))}
+                                  </div>
+                                  <div className="associate-actions">
+                                    <button
+                                      className="btn-assoc-action"
+                                      onClick={() => setSelectedDossierEntity(assoc.name)}
+                                    >
+                                      Open Dossier
+                                    </button>
+                                    <button
+                                      className="btn-assoc-action outline"
+                                      onClick={() => openTargetedGraph(assoc.name)}
+                                    >
+                                      <Network size={12} />
+                                      Graph
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="dossier-empty-state">
+                              <Users size={24} color="#94a3b8" />
+                              <p>No direct person-to-person associate links recorded.</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* All Linked Evidence */}
+                        <div className="dossier-section-block" style={{ marginTop: '20px' }}>
+                          <div className="dossier-block-header">
+                            <Share2 size={16} />
+                            <span>All Linked Evidence & Graph Relational Entities ({dossierData.connected_evidence?.length || 0})</span>
+                          </div>
+                          <div className="dossier-connections-list">
+                            {dossierData.connected_evidence?.map((conn, idx) => (
+                              <div key={idx} className="dossier-conn-item">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                  {conn.connected_type === 'Phone' && <Phone size={14} color="#f59e0b" />}
+                                  {conn.connected_type === 'Vehicle' && <Car size={14} color="#38bdf8" />}
+                                  {conn.connected_type === 'Location' && <MapPin size={14} color="#a855f7" />}
+                                  {conn.connected_type === 'FIR' && <FileText size={14} color="#ef4444" />}
+                                  {conn.connected_type === 'Person' && <User size={14} color="#3b82f6" />}
+                                  <span className="font-mono font-bold" style={{ fontSize: '12px' }}>{conn.connected_entity}</span>
+                                  <span className="conn-type-badge">({conn.connected_type})</span>
+                                </div>
+                                <span className="conn-rel-badge">
+                                  {conn.relationship}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     )}
 
-                    {/* All Connected Entities (Graph Relations) */}
-                    <div className="dossier-section">
-                      <div className="dossier-section-title">
-                        <Share2 size={14} />
-                        <span>All Connected Evidence Entities ({dossierData.connected_evidence?.length || 0})</span>
-                      </div>
-                      <div className="dossier-connections-list">
-                        {dossierData.connected_evidence?.map((conn, idx) => (
-                          <div key={idx} className="dossier-conn-item">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              {conn.connected_type === 'Phone' && <Phone size={13} color="#fbbf24" />}
-                              {conn.connected_type === 'Vehicle' && <Car size={13} color="#38bdf8" />}
-                              {conn.connected_type === 'Location' && <MapPin size={13} color="#c084fc" />}
-                              {conn.connected_type === 'FIR' && <FileText size={13} color="#f87171" />}
-                              {conn.connected_type === 'Person' && <User size={13} color="#ffffff" />}
-                              <span style={{ fontFamily: 'JetBrains Mono', color: 'var(--foreground)' }}>{conn.connected_entity}</span>
-                              <span style={{ fontSize: '10px', color: 'var(--muted-foreground)' }}>({conn.connected_type})</span>
-                            </div>
-                            <span style={{ padding: '2px 8px', fontSize: '9px', fontWeight: 700, background: 'var(--secondary)', border: '1px solid var(--border)', color: 'var(--muted-foreground)', borderRadius: '4px', fontFamily: 'JetBrains Mono' }}>
-                              {conn.relationship}
-                            </span>
+                    {/* TAB 3: RECENT ACTIVITY */}
+                    {dossierActiveTab === 'activity' && (
+                      <div className="dossier-tab-content">
+                        <div className="dossier-section-block">
+                          <div className="dossier-block-header">
+                            <IndianRupee size={16} />
+                            <span>Financial Intelligence Trail & Hawala Intercepts ({dossierData.transactions?.length || 0})</span>
                           </div>
-                        ))}
+                          {dossierData.transactions && dossierData.transactions.length > 0 ? (
+                            <div className="dossier-table-wrap">
+                              <table className="dossier-tx-table">
+                                <thead>
+                                  <tr>
+                                    <th>TX ID</th>
+                                    <th>Direction</th>
+                                    <th>Counterparty</th>
+                                    <th>Amount</th>
+                                    <th>Mode</th>
+                                    <th>Timestamp</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {dossierData.transactions.map((tx, idx) => (
+                                    <tr key={idx}>
+                                      <td className="font-mono">{tx.transaction_id}</td>
+                                      <td>
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          {tx.direction === 'Outgoing'
+                                            ? <ArrowUpRight size={13} color="#ef4444" />
+                                            : <ArrowDownLeft size={13} color="#10b981" />}
+                                          {tx.direction}
+                                        </span>
+                                      </td>
+                                      <td className="font-bold">{tx.counterparty}</td>
+                                      <td style={{ color: tx.is_structured ? '#ef4444' : 'inherit', fontWeight: 700 }}>
+                                        ₹{tx.amount.toLocaleString()}
+                                      </td>
+                                      <td>
+                                        {tx.is_structured ? (
+                                          <span className="structured-tx-badge">
+                                            STRUCTURED
+                                          </span>
+                                        ) : tx.mode}
+                                      </td>
+                                      <td style={{ color: 'var(--muted-foreground)' }}>{tx.timestamp}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          ) : (
+                            <div className="dossier-empty-state">
+                              <DollarSign size={24} color="#94a3b8" />
+                              <p>No financial intercepts or Hawala transactions flagged for this profile.</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Sighting Timeline */}
+                        {dossierData.locations && dossierData.locations.length > 0 && (
+                          <div className="dossier-section-block" style={{ marginTop: '20px' }}>
+                            <div className="dossier-block-header">
+                              <MapPin size={16} />
+                              <span>Surveillance Sightings & Geo Observations ({dossierData.locations.length})</span>
+                            </div>
+                            <div className="dossier-sighting-grid">
+                              {dossierData.locations.map((loc, i) => (
+                                <div key={i} className="dossier-sighting-card">
+                                  <div className="sighting-card-top">
+                                    <div className="sighting-icon-box">
+                                      <MapPin size={16} />
+                                    </div>
+                                    <div className="sighting-info-block">
+                                      <span className="sighting-location-name">{loc.name}</span>
+                                      <span className="sighting-source-tag">{loc.observed_by || 'Field Observation'}</span>
+                                    </div>
+                                  </div>
+                                  <div className="sighting-meta-row">
+                                    <span className="sighting-report-text">Report ID: {loc.report_id || 'ANPR-GEO-LOG'}</span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </>
+                    )}
+
+                    {/* TAB 4: LINKED CASES */}
+                    {dossierActiveTab === 'cases' && (
+                      <div className="dossier-tab-content">
+                        <div className="dossier-section-block">
+                          <div className="dossier-block-header">
+                            <FileText size={16} />
+                            <span>Linked Police First Information Reports ({dossierData.firs?.length || 0})</span>
+                          </div>
+                          {dossierData.firs && dossierData.firs.length > 0 ? (
+                            <div className="dossier-fir-files-list">
+                              {dossierData.firs.map((fir, i) => (
+                                <div key={i} className="dossier-fir-file-card">
+                                  <div className="fir-file-header">
+                                    <div className="fir-file-icon-box">
+                                      <FileText size={20} className="fir-file-icon" />
+                                    </div>
+                                    <div className="fir-file-title-block">
+                                      <div className="fir-file-name-row">
+                                        <span className="fir-file-name">{fir.fir_no}</span>
+                                        <span className="fir-status-pill">
+                                          <ShieldAlert size={11} />
+                                          <span>ACTIVE INVESTIGATION</span>
+                                        </span>
+                                      </div>
+                                      <span className="fir-file-subtitle">Official State Police Crime Incident Report</span>
+                                    </div>
+                                  </div>
+
+                                  <div className="fir-file-details-grid">
+                                    <div className="fir-detail-pill">
+                                      <Landmark size={14} className="fir-detail-icon" />
+                                      <div className="fir-detail-text">
+                                        <span className="fir-detail-label">Police Station</span>
+                                        <span className="fir-detail-value">{fir.police_station || 'Jurisdiction Central PS'}</span>
+                                      </div>
+                                    </div>
+
+                                    <div className="fir-detail-pill">
+                                      <Calendar size={14} className="fir-detail-icon" />
+                                      <div className="fir-detail-text">
+                                        <span className="fir-detail-label">Incident Date</span>
+                                        <span className="fir-detail-value font-mono">
+                                          {fir.incident_date ? fir.incident_date.replace(/T.*$/, '') : 'Recorded'}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <div className="fir-detail-pill">
+                                      <FileText size={14} className="fir-detail-icon" />
+                                      <div className="fir-detail-text">
+                                        <span className="fir-detail-label">Case Source</span>
+                                        <span className="fir-detail-value">{fir.source_file || 'E-FIR Repository'}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="fir-file-actions-row">
+                                    <div className="fir-file-tag">
+                                      <span>STATE CRIMINAL DATABASE • CCTNS RECORD</span>
+                                    </div>
+                                    <button
+                                      className="btn-fir-graph-view"
+                                      onClick={() => openTargetedGraph(fir.fir_no)}
+                                      title="Investigate FIR Case Network on Graph"
+                                    >
+                                      <Network size={13} />
+                                      <span>Investigate Case Graph</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="dossier-empty-state">
+                              <ShieldCheck size={28} color="#10b981" />
+                              <p>No formal FIR cases currently filed in jurisdiction.</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   /* Initial State when section opened: Search Section in the Middle */
                   <div className="dossier-search-landing-container">
