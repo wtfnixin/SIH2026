@@ -41,6 +41,7 @@ import SyndicateLeaderboard from './components/SyndicateLeaderboard';
 import AuditLoggerPanel from './components/AuditLoggerPanel';
 import AICopilotDrawer from './components/AICopilotDrawer';
 import TargetedGraphCanvas from './components/TargetedGraphCanvas';
+import GeospatialMapCanvas from './components/GeospatialMapCanvas';
 
 export default function App() {
   // Theme state: 'dark' or 'light'
@@ -504,6 +505,29 @@ export default function App() {
                 </div>
               </div>
 
+              {/* SECTION: GEOSPATIAL ANPR SURVEILLANCE */}
+              <div className="sidebar-group">
+                <div className="sidebar-group-title">
+                  <span>SPATIAL SURVEILLANCE</span>
+                  <span className="sidebar-item-badge">GIS</span>
+                </div>
+                <div className="sidebar-nav-list">
+                  <div
+                    className={`sidebar-nav-item ${activeView === 'geo_map' ? 'active' : ''}`}
+                    onClick={() => setActiveView('geo_map')}
+                    title="View Interactive ANPR Spatial Map & Vehicle Trajectories"
+                  >
+                    <div className="sidebar-item-left">
+                      <MapPin size={15} color="#06b6d4" />
+                      <span>ANPR Movement Map</span>
+                    </div>
+                    <span className="sidebar-item-badge" style={{ background: 'rgba(6, 182, 212, 0.14)', color: '#06b6d4', borderColor: 'rgba(6, 182, 212, 0.25)' }}>
+                      LIVE
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               {/* SECTION: SUSPECT DOSSIERS */}
               <div className="sidebar-group">
                 <div className="sidebar-group-title">
@@ -604,6 +628,17 @@ export default function App() {
               onBackToDashboard={() => setActiveView(previousView || 'threats')}
               onOpenDossier={(id) => openDossier(id)}
             />
+          )}
+
+          {/* VIEW: GEOSPATIAL ANPR MOVEMENT & CONVOY MAP */}
+          {activeView === 'geo_map' && (
+            <div style={{ flex: 1, height: '100%', position: 'relative', overflow: 'hidden' }}>
+              <GeospatialMapCanvas
+                onSelectEntity={(id) => setFocusedEntityId(id)}
+                onOpenDossier={(id) => openDossier(id)}
+                initialVehiclePlate="MH-12-PQ-9981"
+              />
+            </div>
           )}
 
           {/* VIEW: CRIMINAL DATABASE (100% DYNAMIC FROM NEO4J) */}
@@ -1129,10 +1164,13 @@ export default function App() {
 
       {/* AI Intelligence Copilot Floating Drawer */}
       <AICopilotDrawer
-        onNavigateGraph={(targetId) => {
-          setSelectedEntityId(targetId);
-          setFocusedEntityId(targetId);
-          setActiveView('topology');
+        onSelectEntity={(id) => openDossier(id)}
+        onAction={(action) => {
+          if (action.type === 'NAVIGATE_GRAPH' && action.target_id) {
+            openTargetedGraph(action.target_id);
+          } else if (action.type === 'NAVIGATE_MAP') {
+            setActiveView('geo_map');
+          }
         }}
       />
     </div>

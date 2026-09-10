@@ -44,6 +44,18 @@ def process_copilot_chat(user_message: str, selected_target_id: str = None) -> D
     if selected_target_id:
         return generate_single_entity_response(selected_target_id, user_message, groq_key)
 
+    # Case 1: Check for Map / Trajectory Intent
+    msg_lower = user_message.lower()
+    if any(k in msg_lower for k in ["map", "location map", "anpr map", "trajectory", "route", "gantry"]):
+        return {
+            "response": "Opening the Interactive ANPR Spatial Surveillance Map canvas. You can trace vehicle movement trajectories, analyze toll gantry camera hits, and monitor convoy co-location alerts.",
+            "multiple_matches": [],
+            "ui_action": {
+                "type": "NAVIGATE_MAP",
+                "open_map": True
+            }
+        }
+
     # Case 2: Check if prompt is a general conversational query (e.g. greeting, system question)
     if is_general_conversation(user_message):
         conv_response = call_groq_general_chat(user_message, groq_key)

@@ -6,6 +6,7 @@ from app.api.v1.graph_routes import router as graph_router
 from app.api.v1.entity_routes import router as entity_router
 from app.api.v1.analytics_routes import router as analytics_router
 from app.api.v1.copilot_routes import router as copilot_router
+from app.api.v1.geo_routes import router as geo_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -28,6 +29,7 @@ app.include_router(graph_router, prefix=settings.API_V1_STR)
 app.include_router(entity_router, prefix=settings.API_V1_STR)
 app.include_router(analytics_router, prefix=settings.API_V1_STR)
 app.include_router(copilot_router, prefix=settings.API_V1_STR)
+app.include_router(geo_router, prefix=f"{settings.API_V1_STR}/geo")
 
 
 @app.get("/")
