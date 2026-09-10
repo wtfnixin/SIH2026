@@ -1,27 +1,89 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { GripHorizontal, Maximize2, Minimize2, RotateCcw, Minus, Network } from 'lucide-react';
+import { 
+  GripHorizontal, 
+  Maximize2, 
+  Minimize2, 
+  RotateCcw, 
+  Minus, 
+  Network, 
+  X, 
+  ExternalLink 
+} from 'lucide-react';
 import NetworkGraph from './NetworkGraph';
 
 export default function FloatingMapWindow({
+  isOpen = true,
+  onClose,
+  targetEntity = null,
   elements = [],
   onSelectNode,
-  selectedEntityId
+  selectedEntityId,
+  onOpenDossier,
+  isMinimized: propMinimized,
+  setIsMinimized: propSetMinimized
 }) {
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [localMinimized, setLocalMinimized] = useState(false);
+  const isMinimized = propMinimized !== undefined ? propMinimized : localMinimized;
+  const setIsMinimized = propSetMinimized !== undefined ? propSetMinimized : setLocalMinimized;
+
   const [isMaximized, setIsMaximized] = useState(false);
   const [position, setPosition] = useState(null); // null = docked at bottom right
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef({ startX: 0, startY: 0, startPosX: 0, startPosY: 0 });
   const windowRef = useRef(null);
 
+  // Ego network data for targetEntity
+  const [egoData, setEgoData] = useState(null);
+  const [loadingEgo, setLoadingEgo] = useState(false);
+
+  // Fetch ego network when targetEntity changes
+  useEffect(() => {
+    if (!targetEntity) {
+      setEgoData(null);
+      return;
+    }
+    setLoadingEgo(true);
+    fetch(`http://localhost:8000/api/v1/graph/dossier-network/${encodeURIComponent(targetEntity)}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Ego network error');
+        return res.json();
+      })
+      .then(data => {
+        setEgoData(data);
+        setLoadingEgo(false);
+      })
+      .catch(err => {
+        console.warn('Ego network fallback:', err);
+        setEgoData(null);
+        setLoadingEgo(false);
+      });
+  }, [targetEntity]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  if (!isOpen) return null;
+
+  // Active elements: use specific ego network if available, otherwise global elements
+  const activeElements = (egoData && egoData.elements && egoData.elements.length > 0)
+    ? egoData.elements
+    : elements;
+
   // Count nodes in graph
-  const nodeCount = elements.filter(el => !el.data.source).length;
-  const edgeCount = elements.filter(el => el.data.source && el.data.target).length;
+  const nodeCount = activeElements.filter(el => !el.data.source).length;
+  const edgeCount = activeElements.filter(el => el.data.source && el.data.target).length;
 
   // Handle Dragging
   const handlePointerDown = (e) => {
     if (isMaximized || isMinimized) return;
-    // Don't drag if clicking buttons inside header
     if (e.target.closest('button')) return;
 
     e.preventDefault();
@@ -35,7 +97,6 @@ export default function FloatingMapWindow({
       startPosY: rect.top
     };
 
-    // If currently docked, convert to explicit x,y coordinates
     if (!position) {
       setPosition({ x: rect.left, y: rect.top });
     }
@@ -53,8 +114,8 @@ export default function FloatingMapWindow({
     const newY = dragRef.current.startPosY + deltaY;
 
     // Bounds checking to stay within viewport
-    const width = 450;
-    const height = 330;
+    const width = 480;
+    const height = 360;
     const clampedX = Math.max(12, Math.min(window.innerWidth - width - 12, newX));
     const clampedY = Math.max(70, Math.min(window.innerHeight - height - 12, newY));
 
@@ -92,10 +153,28 @@ export default function FloatingMapWindow({
         title="Restore Network Graph Map"
       >
         <span className="live-pulse-dot" />
-        <Network size={16} color="#ffffff" />
-        <span className="pill-text">Network Map ({nodeCount} Nodes)</span>
-        <div className="pill-expand-icon">
-          <Maximize2 size={13} color="#94a3b8" />
+        <Network size={16} color="#38bdf8" />
+        <span className="pill-text">
+          {targetEntity ? `${targetEntity} Map` : 'Network Map'} ({nodeCount} Nodes)
+        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '4px' }}>
+          <div className="pill-expand-icon" title="Expand Map">
+            <Maximize2 size={12} color="#a1a1aa" />
+          </div>
+          {onClose && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              className="control-btn control-btn-close"
+              style={{ width: '22px', height: '22px', border: 'none', background: 'transparent' }}
+              title="Close Graph Window (Esc)"
+              aria-label="Close graph window"
+            >
+              <X size={13} color="#a1a1aa" />
+            </button>
+          )}
         </div>
       </div>
     );
@@ -121,8 +200,8 @@ export default function FloatingMapWindow({
         position: 'fixed',
         left: `${position.x}px`,
         top: `${position.y}px`,
-        width: '450px',
-        height: '330px',
+        width: '480px',
+        height: '360px',
         zIndex: 850
       };
     }
@@ -132,8 +211,8 @@ export default function FloatingMapWindow({
       position: 'fixed',
       right: '24px',
       bottom: '24px',
-      width: '450px',
-      height: '330px',
+      width: '480px',
+      height: '360px',
       zIndex: 850
     };
   };
@@ -151,10 +230,19 @@ export default function FloatingMapWindow({
         style={{ cursor: isMaximized ? 'default' : 'grab' }}
       >
         <div className="floating-map-title">
-          {!isMaximized && <GripHorizontal size={16} className="drag-grip-icon" />}
+          {!isMaximized && <GripHorizontal size={15} className="drag-grip-icon" />}
           <div className="status-indicator">
             <span className="live-pulse-dot" />
-            <span className="title-text">NETWORK TOPOLOGY MAP</span>
+            <span className="title-text">
+              {targetEntity ? (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span>MAP:</span>
+                  <span className="floating-target-tag" title={targetEntity}>{targetEntity}</span>
+                </span>
+              ) : (
+                'NETWORK TOPOLOGY'
+              )}
+            </span>
           </div>
           <span className="node-badge">
             {nodeCount} Nodes • {edgeCount} Edges
@@ -190,17 +278,56 @@ export default function FloatingMapWindow({
               <Minus size={13} />
             </button>
           )}
+
+          {onClose && (
+            <button
+              id="close-floating-map-btn"
+              onClick={onClose}
+              className="control-btn control-btn-close"
+              title="Close Graph Window (Esc)"
+              aria-label="Close graph window"
+            >
+              <X size={13} />
+            </button>
+          )}
         </div>
       </div>
 
       {/* Embedded Cytoscape Graph Canvas */}
       <div className="floating-map-body">
         <NetworkGraph
-          elements={elements}
+          elements={activeElements}
           onSelectNode={onSelectNode}
-          selectedEntityId={selectedEntityId}
+          selectedEntityId={selectedEntityId || targetEntity}
           isCompact={!isMaximized}
+          targetEntityId={targetEntity}
+          isDark={true}
         />
+      </div>
+
+      {/* Relevant Information Bar at the Bottom */}
+      <div className="floating-map-infobar">
+        <div className="infobar-left">
+          <span className="infobar-label">FOCUS:</span>
+          <span className="infobar-value" title={selectedEntityId || targetEntity || 'Network'}>
+            {selectedEntityId || targetEntity || 'Global Network'}
+          </span>
+          {egoData?.breakdown && (
+            <span className="infobar-stats">
+              • {egoData.breakdown.total_connections} links • {egoData.breakdown.fir_count || 0} FIRs • {egoData.breakdown.vehicle_count || 0} veh
+            </span>
+          )}
+        </div>
+        {selectedEntityId && onOpenDossier && (
+          <button
+            className="infobar-inspect-btn"
+            onClick={() => onOpenDossier(selectedEntityId)}
+            title={`Open dossier for ${selectedEntityId}`}
+          >
+            <span>Dossier</span>
+            <ExternalLink size={10} />
+          </button>
+        )}
       </div>
     </div>
   );

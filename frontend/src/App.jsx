@@ -4,6 +4,9 @@ import {
   Search, 
   Upload, 
   RefreshCw, 
+  Sun,
+  Moon,
+  ArrowLeft,
   Crown, 
   AlertTriangle, 
   PhoneOff, 
@@ -31,16 +34,30 @@ import {
   Filter,
   ChevronDown
 } from 'lucide-react';
-import FloatingMapWindow from './components/FloatingMapWindow';
 import ThreatAlertsFeed from './components/ThreatAlertsFeed';
-import EntityDossierModal from './components/EntityDossierModal';
 import FileUploadModal from './components/FileUploadModal';
-import NetworkGraph from './components/NetworkGraph';
+import GraphWindow from './components/GraphWindow';
 import SyndicateLeaderboard from './components/SyndicateLeaderboard';
 import AuditLoggerPanel from './components/AuditLoggerPanel';
 import TargetedGraphCanvas from './components/TargetedGraphCanvas';
 
 export default function App() {
+  // Theme state: 'dark' or 'light'
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem('sih_theme');
+    if (saved) return saved;
+    return 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('sih_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
   const [networkData, setNetworkData] = useState({ elements: [] });
   const [alertsData, setAlertsData] = useState(null);
   const [kingpins, setKingpins] = useState([]);
@@ -64,9 +81,13 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeView, setActiveView] = useState('threats');
+  const [previousView, setPreviousView] = useState('threats');
   const [threatCategory, setThreatCategory] = useState('all');
   const [isThreatDropdownOpen, setIsThreatDropdownOpen] = useState(true);
   const [targetedGraphEntity, setTargetedGraphEntity] = useState(null);
+  const [isFloatingMapOpen, setIsFloatingMapOpen] = useState(false);
+  const [floatingMapEntity, setFloatingMapEntity] = useState(null);
+  const [isFloatingMapMinimized, setIsFloatingMapMinimized] = useState(false);
 
   const fetchAllData = () => {
     setLoading(true);
@@ -83,9 +104,6 @@ export default function App() {
         const crimList = crim?.criminals || [];
         setCriminals(crimList);
         setTotalCriminals(crim?.total || crimList.length);
-        if (crimList.length > 0 && !selectedDossierEntity) {
-          setSelectedDossierEntity(crimList[0].entity_id);
-        }
         setLoading(false);
       })
       .catch(err => {
@@ -140,13 +158,33 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const openTargetedGraph = (entityId) => {
-    setTargetedGraphEntity(entityId);
-    setSelectedEntityId(entityId);
-    setFocusedEntityId(entityId);
-    setActiveView('graph_canvas');
+  // Escape key closes floating map or full graph view
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        if (isFloatingMapOpen) {
+          setIsFloatingMapOpen(false);
+        } else if (activeView === 'graph_canvas' || activeView === 'topology') {
+          setActiveView(previousView || 'threats');
+        }
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isFloatingMapOpen, activeView, previousView]);
+
+  const openFloatingGraph = (entityId) => {
+    const target = entityId || (criminals.length > 0 ? criminals[0].entity_id : 'Rahul Sharma');
+    setFloatingMapEntity(target);
+    setFocusedEntityId(target);
+    setIsFloatingMapOpen(true);
+    setIsFloatingMapMinimized(false);
     setSearchResults([]);
     setSearchQuery('');
+  };
+
+  const openTargetedGraph = (entityId) => {
+    openFloatingGraph(entityId);
   };
 
   const openDossier = (entityId) => {
@@ -269,44 +307,45 @@ export default function App() {
           {searchResults.length > 0 && (
             <div style={{
               position: 'absolute',
-              top: '44px',
+              top: '42px',
               left: 0,
               right: 0,
-              background: '#121216',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              borderRadius: '10px',
-              padding: '8px',
+              background: '#0c0c0e',
+              border: '1px solid #27272a',
+              borderRadius: '6px',
+              padding: '6px',
               zIndex: 100,
-              boxShadow: '0 10px 30px rgba(0,0,0,0.8)'
+              boxShadow: '0 12px 30px rgba(0,0,0,0.8)'
             }}>
               {searchResults.map(r => (
                 <div
                   key={r.entity_id}
                   onClick={() => openDossier(r.entity_id)}
                   style={{
-                    padding: '8px 12px',
-                    borderRadius: '6px',
+                    padding: '7px 10px',
+                    borderRadius: '5px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     fontSize: '12px',
-                    transition: 'background 0.2s'
+                    transition: 'background 0.15s'
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.background = '#27272a'}
                   onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                   title={`Open ${r.entity_id} in Suspect Dossiers section`}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <User size={13} color="#93c5fd" />
-                    <span style={{ fontWeight: 600, color: '#f4f4f5' }}>{r.entity_id}</span>
+                    <User size={13} color="#a1a1aa" />
+                    <span style={{ fontWeight: 600, color: '#fafafa' }}>{r.entity_id}</span>
                     <span style={{
-                      fontSize: '10px',
-                      padding: '2px 6px',
+                      fontSize: '9.5px',
+                      padding: '1px 5px',
                       borderRadius: '4px',
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      color: '#ffffff',
-                      border: '1px solid rgba(255, 255, 255, 0.18)'
+                      background: '#18181b',
+                      color: '#a1a1aa',
+                      border: '1px solid #27272a',
+                      fontFamily: 'JetBrains Mono, monospace'
                     }}>
                       {r.type}
                     </span>
@@ -332,13 +371,24 @@ export default function App() {
         </div>
 
         {/* Action Controls */}
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button 
+            id="theme-toggle-btn"
+            className="theme-toggle-btn" 
+            onClick={toggleTheme}
+            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+            <span className="theme-toggle-label">{theme === 'dark' ? 'Light' : 'Dark'}</span>
+          </button>
+
           <button className="btn-primary" onClick={() => setIsUploadOpen(true)}>
-            <Upload size={15} />
+            <Upload size={14} />
             <span>Upload Evidence</span>
           </button>
           <button className="btn-secondary" onClick={fetchAllData} title="Refresh Live Feeds">
-            <RefreshCw size={15} className={loading ? 'spin-anim' : ''} />
+            <RefreshCw size={14} className={loading ? 'spin-anim' : ''} />
           </button>
         </div>
       </header>
@@ -464,9 +514,6 @@ export default function App() {
                     className={`sidebar-nav-item ${activeView === 'dossiers' ? 'active' : ''}`}
                     onClick={() => {
                       setActiveView('dossiers');
-                      if (!selectedDossierEntity && criminals.length > 0) {
-                        setSelectedDossierEntity(criminals[0].entity_id);
-                      }
                     }}
                     title="View suspect forensic dossiers workspace"
                   >
@@ -553,7 +600,7 @@ export default function App() {
           {activeView === 'graph_canvas' && (
             <TargetedGraphCanvas
               targetEntity={targetedGraphEntity || (criminals.length > 0 ? criminals[0].entity_id : 'Rahul Sharma')}
-              onBackToDashboard={() => setActiveView('threats')}
+              onBackToDashboard={() => setActiveView(previousView || 'threats')}
               onOpenDossier={(id) => openDossier(id)}
             />
           )}
@@ -689,12 +736,8 @@ export default function App() {
                         <button
                           className="btn-secondary"
                           style={{ padding: '7px 12px', fontSize: '11px' }}
-                          onClick={() => {
-                            setFocusedEntityId(c.entity_id);
-                            setSelectedEntityId(c.entity_id);
-                            setActiveView('topology');
-                          }}
-                          title="Locate suspect on network topology"
+                          onClick={() => openTargetedGraph(c.entity_id)}
+                          title="View on network graph"
                         >
                           <Network size={13} />
                         </button>
@@ -710,55 +753,14 @@ export default function App() {
           {activeView === 'dossiers' && (
             <div className="dossier-workspace-layout">
               
-              {/* Left Suspect Selector Pane */}
-              <div className="dossier-selector-pane">
-                <div className="dossier-selector-header">
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 800, color: '#ffffff', letterSpacing: '0.6px' }}>
-                      SUSPECT DIRECTORY
-                    </span>
-                    <span className="sidebar-item-badge">{criminals.length}</span>
-                  </div>
-                  <div className="criminal-search-box" style={{ maxWidth: '100%' }}>
-                    <Search size={14} color="#71717a" />
-                    <input
-                      type="text"
-                      placeholder="Filter suspects..."
-                      value={dossierSearch}
-                      onChange={(e) => setDossierSearch(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="dossier-selector-list">
-                  {displayedDossierSuspects.map((s, idx) => (
-                    <div
-                      key={idx}
-                      className={`dossier-selector-item ${selectedDossierEntity === s.entity_id ? 'active' : ''}`}
-                      onClick={() => setSelectedDossierEntity(s.entity_id)}
-                    >
-                      <div>
-                        <div className="dossier-item-name">{s.name}</div>
-                        <div className="dossier-item-sub">
-                          {s.connection_count} links • {s.fir_count} FIRs
-                        </div>
-                      </div>
-                      <span className={`threat-badge ${getThreatClass(s.threat_level)}`} style={{ fontSize: '8px', padding: '2px 6px' }}>
-                        {s.threat_level}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right Dossier Detail Pane */}
+              {/* Middle: Dossier Detail Pane (or Search Landing when no suspect selected) */}
               <div className="dossier-detail-pane">
                 {loadingDossier ? (
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '10px', color: '#a1a1aa' }}>
                     <div className="w-5 h-5 border-2 border-white/60 border-t-transparent rounded-full animate-spin" />
                     <span style={{ fontFamily: 'JetBrains Mono', fontSize: '12px' }}>Loading Intelligence Dossier...</span>
                   </div>
-                ) : dossierData ? (
+                ) : (dossierData && selectedDossierEntity) ? (
                   <>
                     {/* Dossier Banner */}
                     <div className="dossier-banner">
@@ -783,10 +785,18 @@ export default function App() {
                         <button
                           className="btn-secondary"
                           onClick={() => {
-                            setFocusedEntityId(dossierData.entity_id);
-                            setSelectedEntityId(dossierData.entity_id);
-                            setActiveView('topology');
+                            setSelectedDossierEntity(null);
+                            setDossierData(null);
                           }}
+                          title="Search another suspect"
+                        >
+                          <Search size={13} />
+                          <span>Search Directory</span>
+                        </button>
+                        <button
+                          className="btn-secondary"
+                          onClick={() => openTargetedGraph(dossierData.entity_id)}
+                          title="Investigate suspect on interactive network graph"
                         >
                           <Network size={14} />
                           <span>View on Graph</span>
@@ -814,51 +824,58 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* FIR Cases Section */}
+                    {/* Linked FIRs Section */}
                     {dossierData.firs && dossierData.firs.length > 0 && (
                       <div className="dossier-section">
                         <div className="dossier-section-title">
-                          <FileText size={15} />
+                          <FileText size={14} />
                           <span>Linked Police First Information Reports ({dossierData.firs.length})</span>
                         </div>
                         <div className="dossier-evidence-grid">
                           {dossierData.firs.map((fir, i) => (
-                            <div key={i} className="dossier-evidence-card">
-                              <span className="dossier-evidence-card-title">{fir.fir_no}</span>
-                              <span className="dossier-evidence-card-meta">{fir.police_station}</span>
-                              <span style={{ fontSize: '9px', color: '#71717a' }}>Incident Date: {fir.incident_date}</span>
+                            <div key={i} className="dossier-fir-card">
+                              <div className="fir-card-top">
+                                <span className="fir-no-text">{fir.fir_no}</span>
+                                <span className="fir-source-tag">{fir.source_file || 'E-FIR'}</span>
+                              </div>
+                              <div className="fir-station-text">{fir.police_station}</div>
+                              <div className="fir-date-text">Incident Date: {fir.incident_date}</div>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {/* Vehicles Section */}
+                    {/* Motor Vehicles Section */}
                     {dossierData.vehicles && dossierData.vehicles.length > 0 && (
                       <div className="dossier-section">
                         <div className="dossier-section-title">
-                          <Car size={15} />
+                          <Car size={14} />
                           <span>Motor Vehicles & Plates ({dossierData.vehicles.length})</span>
                         </div>
                         <div className="dossier-evidence-grid">
-                          {dossierData.vehicles.map((v, i) => (
-                            <div key={i} className="dossier-evidence-card">
-                              <span className="dossier-evidence-card-title">{v.registration_number}</span>
-                              <span className="dossier-evidence-card-meta">Relationship: {v.relationship}</span>
+                          {dossierData.vehicles.map((veh, i) => (
+                            <div key={i} className="dossier-fir-card">
+                              <div className="fir-card-top">
+                                <span className="fir-no-text" style={{ color: '#38bdf8' }}>{veh.registration_number}</span>
+                              </div>
+                              <div className="fir-date-text" style={{ marginTop: '4px' }}>
+                                Relationship: {veh.relationship || 'OWNS_VEHICLE'}
+                              </div>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {/* Financial Transfers Table */}
+                    {/* Financial Intelligence Trail */}
                     {dossierData.transactions && dossierData.transactions.length > 0 && (
                       <div className="dossier-section">
                         <div className="dossier-section-title">
-                          <DollarSign size={15} />
+                          <DollarSign size={14} />
                           <span>Financial Intelligence Trail & Hawala Intercepts ({dossierData.transactions.length})</span>
                         </div>
-                        <div style={{ maxHeight: '220px', overflowY: 'auto', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                        <div className="dossier-table-wrap">
                           <table className="dossier-tx-table">
                             <thead>
                               <tr>
@@ -873,25 +890,25 @@ export default function App() {
                             <tbody>
                               {dossierData.transactions.map((tx, idx) => (
                                 <tr key={idx}>
-                                  <td style={{ color: '#ffffff' }}>{tx.transaction_id}</td>
+                                  <td style={{ color: 'var(--foreground)' }}>{tx.transaction_id}</td>
                                   <td>
                                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                      {tx.direction === 'Outgoing' ? <ArrowUpRight size={11} color="#fca5a5" /> : <ArrowDownLeft size={11} color="#93c5fd" />}
+                                      {tx.direction === 'Outgoing' ? <ArrowUpRight size={11} color="#f87171" /> : <ArrowDownLeft size={11} color="#38bdf8" />}
                                       {tx.direction}
                                     </span>
                                   </td>
                                   <td>{tx.counterparty}</td>
-                                  <td style={{ color: tx.is_structured ? '#f87171' : '#ffffff', fontWeight: 700 }}>
+                                  <td style={{ color: tx.is_structured ? '#f87171' : 'var(--foreground)', fontWeight: 700 }}>
                                     ₹{tx.amount.toLocaleString()}
                                   </td>
                                   <td>
                                     {tx.is_structured ? (
-                                      <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5' }}>
+                                      <span style={{ fontSize: '9px', padding: '1px 5px', borderRadius: '4px', background: 'transparent', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#f87171', fontFamily: 'JetBrains Mono' }}>
                                         STRUCTURED
                                       </span>
                                     ) : tx.mode}
                                   </td>
-                                  <td style={{ color: '#71717a' }}>{tx.timestamp}</td>
+                                  <td style={{ color: 'var(--muted-foreground)' }}>{tx.timestamp}</td>
                                 </tr>
                               ))}
                             </tbody>
@@ -900,37 +917,25 @@ export default function App() {
                       </div>
                     )}
 
-                    {/* Relational Network Connections */}
+                    {/* All Connected Entities (Graph Relations) */}
                     <div className="dossier-section">
                       <div className="dossier-section-title">
-                        <Share2 size={15} />
+                        <Share2 size={14} />
                         <span>All Connected Evidence Entities ({dossierData.connected_evidence?.length || 0})</span>
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '200px', overflowY: 'auto' }}>
+                      <div className="dossier-connections-list">
                         {dossierData.connected_evidence?.map((conn, idx) => (
-                          <div
-                            key={idx}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'space-between',
-                              padding: '8px 12px',
-                              background: 'rgba(255, 255, 255, 0.02)',
-                              borderRadius: '6px',
-                              border: '1px solid rgba(255, 255, 255, 0.05)',
-                              fontSize: '11px'
-                            }}
-                          >
+                          <div key={idx} className="dossier-conn-item">
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                               {conn.connected_type === 'Phone' && <Phone size={13} color="#fbbf24" />}
-                              {conn.connected_type === 'Vehicle' && <Car size={13} color="#60a5fa" />}
+                              {conn.connected_type === 'Vehicle' && <Car size={13} color="#38bdf8" />}
                               {conn.connected_type === 'Location' && <MapPin size={13} color="#c084fc" />}
                               {conn.connected_type === 'FIR' && <FileText size={13} color="#f87171" />}
                               {conn.connected_type === 'Person' && <User size={13} color="#ffffff" />}
-                              <span style={{ fontFamily: 'JetBrains Mono', color: '#ffffff' }}>{conn.connected_entity}</span>
-                              <span style={{ fontSize: '10px', color: '#71717a' }}>({conn.connected_type})</span>
+                              <span style={{ fontFamily: 'JetBrains Mono', color: 'var(--foreground)' }}>{conn.connected_entity}</span>
+                              <span style={{ fontSize: '10px', color: 'var(--muted-foreground)' }}>({conn.connected_type})</span>
                             </div>
-                            <span style={{ padding: '2px 8px', fontSize: '9px', fontWeight: 700, background: 'rgba(255, 255, 255, 0.06)', color: '#d4d4d8', borderRadius: '4px', fontFamily: 'JetBrains Mono' }}>
+                            <span style={{ padding: '2px 8px', fontSize: '9px', fontWeight: 700, background: 'var(--secondary)', border: '1px solid var(--border)', color: 'var(--muted-foreground)', borderRadius: '4px', fontFamily: 'JetBrains Mono' }}>
                               {conn.relationship}
                             </span>
                           </div>
@@ -939,47 +944,182 @@ export default function App() {
                     </div>
                   </>
                 ) : (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#71717a' }}>
-                    Select a suspect from the directory to inspect their forensic dossier.
+                  /* Initial State when section opened: Search Section in the Middle */
+                  <div className="dossier-search-landing-container">
+                    <div className="dossier-search-hero-card">
+                      <div className="search-hero-icon-wrap">
+                        <Search size={26} color="#38bdf8" />
+                      </div>
+                      <h3 className="search-hero-title">INTELLIGENCE DOSSIER LOOKUP</h3>
+                      <p className="search-hero-subtitle">
+                        Search and filter the active criminal database by name, alias, vehicle plate, or police FIR case number.
+                      </p>
+
+                      <div className="dossier-hero-search-box">
+                        <Search size={15} color="#71717a" />
+                        <input
+                          type="text"
+                          placeholder="Search suspect name, case FIR, or vehicle plate..."
+                          value={dossierSearch}
+                          onChange={(e) => setDossierSearch(e.target.value)}
+                          autoFocus
+                        />
+                        {dossierSearch && (
+                          <button
+                            onClick={() => setDossierSearch('')}
+                            style={{ background: 'transparent', border: 'none', color: '#71717a', cursor: 'pointer' }}
+                            title="Clear search"
+                          >
+                            <X size={14} />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Matching Results in Center when searching */}
+                      {dossierSearch.trim() ? (
+                        <div className="dossier-hero-results">
+                          <div className="hero-results-header">
+                            <span>MATCHING SUSPECTS ({displayedDossierSuspects.length})</span>
+                          </div>
+                          <div className="hero-results-grid">
+                            {displayedDossierSuspects.map((s, idx) => (
+                              <div
+                                key={idx}
+                                className="hero-result-card"
+                                onClick={() => setSelectedDossierEntity(s.entity_id)}
+                              >
+                                <div className="hero-card-left">
+                                  <div className="hero-card-avatar">
+                                    <User size={15} />
+                                  </div>
+                                  <div>
+                                    <div className="hero-card-name">{s.name}</div>
+                                    <div className="hero-card-sub">
+                                      {s.connection_count} links • {s.fir_count || 0} FIRs
+                                    </div>
+                                  </div>
+                                </div>
+                                <span className={`threat-badge ${getThreatClass(s.threat_level)}`} style={{ fontSize: '8px', padding: '2px 6px' }}>
+                                  {s.threat_level}
+                                </span>
+                              </div>
+                            ))}
+                            {displayedDossierSuspects.length === 0 && (
+                              <div className="hero-no-results">
+                                No suspects found matching "{dossierSearch}".
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="dossier-quick-tags-section">
+                          <span className="quick-tags-label">QUICK ACCESS DIRECTORY:</span>
+                          <div className="quick-tags-list">
+                            {criminals.slice(0, 8).map((c, i) => (
+                              <button
+                                key={i}
+                                className="quick-suspect-chip"
+                                onClick={() => setSelectedDossierEntity(c.entity_id)}
+                              >
+                                <User size={11} color="#a1a1aa" />
+                                <span>{c.name}</span>
+                                <span className="chip-badge">{c.threat_level}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
+              </div>
+
+              {/* Right: Suspect Search Directory Pane */}
+              <div className="dossier-selector-pane">
+                <div className="dossier-selector-header">
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--foreground)', letterSpacing: '0.6px' }}>
+                      SUSPECT DIRECTORY
+                    </span>
+                    <span className="sidebar-item-badge">{displayedDossierSuspects.length}</span>
+                  </div>
+                  <div className="criminal-search-box" style={{ maxWidth: '100%' }}>
+                    <Search size={14} color="#71717a" />
+                    <input
+                      type="text"
+                      placeholder="Filter suspects..."
+                      value={dossierSearch}
+                      onChange={(e) => setDossierSearch(e.target.value)}
+                    />
+                    {dossierSearch && (
+                      <button
+                        onClick={() => setDossierSearch('')}
+                        style={{ background: 'transparent', border: 'none', color: '#71717a', cursor: 'pointer' }}
+                        title="Clear filter"
+                      >
+                        <X size={12} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="dossier-selector-list">
+                  {displayedDossierSuspects.map((s, idx) => (
+                    <div
+                      key={idx}
+                      className={`dossier-selector-item ${selectedDossierEntity === s.entity_id ? 'active' : ''}`}
+                      onClick={() => setSelectedDossierEntity(s.entity_id)}
+                    >
+                      <div>
+                        <div className="dossier-item-name">{s.name}</div>
+                        <div className="dossier-item-sub">
+                          {s.connection_count} links • {s.fir_count} FIRs
+                        </div>
+                      </div>
+                      <span className={`threat-badge ${getThreatClass(s.threat_level)}`} style={{ fontSize: '8px', padding: '2px 6px' }}>
+                        {s.threat_level}
+                      </span>
+                    </div>
+                  ))}
+                  {displayedDossierSuspects.length === 0 && (
+                    <div style={{ padding: '16px 12px', fontSize: '11px', color: 'var(--muted-foreground)', textAlign: 'center' }}>
+                      No suspects match your filter.
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
 
           {/* VIEW: TOPOLOGY */}
-          {activeView === 'topology' && (
-            <div className="glass-card" style={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 10, background: 'rgba(10, 10, 14, 0.85)', padding: '8px 14px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.15)' }}>
-                <h3 style={{ fontSize: '12px', fontWeight: 800, color: '#ffffff' }}>NETWORK GRAPH TOPOLOGY</h3>
-                <p style={{ fontSize: '10px', color: '#a1a1aa', fontFamily: 'JetBrains Mono' }}>
-                  Interactive Cytoscape Visual Canvas • {networkData.elements.length} Elements
-                </p>
-              </div>
-              <NetworkGraph
-                elements={networkData.elements}
-                onSelectNode={(id) => setSelectedEntityId(id)}
-                selectedEntityId={focusedEntityId || selectedEntityId}
-                isCompact={false}
-              />
-            </div>
-          )}
+          {activeView === 'topology' && (() => {
+            // Redirect: topology view now uses the floating GraphWindow (maximizable)
+            // Auto-open and go back to previous view
+            if (!isFloatingMapOpen) {
+              setTimeout(() => {
+                setIsFloatingMapOpen(true);
+                setIsFloatingMapMinimized(false);
+                setActiveView(previousView || 'threats');
+              }, 0);
+            }
+            return null;
+          })()}
         </div>
       </div>
 
-      {/* Floatable Portable Network Map Window in the bottom right corner */}
-      <FloatingMapWindow
-        elements={networkData.elements}
-        onSelectNode={(id) => setSelectedEntityId(id)}
-        selectedEntityId={focusedEntityId || selectedEntityId}
-      />
+      {/* Portable Floating Network Graph Window */}
+      {isFloatingMapOpen && (
+        <GraphWindow
+          isOpen={isFloatingMapOpen}
+          onClose={() => setIsFloatingMapOpen(false)}
+          targetEntity={floatingMapEntity || focusedEntityId}
+          onOpenDossier={(id) => openDossier(id)}
+          isMinimized={isFloatingMapMinimized}
+          setIsMinimized={setIsFloatingMapMinimized}
+        />
+      )}
 
       {/* Modals */}
-      <EntityDossierModal
-        entityId={selectedEntityId}
-        onClose={() => setSelectedEntityId(null)}
-      />
-
       <FileUploadModal
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
