@@ -24,7 +24,36 @@ def get_db():
 
 def init_db():
     """
-    Initializes all database tables in PostgreSQL.
+    Initializes all database tables in PostgreSQL and provisions the default administrator account.
     """
+    import os
     import app.models  # noqa: F401
+    from app.models.audit import User
+    from app.auth.password import hash_password
+
     Base.metadata.create_all(bind=engine)
+
+    db = SessionLocal()
+    try:
+        # Check if default admin exists
+        admin = db.query(User).filter(User.username == "admin").first()
+        if not admin:
+            initial_pw = os.getenv("INITIAL_ADMIN_PASSWORD", "Admin@Secure2026!")
+            admin = User(
+                username="admin",
+                email="admin@sih2026.gov.in",
+                full_name="Chief System Administrator",
+                password_hash=hash_password(initial_pw),
+                role="ADMIN",
+                is_active=True,
+                is_locked=False,
+                failed_login_attempts=0
+            )
+            db.add(admin)
+            db.commit()
+            print("Successfully provisioned initial Administrator (username: admin)")
+    except Exception as e:
+        db.rollback()
+        print("init_db admin seeder note:", e)
+    finally:
+        db.close()

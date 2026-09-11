@@ -2,13 +2,18 @@
 FastAPI Analytics & Threat Alerts Router
 Provides endpoints for real-time Financial Structuring, Burner SIM, and ANPR Co-location alerts.
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import Dict, Any, List
 from app.analytics.smurfing_detector import detect_financial_structuring
 from app.analytics.burner_detector import detect_burner_phones
 from app.analytics.co_location_detector import detect_vehicle_colocations
+from app.auth.dependencies import require_permission
 
-router = APIRouter(prefix="/analytics", tags=["Threat Analytics"])
+router = APIRouter(
+    prefix="/analytics",
+    tags=["Threat Analytics"],
+    dependencies=[Depends(require_permission("intelligence:read"))]
+)
 
 
 @router.get("/alerts")
