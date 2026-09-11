@@ -138,22 +138,35 @@ body {
 }
 
 .brand-logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 6px;
-  background: var(--secondary);
-  border: 1px solid var(--border);
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--foreground);
+  padding: 0;
   box-shadow: none;
 }
 
+.emblem-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Dark mode: turn black vector art into crisp white */
+  filter: brightness(0) invert(1);
+  transition: filter 0.25s ease;
+}
+
 [data-theme="light"] .brand-logo {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.2);
-  color: #ffffff;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+[data-theme="light"] .emblem-logo-img {
+  /* Light mode: turn vector art into sharp dark/navy */
+  filter: brightness(0) saturate(100%);
 }
 
 .brand-title {

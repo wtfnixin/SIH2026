@@ -298,7 +298,11 @@ export default function App() {
             {isSidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
           </button>
           <div className="brand-logo">
-            <Shield size={22} />
+            <img 
+              src="/Emblem_of_India_no_text.svg" 
+              alt="Government of India Emblem" 
+              className="emblem-logo-img"
+            />
           </div>
           <div>
             <h1 className="brand-title">CRIMINAL NETWORK INTELLIGENCE SYSTEM</h1>
