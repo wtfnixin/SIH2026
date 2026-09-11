@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Lock, User, AlertTriangle, KeyRound, Loader2, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, AlertTriangle, Loader2, Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginModal() {
@@ -10,10 +10,16 @@ export default function LoginModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [localError, setLocalError] = useState('');
 
+  const handleQuickLogin = (u, p) => {
+    setUsername(u);
+    setPassword(p);
+    setLocalError('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username.trim() || !password) {
-      setLocalError('Please enter both Officer ID/Username and Password.');
+      setLocalError('Please enter both Officer ID and Password.');
       return;
     }
 
@@ -30,110 +36,260 @@ export default function LoginModal() {
   const displayedError = localError || authError;
 
   return (
-    <div className="login-modal-overlay">
-      <div className="login-modal-card glass-card">
-        {/* Top Header Badge */}
-        <div className="login-terminal-header">
-          <div className="login-emblem-badge">
-            <Shield size={28} color="#38bdf8" />
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: '100vh',
+      background: 'rgba(9, 9, 11, 0.88)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 999999,
+      padding: '20px',
+      fontFamily: "'Inter', sans-serif"
+    }}>
+      <div style={{
+        maxWidth: '390px',
+        width: '100%',
+        borderRadius: '16px',
+        background: '#111114',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px -10px rgba(56, 189, 248, 0.15)',
+        padding: '32px 28px 28px 28px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '22px',
+        color: '#fafafa',
+        position: 'relative'
+      }}>
+        {/* Header with High-Visibility National Emblem */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          gap: '12px'
+        }}>
+          <div style={{
+            width: '68px',
+            height: '68px',
+            borderRadius: '16px',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04))',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '9px'
+          }}>
+            <img
+              src="/Emblem_of_India_no_text.svg"
+              alt="Government of India Emblem"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                filter: 'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(255, 255, 255, 0.4))'
+              }}
+            />
           </div>
-          <div className="login-header-text">
-            <h2 className="login-title">CRIMINAL INVESTIGATION COMMAND CENTER</h2>
-            <p className="login-subtitle">OFFICER AUTHENTICATION & ACCESS GATEWAY</p>
+
+          <div>
+            <h1 style={{
+              fontSize: '17px',
+              fontWeight: 700,
+              letterSpacing: '-0.01em',
+              color: '#ffffff',
+              margin: 0
+            }}>
+              Criminal Network Intelligence
+            </h1>
+            <p style={{
+              fontSize: '12px',
+              color: '#a1a1aa',
+              margin: '4px 0 0 0'
+            }}>
+              Sign in with your officer credentials
+            </p>
           </div>
         </div>
 
-        <div className="login-restricted-pill">
-          <ShieldCheck size={12} color="#34d399" />
-          <span>RESTRICTED LAW ENFORCEMENT & INTELLIGENCE ACCESS ONLY</span>
-        </div>
-
-        {/* Error Alert Box */}
+        {/* Error Alert */}
         {displayedError && (
-          <div className="login-error-box">
-            <AlertTriangle size={16} color="#f87171" className="flex-shrink-0" />
-            <div className="login-error-text">
-              <span>{displayedError}</span>
-            </div>
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.12)',
+            border: '1px solid rgba(239, 68, 68, 0.25)',
+            borderRadius: '8px',
+            padding: '9px 12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: '#fca5a5',
+            fontSize: '12px'
+          }}>
+            <AlertTriangle size={15} color="#f87171" style={{ flexShrink: 0 }} />
+            <span>{displayedError}</span>
           </div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="login-input-group">
-            <label className="login-label">
-              <User size={13} color="#94a3b8" />
-              <span>OFFICER BADGE ID / USERNAME</span>
+        {/* Minimal Form */}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label style={{
+              fontSize: '11px',
+              fontWeight: 600,
+              color: '#a1a1aa',
+              letterSpacing: '0.02em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px'
+            }}>
+              <User size={12} color="#71717a" />
+              <span>Officer ID / Username</span>
             </label>
-            <div className="login-input-wrapper">
-              <input
-                type="text"
-                autoComplete="username"
-                autoFocus
-                className="login-input"
-                placeholder="e.g. admin or officer_sharma"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={isSubmitting}
-              />
-            </div>
+            <input
+              type="text"
+              autoComplete="username"
+              autoFocus
+              style={{
+                width: '100%',
+                background: '#18181b',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '8px',
+                padding: '10px 12px',
+                color: '#ffffff',
+                fontSize: '13px',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
+              placeholder="e.g. admin"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={isSubmitting}
+            />
           </div>
 
-          <div className="login-input-group">
-            <label className="login-label">
-              <Lock size={13} color="#94a3b8" />
-              <span>ACCESS PASSPHRASE</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label style={{
+              fontSize: '11px',
+              fontWeight: 600,
+              color: '#a1a1aa',
+              letterSpacing: '0.02em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px'
+            }}>
+              <Lock size={12} color="#71717a" />
+              <span>Password</span>
             </label>
-            <div className="login-input-wrapper">
+            <div style={{ position: 'relative' }}>
               <input
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
-                className="login-input"
-                placeholder="Enter authorized credential"
+                style={{
+                  width: '100%',
+                  background: '#18181b',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  borderRadius: '8px',
+                  padding: '10px 38px 10px 12px',
+                  color: '#ffffff',
+                  fontSize: '13px',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+                placeholder="••••••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isSubmitting}
               />
               <button
                 type="button"
-                className="login-toggle-pw"
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#71717a',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex={-1}
               >
-                {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
           </div>
 
+          {/* Clean Quick Demo Access Option */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '2px 0'
+          }}>
+            <button
+              type="button"
+              onClick={() => handleQuickLogin('admin', 'Admin@Secure2026!')}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#38bdf8',
+                fontSize: '11px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                padding: 0,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <Sparkles size={12} color="#38bdf8" />
+              <span>Fill Demo Credentials (Admin)</span>
+            </button>
+          </div>
+
           <button
             type="submit"
-            className="login-submit-btn"
             disabled={isSubmitting}
+            style={{
+              marginTop: '4px',
+              height: '42px',
+              borderRadius: '8px',
+              background: '#0284c7',
+              border: 'none',
+              color: '#ffffff',
+              fontSize: '13px',
+              fontWeight: 600,
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'background 0.15s ease'
+            }}
           >
             {isSubmitting ? (
               <>
                 <Loader2 size={16} className="animate-spin" />
-                <span>VERIFYING CREDENTIALS...</span>
+                <span>Signing in...</span>
               </>
             ) : (
               <>
-                <KeyRound size={16} />
-                <span>AUTHENTICATE & ENTER SYSTEM</span>
+                <span>Sign In</span>
+                <ArrowRight size={15} />
               </>
             )}
           </button>
         </form>
-
-        {/* Legal & Security Compliance Warning */}
-        <div className="login-security-notice">
-          <div className="notice-header">
-            <AlertTriangle size={11} color="#eab308" />
-            <span>OFFICIAL SURVEILLANCE & AUDIT NOTICE</span>
-          </div>
-          <p className="notice-body">
-            Access to this intelligence system is monitored and recorded. All database queries, entity dossier inspections, and wiretap analytics are linked to your badge credentials and logged into tamper-resistant audit trails under the IT Act 2000.
-          </p>
-        </div>
       </div>
     </div>
   );

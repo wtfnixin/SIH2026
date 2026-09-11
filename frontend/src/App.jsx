@@ -1615,6 +1615,9 @@ export default function App() {
           onOpenFullScreen={() => setActiveView('sathi')}
         />
       )}
+
+      {/* Mandatory Officer Authentication Gateway Modal */}
+      {!isAuthenticated && !authLoading && <LoginModal />}
     </div>
   );
 }

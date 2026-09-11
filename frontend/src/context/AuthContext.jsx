@@ -2,6 +2,10 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 
 const AuthContext = createContext(null);
 
+const API_BASE = (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+  ? `${window.location.protocol}//${window.location.hostname}:8000`
+  : '';
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
@@ -10,6 +14,7 @@ export function AuthProvider({ children }) {
 
   // Authenticated fetch wrapper that attaches Bearer token & credentials
   const authFetch = useCallback(async (url, options = {}) => {
+    const fullUrl = url.startsWith('http') ? url : `${API_BASE}${url.startsWith('/') ? '' : '/'}${url}`;
     const headers = {
       ...(options.headers || {}),
     };
@@ -24,12 +29,12 @@ export function AuthProvider({ children }) {
       credentials: 'include'
     };
 
-    let response = await fetch(url, config);
+    let response = await fetch(fullUrl, config);
 
     // If 401, try refreshing token once and retrying
     if (response.status === 401 && accessToken) {
       try {
-        const refreshRes = await fetch('/api/v1/auth/refresh', {
+        const refreshRes = await fetch(`${API_BASE}/api/v1/auth/refresh`, {
           method: 'POST',
           credentials: 'include'
         });
@@ -41,7 +46,7 @@ export function AuthProvider({ children }) {
 
           // Retry original request with new token
           headers['Authorization'] = `Bearer ${refreshData.access_token}`;
-          return await fetch(url, { ...options, headers, credentials: 'include' });
+          return await fetch(fullUrl, { ...options, headers, credentials: 'include' });
         } else {
           // Refresh failed - log out
           setUser(null);
@@ -59,7 +64,7 @@ export function AuthProvider({ children }) {
   // Initial check on mount: check if active refresh cookie exists
   const checkSession = useCallback(async () => {
     try {
-      const res = await fetch('/api/v1/auth/refresh', {
+      const res = await fetch(`${API_BASE}/api/v1/auth/refresh`, {
         method: 'POST',
         credentials: 'include'
       });
@@ -84,7 +89,7 @@ export function AuthProvider({ children }) {
   const login = async (username, password) => {
     setAuthError(null);
     try {
-      const res = await fetch('/api/v1/auth/login', {
+      const res = await fetch(`${API_BASE}/api/v1/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -114,7 +119,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       if (accessToken) {
-        await fetch('/api/v1/auth/logout', {
+        await fetch(`${API_BASE}/api/v1/auth/logout`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${accessToken}` },
           credentials: 'include'
