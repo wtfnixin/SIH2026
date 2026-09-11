@@ -26,6 +26,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import cytoscape from 'cytoscape';
 import cola from 'cytoscape-cola';
+import { useAuth } from '../context/AuthContext';
 import {
   GripHorizontal, Maximize2, Minimize2, Minus, X,
   RotateCcw, ZoomIn, ZoomOut, Network, Info,
@@ -38,7 +39,6 @@ try { cytoscape.use(cola); } catch (_) {}
 // ── Constants ──────────────────────────────────────────────────────────────
 const MAX_NODES = 30;
 const ZOOM_FACTOR = 1.3;
-const API_BASE = 'http://localhost:8000/api/v1';
 
 // ── Node type palette ──────────────────────────────────────────────────────
 const TYPE = {
@@ -250,6 +250,7 @@ export default function GraphWindow({
   isMinimized: propMin,
   setIsMinimized: propSetMin,
 }) {
+  const { authFetch } = useAuth();
   // ── Window state ─────────────────────────────────────────────────────────
   const [localMin, setLocalMin] = useState(false);
   const isMin    = propMin    !== undefined ? propMin    : localMin;
@@ -283,11 +284,11 @@ export default function GraphWindow({
     setApiData(null);
     setSelected(null);
 
-    fetch(`${API_BASE}/graph/dossier-network/${encodeURIComponent(targetEntity)}`)
+    authFetch(`/api/v1/graph/dossier-network/${encodeURIComponent(targetEntity)}`)
       .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then(d => { setApiData(d); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });
-  }, [targetEntity, isOpen]);
+  }, [targetEntity, isOpen, authFetch]);
 
   // ── Build & load graph when data arrives ─────────────────────────────────
   useEffect(() => {

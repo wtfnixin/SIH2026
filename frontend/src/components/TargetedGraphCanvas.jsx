@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import cytoscape from 'cytoscape';
+import { useAuth } from '../context/AuthContext';
 import { 
   ArrowLeft, 
   X, 
@@ -10,7 +11,7 @@ import {
   Phone, 
   Car, 
   MapPin, 
-  FileSpreadsheet,
+  FileSpreadsheet, 
   ZoomIn, 
   ZoomOut, 
   Maximize2,
@@ -25,6 +26,7 @@ export default function TargetedGraphCanvas({
   onBackToDashboard, 
   onOpenDossier 
 }) {
+  const { authFetch } = useAuth();
   const containerRef = useRef(null);
   const cyRef = useRef(null);
 
@@ -58,7 +60,7 @@ export default function TargetedGraphCanvas({
     if (!targetEntity) return;
     setLoading(true);
 
-    fetch(`http://localhost:8000/api/v1/graph/dossier-network/${encodeURIComponent(targetEntity)}`)
+    authFetch(`/api/v1/graph/dossier-network/${encodeURIComponent(targetEntity)}`)
       .then(res => {
         if (!res.ok) throw new Error("Not found in ego-network");
         return res.json();

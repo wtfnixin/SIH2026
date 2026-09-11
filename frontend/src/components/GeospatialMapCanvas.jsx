@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useAuth } from '../context/AuthContext';
 import {
   MapContainer,
   TileLayer,
@@ -252,6 +253,7 @@ function TacticalMapControls({ activeTargetCoords }) {
    MAIN COMPONENT
 ────────────────────────────────────────── */
 export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, initialVehiclePlate = null }) {
+  const { authFetch } = useAuth();
   const [gantries, setGantries] = useState([]);
   const [convoys, setConvoys] = useState([]);
   const [suspectVehicles, setSuspectVehicles] = useState([]);
@@ -334,9 +336,9 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
   // Fetch initial geospatial data & suspect vehicle catalog
   useEffect(() => {
     Promise.all([
-      fetch('http://localhost:8000/api/v1/geo/anpr-sightings').then(r => r.json()),
-      fetch('http://localhost:8000/api/v1/geo/convoys').then(r => r.json()),
-      fetch('http://localhost:8000/api/v1/geo/vehicles').then(r => r.json())
+      authFetch('/api/v1/geo/anpr-sightings').then(r => r.json()),
+      authFetch('/api/v1/geo/convoys').then(r => r.json()),
+      authFetch('/api/v1/geo/vehicles').then(r => r.json())
     ])
       .then(([g, c, v]) => {
         setGantries(g.gantries || []);
@@ -345,7 +347,7 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [authFetch]);
 
   // Fetch trajectory for selected plate
   const fetchTrajectory = useCallback((plate) => {
@@ -353,7 +355,7 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
     setLoadingTrajectory(true);
     setIsDropdownOpen(false);
     setSelectedStopIdx(null);
-    fetch(`http://localhost:8000/api/v1/geo/vehicle-trajectory/${encodeURIComponent(plate.trim())}`)
+    authFetch(`/api/v1/geo/vehicle-trajectory/${encodeURIComponent(plate.trim())}`)
       .then(r => r.json())
       .then(data => {
         setActiveVehicle(data.vehicle);
@@ -366,7 +368,7 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
         }
       })
       .catch(() => setLoadingTrajectory(false));
-  }, []);
+  }, [authFetch]);
 
   useEffect(() => {
     if (initialVehiclePlate) fetchTrajectory(initialVehiclePlate);

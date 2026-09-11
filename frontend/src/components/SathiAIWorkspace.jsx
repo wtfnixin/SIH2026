@@ -29,6 +29,7 @@ import {
   Separator,
   ScrollArea
 } from './ui';
+import { useAuth } from '../context/AuthContext';
 
 export default function SathiAIWorkspace({
   theme = 'light',
@@ -40,6 +41,7 @@ export default function SathiAIWorkspace({
   chatHistory: propChatHistory,
   setChatHistory: propSetChatHistory
 }) {
+  const { authFetch } = useAuth();
   const [workspaceTheme, setWorkspaceTheme] = useState(theme || 'light');
 
   useEffect(() => {
@@ -97,7 +99,7 @@ export default function SathiAIWorkspace({
 
     setLoading(true);
 
-    fetch('http://localhost:8000/api/v1/copilot/chat', {
+    authFetch('/api/v1/copilot/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -3,6 +3,7 @@ Argon2id & Bcrypt Password Security & Policy Module.
 Handles cryptographic hashing and validation for investigator credentials.
 """
 from typing import Tuple
+import bcrypt
 
 try:
     from argon2 import PasswordHasher, Type
@@ -16,8 +17,6 @@ try:
     )
     _USE_ARGON2 = True
 except ImportError:
-    from passlib.context import CryptContext
-    _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     _USE_ARGON2 = False
 
 # Common insecure / predictable passwords to block
@@ -40,7 +39,9 @@ def hash_password(plain_password: str) -> str:
         raise ValueError("Password cannot be empty")
     if _USE_ARGON2:
         return _hasher.hash(plain_password)
-    return _pwd_context.hash(plain_password)
+    # Direct bcrypt
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(plain_password.encode("utf-8")[:72], salt).decode("utf-8")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -54,9 +55,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         if _USE_ARGON2 and hashed_password.startswith("$argon2"):
             return _hasher.verify(hashed_password, plain_password)
         else:
-            from passlib.context import CryptContext
-            ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
-            return ctx.verify(plain_password, hashed_password)
+            return bcrypt.checkpw(plain_password.encode("utf-8")[:72], hashed_password.encode("utf-8"))
     except Exception:
         return False
 

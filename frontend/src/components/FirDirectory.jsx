@@ -18,6 +18,7 @@ import {
   Input,
   ScrollArea
 } from './ui';
+import { useAuth } from '../context/AuthContext';
 
 export default function FirDirectory({
   theme = 'dark',
@@ -25,6 +26,7 @@ export default function FirDirectory({
   onInvestigateGraph
 }) {
   const isLight = theme === 'light';
+  const { authFetch } = useAuth();
 
   const [firsData, setFirsData] = useState([]);
   const [stations, setStations] = useState([]);
@@ -38,7 +40,7 @@ export default function FirDirectory({
 
   const fetchFirs = () => {
     setLoading(true);
-    fetch('http://localhost:8000/api/v1/entities/firs?limit=150')
+    authFetch('/api/v1/entities/firs?limit=150')
       .then(res => res.json())
       .then(data => {
         setFirsData(data.firs || []);

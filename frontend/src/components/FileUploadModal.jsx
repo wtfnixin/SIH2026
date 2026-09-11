@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { 
   UploadCloud, 
   X, 
@@ -92,6 +93,7 @@ DETAILS: Multiple burner phones synchronized with NCR cell towers. Structured tr
 };
 
 export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
+  const { authFetch } = useAuth();
   // Flow State: 'mode_select' | 'form'
   const [flowStep, setFlowStep] = useState('mode_select');
   // Case Mode: 'new_case' | 'existing_case'
@@ -154,7 +156,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
   useEffect(() => {
     if (isOpen) {
       handleReset();
-      fetch('http://localhost:8000/api/v1/entities/criminals?limit=250')
+      authFetch('/api/v1/entities/criminals?limit=250')
         .then(res => res.json())
         .then(data => {
           const list = data?.criminals || [];
@@ -172,7 +174,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
     } else {
       handleReset();
     }
-  }, [isOpen]);
+  }, [isOpen, authFetch]);
 
   // Click outside listener: close search dropdown if clicked anywhere outside dropdownRef
   useEffect(() => {
@@ -317,7 +319,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
     const timer2 = setTimeout(() => setPipelineStep(3), 1200);
 
     try {
-      const res = await fetch('http://localhost:8000/api/v1/ingest/upload', {
+      const res = await authFetch('/api/v1/ingest/upload', {
         method: 'POST',
         body: formData
       });

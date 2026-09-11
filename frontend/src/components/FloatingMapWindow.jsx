@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { 
   GripHorizontal, 
   Maximize2, 
@@ -22,6 +23,7 @@ export default function FloatingMapWindow({
   isMinimized: propMinimized,
   setIsMinimized: propSetMinimized
 }) {
+  const { authFetch } = useAuth();
   const [localMinimized, setLocalMinimized] = useState(false);
   const isMinimized = propMinimized !== undefined ? propMinimized : localMinimized;
   const setIsMinimized = propSetMinimized !== undefined ? propSetMinimized : setLocalMinimized;
@@ -43,7 +45,7 @@ export default function FloatingMapWindow({
       return;
     }
     setLoadingEgo(true);
-    fetch(`http://localhost:8000/api/v1/graph/dossier-network/${encodeURIComponent(targetEntity)}`)
+    authFetch(`/api/v1/graph/dossier-network/${encodeURIComponent(targetEntity)}`)
       .then(res => {
         if (!res.ok) throw new Error('Ego network error');
         return res.json();

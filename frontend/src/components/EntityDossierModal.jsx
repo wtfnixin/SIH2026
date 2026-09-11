@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { X, User, Phone, Car, MapPin, FileText, Share2, ShieldAlert, ArrowUpRight, ArrowDownLeft, DollarSign, Network } from 'lucide-react';
 
 export default function EntityDossierModal({ entityId, onClose, onViewOnGraph }) {
+  const { authFetch } = useAuth();
   const [dossier, setDossier] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
@@ -9,7 +11,7 @@ export default function EntityDossierModal({ entityId, onClose, onViewOnGraph })
   useEffect(() => {
     if (!entityId) return;
     setLoading(true);
-    fetch(`http://localhost:8000/api/v1/entities/dossier/${encodeURIComponent(entityId)}`)
+    authFetch(`/api/v1/entities/dossier/${encodeURIComponent(entityId)}`)
       .then(res => res.json())
       .then(data => {
         setDossier(data);
@@ -19,7 +21,7 @@ export default function EntityDossierModal({ entityId, onClose, onViewOnGraph })
         console.error('Dossier fetch error:', err);
         setLoading(false);
       });
-  }, [entityId]);
+  }, [entityId, authFetch]);
 
   if (!entityId) return null;
 

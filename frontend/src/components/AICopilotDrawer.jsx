@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { Bot, Send, X, Sparkles, ArrowRight, CornerDownLeft, Maximize2 } from 'lucide-react';
 
 export default function AICopilotDrawer({
@@ -9,6 +10,7 @@ export default function AICopilotDrawer({
   chatHistory: propChatHistory,
   setChatHistory: propSetChatHistory
 }) {
+  const { authFetch } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [inputMsg, setInputMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,7 +51,7 @@ export default function AICopilotDrawer({
 
     setLoading(true);
 
-    fetch('http://localhost:8000/api/v1/copilot/chat', {
+    authFetch('/api/v1/copilot/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -7,9 +7,22 @@ const API_BASE = (typeof window !== 'undefined' && (window.location.hostname ===
   : '';
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('sih_user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [accessToken, setAccessToken] = useState(() => {
+    try {
+      return localStorage.getItem('sih_access_token') || null;
+    } catch {
+      return null;
+    }
+  });
+  const [isLoading, setIsLoading] = useState(!user);
   const [authError, setAuthError] = useState(null);
 
   // Authenticated fetch wrapper that attaches Bearer token & credentials
@@ -19,8 +32,9 @@ export function AuthProvider({ children }) {
       ...(options.headers || {}),
     };
 
-    if (accessToken) {
-      headers['Authorization'] = `Bearer ${accessToken}`;
+    const token = accessToken || (typeof localStorage !== 'undefined' ? localStorage.getItem('sih_access_token') : null);
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
 
     const config = {
@@ -32,7 +46,7 @@ export function AuthProvider({ children }) {
     let response = await fetch(fullUrl, config);
 
     // If 401, try refreshing token once and retrying
-    if (response.status === 401 && accessToken) {
+    if (response.status === 401 && token) {
       try {
         const refreshRes = await fetch(`${API_BASE}/api/v1/auth/refresh`, {
           method: 'POST',
@@ -43,6 +57,10 @@ export function AuthProvider({ children }) {
           const refreshData = await refreshRes.json();
           setAccessToken(refreshData.access_token);
           setUser(refreshData.user);
+          try {
+            localStorage.setItem('sih_access_token', refreshData.access_token);
+            localStorage.setItem('sih_user', JSON.stringify(refreshData.user));
+          } catch (e) {}
 
           // Retry original request with new token
           headers['Authorization'] = `Bearer ${refreshData.access_token}`;
@@ -51,10 +69,18 @@ export function AuthProvider({ children }) {
           // Refresh failed - log out
           setUser(null);
           setAccessToken(null);
+          try {
+            localStorage.removeItem('sih_access_token');
+            localStorage.removeItem('sih_user');
+          } catch (e) {}
         }
       } catch (err) {
         setUser(null);
         setAccessToken(null);
+        try {
+          localStorage.removeItem('sih_access_token');
+          localStorage.removeItem('sih_user');
+        } catch (e) {}
       }
     }
 
@@ -73,6 +99,10 @@ export function AuthProvider({ children }) {
         const data = await res.json();
         setAccessToken(data.access_token);
         setUser(data.user);
+        try {
+          localStorage.setItem('sih_access_token', data.access_token);
+          localStorage.setItem('sih_user', JSON.stringify(data.user));
+        } catch (e) {}
       }
     } catch (err) {
       // No active session
@@ -106,6 +136,10 @@ export function AuthProvider({ children }) {
 
       setAccessToken(data.access_token);
       setUser(data.user);
+      try {
+        localStorage.setItem('sih_access_token', data.access_token);
+        localStorage.setItem('sih_user', JSON.stringify(data.user));
+      } catch (e) {}
       setAuthError(null);
       return { success: true, user: data.user };
     } catch (err) {
@@ -118,10 +152,11 @@ export function AuthProvider({ children }) {
   // Logout handler
   const logout = async () => {
     try {
-      if (accessToken) {
+      const token = accessToken || (typeof localStorage !== 'undefined' ? localStorage.getItem('sih_access_token') : null);
+      if (token) {
         await fetch(`${API_BASE}/api/v1/auth/logout`, {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${accessToken}` },
+          headers: { 'Authorization': `Bearer ${token}` },
           credentials: 'include'
         });
       }
@@ -130,6 +165,10 @@ export function AuthProvider({ children }) {
     } finally {
       setUser(null);
       setAccessToken(null);
+      try {
+        localStorage.removeItem('sih_access_token');
+        localStorage.removeItem('sih_user');
+      } catch (e) {}
     }
   };
 
