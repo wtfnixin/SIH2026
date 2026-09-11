@@ -146,7 +146,7 @@ def load_all_to_postgres(
                 inc_date = None
             f_objs.append(FirRecord(
                 fir_no=f["fir_no"],
-                police_station=f.get("police_station", "Central PS"),
+                police_station=f.get("police_station") or "Central PS, Bengaluru",
                 incident_date=inc_date,
                 crime_category=f.get("crime_category", "GENERAL CRIME"),
                 status=f.get("status", "ACTIVE INVESTIGATION"),

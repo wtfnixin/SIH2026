@@ -1,0 +1,111 @@
+vehicle_number,registered_owner,location,timestamp,camera_id
+KA01AZ5555,Siddharth Rao,"Connaught Place, Delhi",2026-09-14 19:39:00,ANPR_DEL_CAM_05
+TS09EX1001,Devendra Varma,"Vasant Kunj, Delhi",2026-09-14 10:15:00,ANPR_DEL_CAM_04
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-10 21:18:00,ANPR_DEL_CAM_08
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-12 06:20:00,ANPR_DEL_CAM_03
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-10 00:11:00,ANPR_DEL_CAM_02
+KA01AZ5555,Siddharth Rao,"Aerocity, Delhi",2026-09-17 08:32:00,ANPR_DEL_CAM_15
+TS09EX1001,Devendra Varma,"Vasant Kunj, Delhi",2026-09-11 04:21:00,ANPR_DEL_CAM_13
+TS07AB2002,Rajesh Khurana,"Vasant Kunj, Delhi",2026-09-19 09:44:00,ANPR_DEL_CAM_13
+TS10CD3003,Vikram Malhotra,"Koramangala, Bengaluru",2026-09-11 08:49:00,ANPR_DEL_CAM_12
+DL01XY9999,Manish Singhania,"Koramangala, Bengaluru",2026-09-10 11:30:00,ANPR_DEL_CAM_14
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-18 06:59:00,ANPR_DEL_CAM_02
+KA01AZ5555,Siddharth Rao,"Aerocity, Delhi",2026-09-14 23:36:00,ANPR_DEL_CAM_10
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-07 06:42:00,ANPR_DEL_CAM_16
+KA01AZ5555,Siddharth Rao,"Vasant Kunj, Delhi",2026-09-19 21:01:00,ANPR_DEL_CAM_02
+TS10CD3003,Vikram Malhotra,"Aerocity, Delhi",2026-09-16 21:07:00,ANPR_DEL_CAM_19
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-13 09:00:00,ANPR_DEL_CAM_19
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-18 21:19:00,ANPR_DEL_CAM_09
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-13 20:17:00,ANPR_DEL_CAM_16
+KA01AZ5555,Siddharth Rao,"Vasant Kunj, Delhi",2026-09-14 20:40:00,ANPR_DEL_CAM_12
+TS09EX1001,Devendra Varma,"Vasant Kunj, Delhi",2026-09-05 13:05:00,ANPR_DEL_CAM_12
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-13 16:37:00,ANPR_DEL_CAM_02
+TS09EX1001,Devendra Varma,"Vasant Kunj, Delhi",2026-09-06 00:52:00,ANPR_DEL_CAM_16
+DL01XY9999,Manish Singhania,"Koramangala, Bengaluru",2026-09-14 11:09:00,ANPR_DEL_CAM_19
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-19 10:28:00,ANPR_DEL_CAM_17
+TS10CD3003,Vikram Malhotra,"Vasant Kunj, Delhi",2026-09-11 20:54:00,ANPR_DEL_CAM_06
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-05 22:07:00,ANPR_DEL_CAM_08
+DL01XY9999,Manish Singhania,"Koramangala, Bengaluru",2026-09-11 08:48:00,ANPR_DEL_CAM_03
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-09 17:58:00,ANPR_DEL_CAM_07
+DL01XY9999,Manish Singhania,"Connaught Place, Delhi",2026-09-15 19:37:00,ANPR_DEL_CAM_17
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-12 11:13:00,ANPR_DEL_CAM_09
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-19 16:56:00,ANPR_DEL_CAM_08
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-16 18:36:00,ANPR_DEL_CAM_17
+TS10CD3003,Vikram Malhotra,"Vasant Kunj, Delhi",2026-09-20 09:57:00,ANPR_DEL_CAM_12
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-17 09:08:00,ANPR_DEL_CAM_05
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-11 14:58:00,ANPR_DEL_CAM_05
+TS07AB2002,Rajesh Khurana,"Connaught Place, Delhi",2026-09-15 21:33:00,ANPR_DEL_CAM_11
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-10 01:56:00,ANPR_DEL_CAM_16
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-13 12:16:00,ANPR_DEL_CAM_04
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-12 21:19:00,ANPR_DEL_CAM_17
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-06 19:32:00,ANPR_DEL_CAM_15
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-10 22:36:00,ANPR_DEL_CAM_10
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-14 10:19:00,ANPR_DEL_CAM_15
+TS10CD3003,Vikram Malhotra,"Aerocity, Delhi",2026-09-10 07:34:00,ANPR_DEL_CAM_15
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-19 06:08:00,ANPR_DEL_CAM_07
+DL01XY9999,Manish Singhania,"Connaught Place, Delhi",2026-09-16 18:34:00,ANPR_DEL_CAM_07
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-07 18:42:00,ANPR_DEL_CAM_10
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-12 18:07:00,ANPR_DEL_CAM_08
+KA01AZ5555,Siddharth Rao,"Aerocity, Delhi",2026-09-09 17:24:00,ANPR_DEL_CAM_06
+TS10CD3003,Vikram Malhotra,"Koramangala, Bengaluru",2026-09-11 00:55:00,ANPR_DEL_CAM_06
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-07 15:59:00,ANPR_DEL_CAM_13
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-16 12:29:00,ANPR_DEL_CAM_04
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-08 17:54:00,ANPR_DEL_CAM_13
+KA01AZ5555,Siddharth Rao,"Vasant Kunj, Delhi",2026-09-11 02:57:00,ANPR_DEL_CAM_09
+KA01AZ5555,Siddharth Rao,"Connaught Place, Delhi",2026-09-08 03:29:00,ANPR_DEL_CAM_06
+TS07AB2002,Rajesh Khurana,"Vasant Kunj, Delhi",2026-09-12 01:06:00,ANPR_DEL_CAM_09
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-14 21:18:00,ANPR_DEL_CAM_11
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-10 07:22:00,ANPR_DEL_CAM_17
+DL01XY9999,Manish Singhania,"Hitech City, Hyderabad",2026-09-20 07:22:00,ANPR_DEL_CAM_06
+TS07AB2002,Rajesh Khurana,"Connaught Place, Delhi",2026-09-16 11:11:00,ANPR_DEL_CAM_06
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-10 05:33:00,ANPR_DEL_CAM_11
+TS07AB2002,Rajesh Khurana,"Connaught Place, Delhi",2026-09-07 09:56:00,ANPR_DEL_CAM_12
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-07 11:52:00,ANPR_DEL_CAM_09
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-17 12:26:00,ANPR_DEL_CAM_01
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-08 22:58:00,ANPR_DEL_CAM_05
+TS10CD3003,Vikram Malhotra,"Connaught Place, Delhi",2026-09-19 03:22:00,ANPR_DEL_CAM_06
+TS10CD3003,Vikram Malhotra,"Vasant Kunj, Delhi",2026-09-09 13:48:00,ANPR_DEL_CAM_13
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-10 21:58:00,ANPR_DEL_CAM_17
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-17 13:14:00,ANPR_DEL_CAM_01
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-10 17:48:00,ANPR_DEL_CAM_04
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-09 05:35:00,ANPR_DEL_CAM_13
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-14 08:24:00,ANPR_DEL_CAM_10
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-10 20:43:00,ANPR_DEL_CAM_12
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-07 19:34:00,ANPR_DEL_CAM_08
+TS07AB2002,Rajesh Khurana,"Connaught Place, Delhi",2026-09-07 22:56:00,ANPR_DEL_CAM_06
+KA01AZ5555,Siddharth Rao,"Aerocity, Delhi",2026-09-14 21:45:00,ANPR_DEL_CAM_09
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-17 11:13:00,ANPR_DEL_CAM_01
+DL01XY9999,Manish Singhania,"Connaught Place, Delhi",2026-09-07 21:18:00,ANPR_DEL_CAM_03
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-09 18:57:00,ANPR_DEL_CAM_05
+TS07AB2002,Rajesh Khurana,"Connaught Place, Delhi",2026-09-15 00:11:00,ANPR_DEL_CAM_13
+TS10CD3003,Vikram Malhotra,"Aerocity, Delhi",2026-09-16 08:20:00,ANPR_DEL_CAM_19
+TS10CD3003,Vikram Malhotra,"Aerocity, Delhi",2026-09-08 16:10:00,ANPR_DEL_CAM_15
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-18 03:46:00,ANPR_DEL_CAM_18
+KA01AZ5555,Siddharth Rao,"Connaught Place, Delhi",2026-09-09 03:21:00,ANPR_DEL_CAM_06
+DL01XY9999,Manish Singhania,"Hitech City, Hyderabad",2026-09-06 00:52:00,ANPR_DEL_CAM_11
+TS10CD3003,Vikram Malhotra,"Koramangala, Bengaluru",2026-09-15 21:41:00,ANPR_DEL_CAM_06
+DL01XY9999,Manish Singhania,"Koramangala, Bengaluru",2026-09-09 08:21:00,ANPR_DEL_CAM_13
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-14 09:53:00,ANPR_DEL_CAM_07
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-13 13:56:00,ANPR_DEL_CAM_16
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-14 19:33:00,ANPR_DEL_CAM_14
+DL01XY9999,Manish Singhania,"Hitech City, Hyderabad",2026-09-12 22:40:00,ANPR_DEL_CAM_08
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-14 11:27:00,ANPR_DEL_CAM_08
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-10 21:08:00,ANPR_DEL_CAM_20
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-15 23:08:00,ANPR_DEL_CAM_20
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-05 12:01:00,ANPR_DEL_CAM_01
+TS10CD3003,Vikram Malhotra,"Koramangala, Bengaluru",2026-09-13 04:45:00,ANPR_DEL_CAM_04
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-11 14:45:00,ANPR_DEL_CAM_04
+TS10CD3003,Vikram Malhotra,"Koramangala, Bengaluru",2026-09-14 11:52:00,ANPR_DEL_CAM_15
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-16 09:01:00,ANPR_DEL_CAM_17
+DL01XY9999,Manish Singhania,"Hitech City, Hyderabad",2026-09-16 06:49:00,ANPR_DEL_CAM_19
+TS10CD3003,Vikram Malhotra,"Connaught Place, Delhi",2026-09-05 18:18:00,ANPR_DEL_CAM_14
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-09 03:48:00,ANPR_DEL_CAM_07
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-19 11:35:00,ANPR_DEL_CAM_13
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-16 16:33:00,ANPR_DEL_CAM_18
+TS10CD3003,Vikram Malhotra,"Connaught Place, Delhi",2026-09-16 21:01:00,ANPR_DEL_CAM_02
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-20 02:56:00,ANPR_DEL_CAM_16
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-15 03:59:00,ANPR_DEL_CAM_04
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-05 13:09:00,ANPR_DEL_CAM_03
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-05 20:30:00,ANPR_DEL_CAM_05
+TS10CD3003,Vikram Malhotra,"Connaught Place, Delhi",2026-09-19 08:23:00,ANPR_DEL_CAM_09
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-09 13:30:00,ANPR_DEL_CAM_08

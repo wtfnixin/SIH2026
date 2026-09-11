@@ -1,0 +1,11 @@
+POLICE FIRST INFORMATION REPORT (FIR)
+FIR No: FIR-2026-TEST-002
+Police Station: Central Crime Branch PS, Bengaluru
+Date: 15 September 2026
+
+Incident Narrative:
+On 15 September 2026, Central Crime Branch (CCB), Bengaluru registered a major interstate crypto-hawala syndicate case.
+Primary suspect Siddharth Rao (Phone: 9876500555) operating vehicle KA01AZ5555 was intercepted near Koramangala, Bengaluru.
+Seized electronic devices revealed direct coordination between Siddharth Rao and Hyderabad-based suspect Devendra Varma (Phone: 9876500111) as well as accountant Ananya Reddy (Phone: 9876500222).
+Digital ledger audits indicate associate Kavya Nair (Phone: 9876500666), managing account ACC-BLR-8822, routed over 450000 INR from Bengaluru accounts directly into Ananya Reddy's account ACC-HYD-7711.
+Furthermore, ANPR cameras logged Rajesh Khurana (Phone: 9876500333) traveling in vehicle TS07AB2002 between Hyderabad and Indiranagar, Bengaluru to exchange encrypted hardware wallets.

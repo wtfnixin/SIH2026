@@ -70,32 +70,8 @@ export default function TargetedGraphCanvas({
         setLoading(false);
       })
       .catch(err => {
-        console.warn("Dossier network fetch warning:", err);
-        // Realistic demo fallback for targetEntity
-        const fallbackData = {
-          elements: [
-            { data: { id: targetEntity, label: targetEntity, node_type: 'Person', is_center: true } },
-            { data: { id: '+91-98765-43210', label: '+91-98765-43210', node_type: 'Phone' } },
-            { data: { id: 'KA-01-AB-1234', label: 'KA-01-AB-1234', node_type: 'Vehicle' } },
-            { data: { id: 'Hebbal Toll Plaza', label: 'Hebbal Toll Plaza', node_type: 'Location' } },
-            { data: { id: 'FIR-2026-402', label: 'FIR #402/2026 - Smurfing', node_type: 'FIR' } },
-            { data: { id: 'Rajesh Verma', label: 'Rajesh Verma (Associate)', node_type: 'Person' } },
-            // Edges
-            { data: { id: 'e1', source: targetEntity, target: '+91-98765-43210', relationship: 'USES_PHONE', label: 'USES_PHONE' } },
-            { data: { id: 'e2', source: targetEntity, target: 'KA-01-AB-1234', relationship: 'OWNS_VEHICLE', label: 'OWNS' } },
-            { data: { id: 'e3', source: 'KA-01-AB-1234', target: 'Hebbal Toll Plaza', relationship: 'SIGHTED_AT', label: 'SIGHTED_AT' } },
-            { data: { id: 'e4', source: targetEntity, target: 'Rajesh Verma', relationship: 'TRANSFERRED_FUNDS', label: '₹8,75,000' } },
-            { data: { id: 'e5', source: 'Rajesh Verma', target: 'FIR-2026-402', relationship: 'MENTIONED_IN', label: 'MENTIONED_IN' } }
-          ],
-          breakdown: {
-            fir_count: 1,
-            vehicle_count: 1,
-            phone_count: 1,
-            location_count: 1,
-            total_connections: 5
-          }
-        };
-        setNetworkData(fallbackData);
+        console.error("Dossier network fetch error:", err);
+        setNetworkData(null);
         setLoading(false);
       });
   }, [targetEntity]);

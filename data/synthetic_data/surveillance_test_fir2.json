@@ -1,0 +1,170 @@
+[
+  {
+    "report_id": "SURV-BLR-2026-01",
+    "entity_type": "Phone",
+    "entity_value": "KA01AZ5555",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-09-05 21:00:00",
+    "observed_by": "Special Tactical Wing"
+  },
+  {
+    "report_id": "SURV-BLR-2026-02",
+    "entity_type": "Vehicle",
+    "entity_value": "Siddharth Rao",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-09-02 07:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-03",
+    "entity_type": "Vehicle",
+    "entity_value": "9876500666",
+    "location": "Koramangala, Bengaluru",
+    "timestamp": "2026-09-10 04:00:00",
+    "observed_by": "Special Tactical Wing"
+  },
+  {
+    "report_id": "SURV-BLR-2026-04",
+    "entity_type": "Vehicle",
+    "entity_value": "9876500666",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-09-05 01:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-05",
+    "entity_type": "Person",
+    "entity_value": "Siddharth Rao",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-09-08 22:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-06",
+    "entity_type": "Vehicle",
+    "entity_value": "9876500666",
+    "location": "Koramangala, Bengaluru",
+    "timestamp": "2026-09-02 02:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-07",
+    "entity_type": "Phone",
+    "entity_value": "Siddharth Rao",
+    "location": "Hitech City, Hyderabad",
+    "timestamp": "2026-09-01 23:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-08",
+    "entity_type": "Vehicle",
+    "entity_value": "9876500555",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-09-09 03:00:00",
+    "observed_by": "Special Tactical Wing"
+  },
+  {
+    "report_id": "SURV-BLR-2026-09",
+    "entity_type": "Phone",
+    "entity_value": "KA01AZ5555",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-09-04 22:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-10",
+    "entity_type": "Person",
+    "entity_value": "Kavya Nair",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-09-07 22:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-11",
+    "entity_type": "Phone",
+    "entity_value": "TS07AB2002",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-09-16 07:00:00",
+    "observed_by": "Special Tactical Wing"
+  },
+  {
+    "report_id": "SURV-BLR-2026-12",
+    "entity_type": "Vehicle",
+    "entity_value": "KA01AZ5555",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-09-07 00:00:00",
+    "observed_by": "Special Tactical Wing"
+  },
+  {
+    "report_id": "SURV-BLR-2026-13",
+    "entity_type": "Vehicle",
+    "entity_value": "Kavya Nair",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-09-02 06:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-14",
+    "entity_type": "Person",
+    "entity_value": "9876500555",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-09-14 19:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-15",
+    "entity_type": "Person",
+    "entity_value": "Devendra Varma",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-09-04 20:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-16",
+    "entity_type": "Phone",
+    "entity_value": "9876500666",
+    "location": "Whitefield, Bengaluru",
+    "timestamp": "2026-09-09 04:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-17",
+    "entity_type": "Person",
+    "entity_value": "9876500555",
+    "location": "Koramangala, Bengaluru",
+    "timestamp": "2026-09-01 23:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-18",
+    "entity_type": "Person",
+    "entity_value": "KA01AZ5555",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-09-01 21:00:00",
+    "observed_by": "Special Tactical Wing"
+  },
+  {
+    "report_id": "SURV-BLR-2026-19",
+    "entity_type": "Vehicle",
+    "entity_value": "9876500555",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-09-10 03:00:00",
+    "observed_by": "Special Tactical Wing"
+  },
+  {
+    "report_id": "SURV-BLR-2026-20",
+    "entity_type": "Person",
+    "entity_value": "9876500555",
+    "location": "Indiranagar, Bengaluru",
+    "timestamp": "2026-09-10 01:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  },
+  {
+    "report_id": "SURV-BLR-2026-21",
+    "entity_type": "Vehicle",
+    "entity_value": "9876500666",
+    "location": "Electronic City, Bengaluru",
+    "timestamp": "2026-09-01 22:00:00",
+    "observed_by": "CCB Intelligence Squad"
+  }
+]

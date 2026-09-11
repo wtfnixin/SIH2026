@@ -1,0 +1,154 @@
+[
+  {
+    "report_id": "SURV-HYD-2026-01",
+    "entity_type": "Person",
+    "entity_value": "TS07AB2002",
+    "location": "Madhapur, Hyderabad",
+    "timestamp": "2026-09-02 07:00:00",
+    "observed_by": "Task Force Alpha"
+  },
+  {
+    "report_id": "SURV-HYD-2026-02",
+    "entity_type": "Vehicle",
+    "entity_value": "Rajesh Khurana",
+    "location": "Jubilee Hills, Hyderabad",
+    "timestamp": "2026-09-01 07:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-03",
+    "entity_type": "Person",
+    "entity_value": "TS07AB2002",
+    "location": "Hitech City, Hyderabad",
+    "timestamp": "2026-09-09 04:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-04",
+    "entity_type": "Vehicle",
+    "entity_value": "9876500222",
+    "location": "Jubilee Hills, Hyderabad",
+    "timestamp": "2026-08-30 23:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-05",
+    "entity_type": "Phone",
+    "entity_value": "9876500222",
+    "location": "Madhapur, Hyderabad",
+    "timestamp": "2026-09-08 22:00:00",
+    "observed_by": "Task Force Alpha"
+  },
+  {
+    "report_id": "SURV-HYD-2026-06",
+    "entity_type": "Vehicle",
+    "entity_value": "9876500222",
+    "location": "Jubilee Hills, Hyderabad",
+    "timestamp": "2026-08-29 22:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-07",
+    "entity_type": "Phone",
+    "entity_value": "9876500222",
+    "location": "Jubilee Hills, Hyderabad",
+    "timestamp": "2026-08-31 20:00:00",
+    "observed_by": "Task Force Alpha"
+  },
+  {
+    "report_id": "SURV-HYD-2026-08",
+    "entity_type": "Vehicle",
+    "entity_value": "TS07AB2002",
+    "location": "Madhapur, Hyderabad",
+    "timestamp": "2026-09-04 06:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-09",
+    "entity_type": "Vehicle",
+    "entity_value": "TS09EX1001",
+    "location": "Madhapur, Hyderabad",
+    "timestamp": "2026-09-03 22:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-10",
+    "entity_type": "Phone",
+    "entity_value": "TS07AB2002",
+    "location": "Hitech City, Hyderabad",
+    "timestamp": "2026-09-01 19:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-11",
+    "entity_type": "Vehicle",
+    "entity_value": "TS07AB2002",
+    "location": "Gachibowli, Hyderabad",
+    "timestamp": "2026-09-03 20:00:00",
+    "observed_by": "Task Force Alpha"
+  },
+  {
+    "report_id": "SURV-HYD-2026-12",
+    "entity_type": "Person",
+    "entity_value": "Vikram Malhotra",
+    "location": "Hitech City, Hyderabad",
+    "timestamp": "2026-09-10 02:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-13",
+    "entity_type": "Person",
+    "entity_value": "Devendra Varma",
+    "location": "Hitech City, Hyderabad",
+    "timestamp": "2026-09-03 20:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-14",
+    "entity_type": "Vehicle",
+    "entity_value": "TS07AB2002",
+    "location": "Hitech City, Hyderabad",
+    "timestamp": "2026-09-09 23:00:00",
+    "observed_by": "Task Force Alpha"
+  },
+  {
+    "report_id": "SURV-HYD-2026-15",
+    "entity_type": "Phone",
+    "entity_value": "Ananya Reddy",
+    "location": "Jubilee Hills, Hyderabad",
+    "timestamp": "2026-09-05 23:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-16",
+    "entity_type": "Phone",
+    "entity_value": "Vikram Malhotra",
+    "location": "Jubilee Hills, Hyderabad",
+    "timestamp": "2026-09-07 17:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-17",
+    "entity_type": "Person",
+    "entity_value": "TS07AB2002",
+    "location": "Gachibowli, Hyderabad",
+    "timestamp": "2026-09-04 22:00:00",
+    "observed_by": "Task Force Alpha"
+  },
+  {
+    "report_id": "SURV-HYD-2026-18",
+    "entity_type": "Person",
+    "entity_value": "Ananya Reddy",
+    "location": "Hitech City, Hyderabad",
+    "timestamp": "2026-09-09 06:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  },
+  {
+    "report_id": "SURV-HYD-2026-19",
+    "entity_type": "Person",
+    "entity_value": "9876500222",
+    "location": "Madhapur, Hyderabad",
+    "timestamp": "2026-09-04 19:00:00",
+    "observed_by": "Cyberabad Intelligence Unit"
+  }
+]

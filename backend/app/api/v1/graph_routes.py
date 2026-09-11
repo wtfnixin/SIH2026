@@ -113,28 +113,56 @@ def get_shortest_path(start: str = Query(...), target: str = Query(...)) -> Dict
 @router.get("/dossier-network/{entity_id}")
 def get_suspect_dossier_network(entity_id: str) -> Dict[str, Any]:
     """
-    Returns ego-network elements for a specific suspect entity, formatted for Cytoscape.js
-    with categorized facets (FIRs, Vehicles, Transfers, Phones, Locations) and rich metadata.
+    Returns 1-hop and 2-hop graph elements for a target FIR or Person entity formatted for Cytoscape.js.
     """
+    import re
+    id_clean = entity_id.strip()
+    id_candidates = [id_clean, id_clean.upper(), id_clean.lower(), id_clean.replace(" ", "-"), id_clean.replace("-", " ")]
+    num_match = re.search(r"(\d+)", id_clean)
+    if num_match:
+        num_str = num_match.group(1)
+        id_candidates.extend([
+            f"FIR-2026-{num_str.zfill(3)}",
+            f"FIR-2026-{num_str}",
+            f"FIR-2026-TEST-{num_str.zfill(3)}",
+            f"FIR-{num_str.zfill(3)}",
+            f"FIR-{num_str}"
+        ])
+
+    id_candidates_upper = [c.upper() for c in id_candidates]
+
     cypher = """
     MATCH (n)
-    WHERE n.name = $id OR n.phone_number = $id OR n.registration_number = $id OR n.fir_no = $id
-    OPTIONAL MATCH (n)-[r]-(m)
-    RETURN n, labels(n)[0] AS n_label, r, type(r) AS r_type, properties(r) AS r_props, m, labels(m)[0] AS m_label, (startNode(r) = n) AS is_out
+    WHERE toUpper(n.name) IN $candidates_upper
+       OR toUpper(n.phone_number) IN $candidates_upper
+       OR toUpper(replace(coalesce(n.phone_number, ''), '-', '')) IN $candidates_upper
+       OR toUpper(n.registration_number) IN $candidates_upper
+       OR toUpper(replace(coalesce(n.registration_number, ''), '-', '')) IN $candidates_upper
+       OR toUpper(n.fir_no) IN $candidates_upper
+       OR toUpper(replace(coalesce(n.fir_no, ''), '-', '')) IN $candidates_upper
+       OR (n:FIR AND any(cand IN $candidates_upper WHERE toUpper(n.fir_no) ENDS WITH cand OR replace(toUpper(n.fir_no), 'FIR-2026-', '') = cand))
+    WITH n LIMIT 1
+    OPTIONAL MATCH (n)-[r1]-(m1)
+    OPTIONAL MATCH (m1)-[r2]-(m2)
+    WHERE m2 <> n AND NOT m2:FIR
+    RETURN n, labels(n)[0] AS n_label, 
+           r1, type(r1) AS r1_type, properties(r1) AS r1_props, m1, labels(m1)[0] AS m1_label, (startNode(r1) = n) AS r1_is_out,
+           r2, type(r2) AS r2_type, properties(r2) AS r2_props, m2, labels(m2)[0] AS m2_label, (startNode(r2) = m1) AS r2_is_out
     """
     try:
         with get_neo4j_session() as session:
-            records = session.run(cypher, id=entity_id).data()
+            records = session.run(cypher, candidates_upper=id_candidates_upper).data()
 
         if not records or not records[0]["n"]:
             raise HTTPException(status_code=404, detail=f"Entity {entity_id} not found")
 
         elements = []
         added_nodes = set()
+        added_edges = set()
 
         n = records[0]["n"]
         n_label = records[0]["n_label"]
-        center_id = n.get("name") or n.get("phone_number") or n.get("registration_number") or entity_id
+        center_id = n.get("name") or n.get("phone_number") or n.get("registration_number") or n.get("fir_no") or entity_id
         added_nodes.add(center_id)
 
         elements.append({
@@ -157,79 +185,99 @@ def get_suspect_dossier_network(entity_id: str) -> Dict[str, Any]:
             "total_connections": 0
         }
 
-        for rec in records:
-            r = rec["r"]
-            m = rec["m"]
-            if not r or not m:
-                continue
-
-            r_type = rec["r_type"]
-            r_props = rec["r_props"] or {}
-            m_label = rec["m_label"]
-            m_id = m.get("name") or m.get("phone_number") or m.get("registration_number") or m.get("fir_no")
-
-            if not m_id:
-                continue
-
-            category = "other"
-            if m_label == "FIR":
-                category = "fir"
-                breakdown["fir_count"] += 1
-            elif m_label == "Vehicle":
-                category = "vehicle"
-                breakdown["vehicle_count"] += 1
-            elif m_label == "Location":
-                category = "location"
-                breakdown["location_count"] += 1
-            elif m_label == "Phone":
-                category = "phone"
-                breakdown["phone_count"] += 1
-            elif r_type == "TRANSFERRED_FUNDS":
-                category = "finance"
-                breakdown["transfer_count"] += 1
-
-            breakdown["total_connections"] += 1
-
-            if m_id not in added_nodes:
-                added_nodes.add(m_id)
+        def process_node(node_obj, node_label):
+            node_id = node_obj.get("name") or node_obj.get("phone_number") or node_obj.get("registration_number") or node_obj.get("fir_no")
+            if not node_id:
+                return None
+            if node_id not in added_nodes:
+                added_nodes.add(node_id)
+                cat = "other"
+                if node_label == "FIR":
+                    cat = "fir"
+                    breakdown["fir_count"] += 1
+                elif node_label == "Vehicle":
+                    cat = "vehicle"
+                    breakdown["vehicle_count"] += 1
+                elif node_label == "Location":
+                    cat = "location"
+                    breakdown["location_count"] += 1
+                elif node_label == "Phone":
+                    cat = "phone"
+                    breakdown["phone_count"] += 1
                 elements.append({
                     "data": {
-                        "id": m_id,
-                        "label": m_id,
-                        "node_type": m_label,
-                        "category": category,
+                        "id": node_id,
+                        "label": node_id,
+                        "node_type": node_label,
+                        "category": cat,
                         "is_center": False,
-                        "properties": dict(m)
+                        "properties": dict(node_obj)
                     }
                 })
+            return node_id
 
-            edge_label = r_type
-            if r_type == "TRANSFERRED_FUNDS" and "amount" in r_props:
-                amt = float(r_props.get("amount", 0))
+        def process_edge(src_id, tgt_id, rel_type, rel_props, is_out):
+            if not src_id or not tgt_id or not rel_type:
+                return
+            edge_key = f"{src_id}||{tgt_id}||{rel_type}"
+            if edge_key in added_edges:
+                return
+            added_edges.add(edge_key)
+
+            if rel_type == "TRANSFERRED_FUNDS":
+                breakdown["transfer_count"] += 1
+            breakdown["total_connections"] += 1
+
+            rel_props = rel_props or {}
+            edge_label = rel_type
+            if rel_type == "TRANSFERRED_FUNDS" and "amount" in rel_props:
+                amt = float(rel_props.get("amount", 0))
                 amt_str = f"₹{amt:,.0f}" if amt < 100000 else f"₹{amt/100000:.1f}L"
-                edge_label = f"{amt_str} (STR)" if r_props.get("is_structured") else amt_str
-            elif r_type == "OWNS_VEHICLE":
-                edge_label = "OWNS"
-            elif r_type == "MENTIONED_IN":
-                edge_label = "FIR LINK"
-            elif r_type == "OBSERVED_AT":
-                edge_label = "SIGHTED"
+                edge_label = f"Sent {amt_str}"
+            elif rel_type == "CALLED":
+                dur = rel_props.get("duration_seconds") or rel_props.get("duration")
+                ts = rel_props.get("timestamp", "")
+                if ts and dur:
+                    edge_label = f"Called ({dur}s)"
+                else:
+                    edge_label = "CALLED"
+            elif rel_type == "OWNS_VEHICLE":
+                edge_label = "OWNS VEHICLE"
+            elif rel_type == "SIGHTED_AT":
+                edge_label = "SIGHTED AT"
+            elif rel_type == "OBSERVED_AT":
+                edge_label = "OBSERVED AT"
 
-            is_out = rec["is_out"]
-            edge_id = f"{center_id}-{m_id}-{r_type}"
+            s_id = src_id if is_out else tgt_id
+            t_id = tgt_id if is_out else src_id
+
             elements.append({
                 "data": {
-                    "id": edge_id,
-                    "source": center_id if is_out else m_id,
-                    "target": m_id if is_out else center_id,
-                    "relationship": r_type,
+                    "id": f"e-{s_id}-{t_id}-{rel_type}",
+                    "source": s_id,
+                    "target": t_id,
+                    "relationship": rel_type,
                     "label": edge_label,
-                    "category": category,
-                    "is_structured": r_props.get("is_structured", False),
-                    "amount": r_props.get("amount"),
-                    "details": r_props
+                    "amount": rel_props.get("amount"),
+                    "details": rel_props
                 }
             })
+
+        for rec in records:
+            m1 = rec.get("m1")
+            r1 = rec.get("r1")
+            if m1 and r1:
+                m1_id = process_node(m1, rec["m1_label"])
+                if m1_id:
+                    process_edge(center_id, m1_id, rec["r1_type"], rec["r1_props"], rec["r1_is_out"])
+
+            m2 = rec.get("m2")
+            r2 = rec.get("r2")
+            if m1 and m2 and r2:
+                m1_id = m1.get("name") or m1.get("phone_number") or m1.get("registration_number") or m1.get("fir_no")
+                m2_id = process_node(m2, rec["m2_label"])
+                if m1_id and m2_id:
+                    process_edge(m1_id, m2_id, rec["r2_type"], rec["r2_props"], rec["r2_is_out"])
 
         return {
             "center_id": center_id,
