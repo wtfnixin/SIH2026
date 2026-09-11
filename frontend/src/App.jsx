@@ -39,7 +39,8 @@ import {
   ArrowDownLeft,
   DollarSign,
   Filter,
-  ChevronDown
+  ChevronDown,
+  Bot
 } from 'lucide-react';
 import ThreatAlertsFeed from './components/ThreatAlertsFeed';
 import FileUploadModal from './components/FileUploadModal';
@@ -49,6 +50,7 @@ import AuditLoggerPanel from './components/AuditLoggerPanel';
 import AICopilotDrawer from './components/AICopilotDrawer';
 import TargetedGraphCanvas from './components/TargetedGraphCanvas';
 import GeospatialMapCanvas from './components/GeospatialMapCanvas';
+import SathiAIWorkspace from './components/SathiAIWorkspace';
 
 export default function App() {
   // Theme state: 'dark' or 'light'
@@ -425,7 +427,6 @@ export default function App() {
               <div className="sidebar-group">
                 <div className="sidebar-group-title">
                   <span>THREAT INTELLIGENCE</span>
-                  <span className="sidebar-item-badge">{alertsData?.total_alerts || 0}</span>
                 </div>
                 <div className="sidebar-nav-list">
                   {/* Parent Dropdown: Live Threat Feed */}
@@ -451,8 +452,7 @@ export default function App() {
                       <ShieldAlert size={15} />
                       <span>Live Threat Feed</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span className="sidebar-item-badge">{alertsData?.total_alerts || 0}</span>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                       <button
                         type="button"
                         onClick={(e) => {
@@ -488,7 +488,6 @@ export default function App() {
                           <CreditCard size={13} />
                           <span>Hawala & Smurfing</span>
                         </div>
-                        <span className="sidebar-item-badge">{alertsData?.breakdown?.financial_structuring_count || 0}</span>
                       </div>
 
                       <div
@@ -502,7 +501,6 @@ export default function App() {
                           <PhoneOff size={13} />
                           <span>Burner SIM Lines</span>
                         </div>
-                        <span className="sidebar-item-badge">{alertsData?.breakdown?.burner_phone_count || 0}</span>
                       </div>
 
                       <div
@@ -516,7 +514,6 @@ export default function App() {
                           <Car size={13} />
                           <span>ANPR Toll Convoys</span>
                         </div>
-                        <span className="sidebar-item-badge">{alertsData?.breakdown?.anpr_colocation_count || 0}</span>
                       </div>
                     </div>
                   )}
@@ -527,7 +524,6 @@ export default function App() {
               <div className="sidebar-group">
                 <div className="sidebar-group-title">
                   <span>SPATIAL SURVEILLANCE</span>
-                  <span className="sidebar-item-badge">GIS</span>
                 </div>
                 <div className="sidebar-nav-list">
                   <div
@@ -539,9 +535,6 @@ export default function App() {
                       <MapPin size={15} color="#06b6d4" />
                       <span>ANPR Movement Map</span>
                     </div>
-                    <span className="sidebar-item-badge" style={{ background: 'rgba(6, 182, 212, 0.14)', color: '#06b6d4', borderColor: 'rgba(6, 182, 212, 0.25)' }}>
-                      LIVE
-                    </span>
                   </div>
                 </div>
               </div>
@@ -550,7 +543,6 @@ export default function App() {
               <div className="sidebar-group">
                 <div className="sidebar-group-title">
                   <span>SUSPECT DOSSIERS</span>
-                  <span className="sidebar-item-badge">360°</span>
                 </div>
                 <div className="sidebar-nav-list">
                   <div
@@ -564,30 +556,25 @@ export default function App() {
                       <FileText size={15} />
                       <span>Suspect Dossiers</span>
                     </div>
-                    <span className="sidebar-item-badge">{totalCriminals || criminals.length || 0}</span>
                   </div>
                 </div>
               </div>
 
-              {/* SECTION: CRIME SYNDICATES */}
+              {/* SECTION: AI INTELLIGENCE */}
               <div className="sidebar-group">
                 <div className="sidebar-group-title">
-                  <span>CRIME SYNDICATES</span>
-                  <span className="sidebar-item-badge">TOP</span>
+                  <span>AI INTELLIGENCE</span>
                 </div>
                 <div className="sidebar-nav-list">
                   <div
-                    className={`sidebar-nav-item ${activeView === 'syndicates' ? 'active' : ''}`}
-                    onClick={() => setActiveView('syndicates')}
-                    title="View Top Syndicate Bosses & PageRank Hierarchy"
+                    className={`sidebar-nav-item ${activeView === 'sathi' ? 'active' : ''}`}
+                    onClick={() => setActiveView('sathi')}
+                    title="Open Sathi - AI Cyber Intelligence Copilot"
                   >
                     <div className="sidebar-item-left">
-                      <Crown size={15} color="#fbbf24" />
-                      <span>Syndicate Bosses</span>
+                      <Bot size={15} color="#06b6d4" />
+                      <span>Sathi</span>
                     </div>
-                    <span className="sidebar-item-badge" style={{ background: 'rgba(251, 191, 36, 0.14)', color: '#fbbf24', borderColor: 'rgba(251, 191, 36, 0.25)' }}>
-                      {kingpins.length > 0 ? `Top ${kingpins.length}` : 'Ranked'}
-                    </span>
                   </div>
                 </div>
               </div>
@@ -625,6 +612,18 @@ export default function App() {
               {/* Evidence Ingestion Audit Logger (Full-Width Bottom Panel) */}
               <AuditLoggerPanel onOpenUpload={() => setIsUploadOpen(true)} />
             </div>
+          )}
+
+          {/* VIEW: SATHI FULLSCREEN AI COPILOT WORKSPACE */}
+          {activeView === 'sathi' && (
+            <SathiAIWorkspace
+              theme={theme}
+              onToggleTheme={toggleTheme}
+              onNavigateGraph={(id) => openTargetedGraph(id)}
+              onOpenDossier={(id) => openDossier(id)}
+              onOpenGeoMap={() => setActiveView('geo_map')}
+              onBackToDashboard={() => setActiveView(previousView || 'threats')}
+            />
           )}
 
           {/* VIEW: TOP SYNDICATE BOSSES & CENTRALITY HIERARCHY */}
@@ -1522,17 +1521,20 @@ export default function App() {
         onUploadSuccess={fetchAllData}
       />
 
-      {/* AI Intelligence Copilot Floating Drawer */}
-      <AICopilotDrawer
-        onSelectEntity={(id) => openDossier(id)}
-        onAction={(action) => {
-          if (action.type === 'NAVIGATE_GRAPH' && action.target_id) {
-            openTargetedGraph(action.target_id);
-          } else if (action.type === 'NAVIGATE_MAP') {
-            setActiveView('geo_map');
-          }
-        }}
-      />
+      {/* AI Intelligence Copilot Floating Drawer (hidden when on full-screen Sathi page) */}
+      {activeView !== 'sathi' && (
+        <AICopilotDrawer
+          onSelectEntity={(id) => openDossier(id)}
+          onAction={(action) => {
+            if (action.type === 'NAVIGATE_GRAPH' && action.target_id) {
+              openTargetedGraph(action.target_id);
+            } else if (action.type === 'NAVIGATE_MAP') {
+              setActiveView('geo_map');
+            }
+          }}
+          onOpenFullScreen={() => setActiveView('sathi')}
+        />
+      )}
     </div>
   );
 }
