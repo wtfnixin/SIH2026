@@ -5,18 +5,24 @@ export default function AICopilotDrawer({
   onNavigateGraph,
   onSelectEntity,
   onAction,
-  onOpenFullScreen
+  onOpenFullScreen,
+  chatHistory: propChatHistory,
+  setChatHistory: propSetChatHistory
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputMsg, setInputMsg] = useState('');
   const [loading, setLoading] = useState(false);
-  const [chatHistory, setChatHistory] = useState([
+  const [internalChatHistory, setInternalChatHistory] = useState([
     {
       sender: 'ai',
       text: "👋 Welcome Officer! I am Sathi, your AI Cyber Intelligence Copilot. Ask me to search suspects, analyze Hawala rings, or locate burner SIMs. I will guide you and open their network graph automatically.",
-      multipleMatches: []
+      multipleMatches: [],
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
+
+  const chatHistory = propChatHistory || internalChatHistory;
+  const setChatHistory = propSetChatHistory || setInternalChatHistory;
 
   const messagesEndRef = useRef(null);
 
@@ -34,8 +40,10 @@ export default function AICopilotDrawer({
     const textToSend = customText || inputMsg;
     if (!textToSend.trim() && !targetIdOverride) return;
 
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
     if (!targetIdOverride) {
-      setChatHistory(prev => [...prev, { sender: 'user', text: textToSend }]);
+      setChatHistory(prev => [...prev, { sender: 'user', text: textToSend, timestamp: timeStr }]);
       setInputMsg('');
     }
 
@@ -51,12 +59,15 @@ export default function AICopilotDrawer({
     })
       .then(res => res.json())
       .then(data => {
+        const aiTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         setChatHistory(prev => [
           ...prev,
           {
             sender: 'ai',
             text: data.response,
-            multipleMatches: data.multiple_matches || []
+            multipleMatches: data.multiple_matches || [],
+            uiAction: data.ui_action || null,
+            timestamp: aiTimeStr
           }
         ]);
         setLoading(false);
@@ -78,7 +89,8 @@ export default function AICopilotDrawer({
           {
             sender: 'ai',
             text: "⚠️ System Offline: Unable to reach Copilot backend service.",
-            multipleMatches: []
+            multipleMatches: [],
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
         setLoading(false);
