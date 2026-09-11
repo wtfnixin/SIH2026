@@ -1,14 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Send, X, Sparkles, User, ShieldAlert, ArrowRight, CornerDownLeft } from 'lucide-react';
+import { Bot, Send, X, Sparkles, ArrowRight, CornerDownLeft, Maximize2 } from 'lucide-react';
 
-export default function AICopilotDrawer({ onNavigateGraph }) {
+export default function AICopilotDrawer({
+  onNavigateGraph,
+  onSelectEntity,
+  onAction,
+  onOpenFullScreen
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputMsg, setInputMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState([
     {
       sender: 'ai',
-      text: "👋 Welcome Officer! I am your AI Cyber Intelligence Copilot. Ask me to search suspects, analyze Hawala rings, or locate burner SIMs. I will guide you and open their network graph automatically.",
+      text: "👋 Welcome Officer! I am Sathi, your AI Cyber Intelligence Copilot. Ask me to search suspects, analyze Hawala rings, or locate burner SIMs. I will guide you and open their network graph automatically.",
       multipleMatches: []
     }
   ]);
@@ -61,6 +66,9 @@ export default function AICopilotDrawer({ onNavigateGraph }) {
           if (onNavigateGraph) {
             onNavigateGraph(data.ui_action.target_id);
           }
+          if (onAction) {
+            onAction(data.ui_action);
+          }
         }
       })
       .catch(err => {
@@ -90,7 +98,7 @@ export default function AICopilotDrawer({ onNavigateGraph }) {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          title="AI Intel Copilot (Groq)"
+          title="Sathi - AI Intel Copilot"
           style={{
             position: 'fixed',
             bottom: '24px',
@@ -145,8 +153,8 @@ export default function AICopilotDrawer({ onNavigateGraph }) {
         }}>
           {/* Header */}
           <div style={{
-            padding: '14px 16px',
-            background: 'rgba(30, 41, 59, 0.8)',
+            padding: '12px 16px',
+            background: 'rgba(30, 41, 59, 0.85)',
             borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
             display: 'flex',
             alignItems: 'center',
@@ -158,6 +166,7 @@ export default function AICopilotDrawer({ onNavigateGraph }) {
                 height: '32px',
                 borderRadius: '8px',
                 background: 'rgba(6, 182, 212, 0.2)',
+                border: '1px solid rgba(6, 182, 212, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -166,39 +175,84 @@ export default function AICopilotDrawer({ onNavigateGraph }) {
                 <Bot size={18} />
               </div>
               <div>
-                <h3 style={{ fontSize: '13px', fontWeight: 700, color: '#f1f5f9', margin: 0 }}>
-                  AI CYBER INTELLIGENCE COPILOT
+                <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#f1f5f9', margin: 0, letterSpacing: '0.04em' }}>
+                  SATHI · AI COPILOT
                 </h3>
                 <p style={{ fontSize: '10px', color: '#34d399', margin: 0, fontWeight: 600 }}>
                   ● LIVE GRAPH SEARCH & NAVIGATION
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: '#94a3b8',
-                cursor: 'pointer',
-                padding: '4px',
-                borderRadius: '6px'
-              }}
-            >
-              <X size={18} />
-            </button>
+
+            {/* Header Action Buttons: Full Screen & Close */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  if (onOpenFullScreen) onOpenFullScreen();
+                }}
+                title="Expand Sathi to Full Screen"
+                style={{
+                  background: 'rgba(6, 182, 212, 0.1)',
+                  border: '1px solid rgba(6, 182, 212, 0.3)',
+                  color: '#22d3ee',
+                  cursor: 'pointer',
+                  padding: '5px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.18s ease'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'rgba(6, 182, 212, 0.25)';
+                  e.currentTarget.style.borderColor = '#22d3ee';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'rgba(6, 182, 212, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(6, 182, 212, 0.3)';
+                }}
+              >
+                <Maximize2 size={15} />
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                title="Close"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#94a3b8',
+                  cursor: 'pointer',
+                  padding: '5px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'color 0.18s ease'
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = '#f43f5e'}
+                onMouseLeave={e => e.currentTarget.style.color = '#94a3b8'}
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
-          {/* Quick Suggestion Chips */}
-          <div style={{
-            padding: '8px 12px',
-            background: 'rgba(15, 23, 42, 0.6)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-            display: 'flex',
-            gap: '6px',
-            overflowX: 'auto',
-            whiteSpace: 'nowrap'
-          }}>
+          {/* Quick Suggestion Chips (Zero scrollbar) */}
+          <div
+            className="copilot-chips-container"
+            style={{
+              padding: '8px 12px',
+              background: 'rgba(15, 23, 42, 0.6)',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+              display: 'flex',
+              gap: '6px',
+              overflowX: 'auto',
+              whiteSpace: 'nowrap',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
+            }}
+          >
             {suggestionChips.map((chip, idx) => (
               <button
                 key={idx}
@@ -212,7 +266,16 @@ export default function AICopilotDrawer({ onNavigateGraph }) {
                   padding: '4px 10px',
                   cursor: 'pointer',
                   fontWeight: 600,
-                  flexShrink: 0
+                  flexShrink: 0,
+                  transition: 'all 0.15s'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'rgba(6, 182, 212, 0.22)';
+                  e.currentTarget.style.borderColor = '#22d3ee';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'rgba(6, 182, 212, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(6, 182, 212, 0.25)';
                 }}
               >
                 {chip}
@@ -311,7 +374,7 @@ export default function AICopilotDrawer({ onNavigateGraph }) {
             {loading && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#22d3ee', fontSize: '12px' }}>
                 <Sparkles size={14} className="spin-anim" />
-                <span>AI is analyzing graph data & navigating...</span>
+                <span>Sathi is analyzing graph data & navigating...</span>
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -331,7 +394,7 @@ export default function AICopilotDrawer({ onNavigateGraph }) {
               value={inputMsg}
               onChange={(e) => setInputMsg(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder="Ask AI to search suspect name, phone, plate..."
+              placeholder="Ask Sathi: suspect name, phone, plate..."
               style={{
                 flex: 1,
                 background: 'rgba(15, 23, 42, 0.8)',

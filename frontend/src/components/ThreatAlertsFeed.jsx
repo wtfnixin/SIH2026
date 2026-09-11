@@ -173,12 +173,17 @@ export default function ThreatAlertsFeed({ alerts, onSelectEntity, onFocusEntity
 
   const filteredColocations = useMemo(() => {
     return colocations.filter(item => {
+      const v1 = item.vehicle_1 || item.vehicle1 || '';
+      const v2 = item.vehicle_2 || item.vehicle2 || '';
+      const loc = item.co_location_point || item.location || '';
+      const aid = item.alert_id || '';
+      const sev = item.severity || item.threat_level || 'HIGH';
       const matchesSearch = !searchQuery || 
-        item.vehicle_1?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.vehicle_2?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.co_location_point?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.alert_id?.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesSeverity = severityFilter === 'ALL' || item.severity === severityFilter;
+        v1.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v2.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        loc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        aid.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSeverity = severityFilter === 'ALL' || sev === severityFilter;
       return matchesSearch && matchesSeverity;
     });
   }, [colocations, searchQuery, severityFilter]);
@@ -447,70 +452,89 @@ export default function ThreatAlertsFeed({ alerts, onSelectEntity, onFocusEntity
 
             {/* ANPR Convoy Sighting Cards */}
             {(activeTab === 'all' || activeTab === 'colocations') &&
-              filteredColocations.map((c) => (
-                <div key={c.alert_id} className="threat-intel-card card-convoy">
-                  <div className="card-top-bar">
-                    <div className="card-badge convoy-badge">
-                      <Car size={13} />
-                      <span>ANPR CONVOY SIGHTING</span>
-                    </div>
-                    <span className={`severity-tag ${c.severity ? c.severity.toLowerCase() : 'high'}`}>
-                      {c.severity || 'HIGH'}
-                    </span>
-                  </div>
+              filteredColocations.map((c) => {
+                const v1 = c.vehicle_1 || c.vehicle1 || 'Vehicle 1';
+                const v2 = c.vehicle_2 || c.vehicle2 || 'Vehicle 2';
+                const locationName = c.co_location_point || c.location || 'Surveillance Toll Checkpoint';
+                const sightings = c.sighting_frequency || c.co_sighting_count || 4;
+                const severity = c.severity || c.threat_level || 'HIGH';
+                const intelDetails = c.rule_violated || c.details || 'Consecutive passage through automatic number plate recognition gantries in convoy formation.';
 
-                  <div className="card-main-info">
-                    <div className="convoy-vehicles-headline">
-                      <div className="vehicle-tag" onClick={() => handleInspect(c.vehicle_1)}>
-                        {c.vehicle_1}
+                return (
+                  <div key={c.alert_id} className="threat-intel-card card-convoy">
+                    <div className="card-top-bar">
+                      <div className="card-badge convoy-badge">
+                        <Car size={13} />
+                        <span>ANPR CONVOY SIGHTING</span>
                       </div>
-                      <span className="convoy-tandem-sign">&</span>
-                      <div className="vehicle-tag" onClick={() => handleInspect(c.vehicle_2)}>
-                        {c.vehicle_2}
-                      </div>
-                    </div>
-
-                    <div className="location-sighting-box">
-                      <div className="location-row">
-                        <MapPin size={13} color="#ffffff" />
-                        <span className="location-name">{c.co_location_point || 'Surveillance Toll Checkpoint'}</span>
-                      </div>
-                      <span className="frequency-badge">
-                        {c.sighting_frequency || 12} Tandem Sightings
+                      <span className={`severity-tag ${severity.toLowerCase()}`}>
+                        {severity}
                       </span>
                     </div>
 
-                    <p className="card-intel-notes">
-                      {c.details || 'Consecutive passage through automatic number plate recognition gantries in convoy formation.'}
-                    </p>
-                  </div>
+                    <div className="card-main-info">
+                      <div className="convoy-vehicles-headline">
+                        <div
+                          className="vehicle-tag"
+                          onClick={() => handleInspect(v1)}
+                          title={`Inspect dossier for ${v1}`}
+                        >
+                          <Car size={12} />
+                          <span>{v1}</span>
+                        </div>
+                        <span className="convoy-tandem-sign">&</span>
+                        <div
+                          className="vehicle-tag"
+                          onClick={() => handleInspect(v2)}
+                          title={`Inspect dossier for ${v2}`}
+                        >
+                          <Car size={12} />
+                          <span>{v2}</span>
+                        </div>
+                      </div>
 
-                  <div className="card-bottom-actions">
-                    <span className="card-timestamp">
-                      <Clock size={11} /> {c.timestamp || 'Just now'}
-                    </span>
-                    <div className="card-action-btn-group">
-                      <button
-                        onClick={() => handleInspect(c.vehicle_1)}
-                        className="action-link-btn"
-                        title="Open Vehicle Dossier"
-                      >
-                        <FileText size={12} /> Dossier
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (onInvestigateGraph) onInvestigateGraph(c.vehicle_1);
-                          else if (onFocusEntity) onFocusEntity(c.vehicle_1);
-                        }}
-                        className="action-link-btn highlight"
-                        title="Investigate in Targeted Graph Canvas"
-                      >
-                        <Network size={12} /> Investigate Graph
-                      </button>
+                      <div className="location-sighting-box">
+                        <div className="location-row">
+                          <MapPin size={13} className="location-pin-icon" />
+                          <span className="location-name">{locationName}</span>
+                        </div>
+                        <span className="frequency-badge">
+                          {sightings} Tandem Sightings
+                        </span>
+                      </div>
+
+                      <p className="card-intel-notes">
+                        {intelDetails}
+                      </p>
+                    </div>
+
+                    <div className="card-bottom-actions">
+                      <span className="card-timestamp">
+                        <Clock size={11} /> {c.timestamp || 'Just now'}
+                      </span>
+                      <div className="card-action-btn-group">
+                        <button
+                          onClick={() => handleInspect(v1)}
+                          className="action-link-btn"
+                          title={`Open Vehicle Dossier for ${v1}`}
+                        >
+                          <FileText size={12} /> Dossier
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (onInvestigateGraph) onInvestigateGraph(v1);
+                            else if (onFocusEntity) onFocusEntity(v1);
+                          }}
+                          className="action-link-btn highlight"
+                          title="Investigate in Targeted Graph Canvas"
+                        >
+                          <Network size={12} /> Investigate Graph
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
           </div>
         )}
       </div>
