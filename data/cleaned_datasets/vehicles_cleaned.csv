@@ -1,0 +1,151 @@
+registration_number,registered_owner,location,timestamp,camera_id,source_file
+KA01AB1234,Rahul Sharma,"MG Road, Bengaluru",2026-08-12T19:45:00Z,ANPR_CAM_01,vehicle_sightings.csv
+KA02CD5678,Amit Kumar,"Whitefield, Bengaluru",2026-08-14T11:15:00Z,ANPR_CAM_04,vehicle_sightings.csv
+KA08FW5906,Anil Kumar,"Koramangala, Bengaluru",2026-08-17T23:29:00Z,ANPR_CAM_03,vehicle_sightings.csv
+KA01UT4920,Neeraj Sharma,"Yelahanka, Bengaluru",2026-08-18T10:34:00Z,ANPR_CAM_19,vehicle_sightings.csv
+KA05VR3588,Gaurav Nair,"Marathahalli, Bengaluru",2026-08-22T04:51:00Z,ANPR_CAM_06,vehicle_sightings.csv
+KA05VC3573,Manish Rao,"HSR Layout, Bengaluru",2026-08-16T15:02:00Z,ANPR_CAM_09,vehicle_sightings.csv
+KA07MV3492,Ramesh Roy,"Yelahanka, Bengaluru",2026-08-09T18:21:00Z,ANPR_CAM_17,vehicle_sightings.csv
+KA09MK8994,Vikram Joshi,"Whitefield, Bengaluru",2026-08-22T07:50:00Z,ANPR_CAM_15,vehicle_sightings.csv
+KA02HD7818,Deepak Singh,"Koramangala, Bengaluru",2026-08-09T11:34:00Z,ANPR_CAM_18,vehicle_sightings.csv
+KA05KX7807,Neeraj Pandey,"MG Road, Bengaluru",2026-08-17T02:42:00Z,ANPR_CAM_13,vehicle_sightings.csv
+KA07OK4090,Rajesh Chauhan,"MG Road, Bengaluru",2026-08-09T04:40:00Z,ANPR_CAM_04,vehicle_sightings.csv
+KA07UL2775,Manish Mishra,"Electronic City, Bengaluru",2026-08-17T18:39:00Z,ANPR_CAM_07,vehicle_sightings.csv
+KA05IH2976,Neeraj Rao,"Whitefield, Bengaluru",2026-08-26T01:40:00Z,ANPR_CAM_11,vehicle_sightings.csv
+KA08OJ8025,Rajesh Pandey,"Jayanagar, Bengaluru",2026-08-24T12:02:00Z,ANPR_CAM_12,vehicle_sightings.csv
+KA05KX7807,Manish Rao,"Hebbal, Bengaluru",2026-08-20T14:49:00Z,ANPR_CAM_08,vehicle_sightings.csv
+KA08YB4335,Karan Kumar,"Marathahalli, Bengaluru",2026-08-04T05:36:00Z,ANPR_CAM_11,vehicle_sightings.csv
+KA03CB3718,Ajay Yadav,"Jayanagar, Bengaluru",2026-08-09T00:20:00Z,ANPR_CAM_14,vehicle_sightings.csv
+KA03GG8933,Rahul Joshi,"MG Road, Bengaluru",2026-08-05T09:47:00Z,ANPR_CAM_15,vehicle_sightings.csv
+KA05RD8451,Ajay Sharma,"Electronic City, Bengaluru",2026-08-07T22:35:00Z,ANPR_CAM_09,vehicle_sightings.csv
+KA02OD3522,Pooja Reddy,"Electronic City, Bengaluru",2026-08-13T05:41:00Z,ANPR_CAM_12,vehicle_sightings.csv
+KA07XK5102,Vikram Reddy,"Koramangala, Bengaluru",2026-08-22T18:17:00Z,ANPR_CAM_10,vehicle_sightings.csv
+KA06XE2476,Rahul Singh,"Marathahalli, Bengaluru",2026-08-26T00:45:00Z,ANPR_CAM_19,vehicle_sightings.csv
+KA05RE5719,Ravi Rao,"Marathahalli, Bengaluru",2026-08-16T06:32:00Z,ANPR_CAM_17,vehicle_sightings.csv
+KA08NB4073,Ramesh Verma,"Indiranagar, Bengaluru",2026-08-22T06:57:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA08UI8529,Neeraj Roy,"MG Road, Bengaluru",2026-08-24T09:29:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA05RE5719,Varun Pandey,"MG Road, Bengaluru",2026-08-09T08:49:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA04LF5952,Rajesh Gupta,"Whitefield, Bengaluru",2026-08-04T13:18:00Z,ANPR_CAM_13,vehicle_sightings.csv
+KA09NC4681,Tarun Saxena,"Marathahalli, Bengaluru",2026-08-13T05:31:00Z,ANPR_CAM_18,vehicle_sightings.csv
+KA04UE5352,Ravi Nair,"Hebbal, Bengaluru",2026-08-04T08:44:00Z,ANPR_CAM_10,vehicle_sightings.csv
+KA03FF2293,Priya Gupta,"Jayanagar, Bengaluru",2026-08-16T10:33:00Z,ANPR_CAM_14,vehicle_sightings.csv
+KA03CB3718,Ravi Chauhan,"Indiranagar, Bengaluru",2026-08-14T12:49:00Z,ANPR_CAM_10,vehicle_sightings.csv
+KA08EO9824,Pooja Verma,"MG Road, Bengaluru",2026-08-23T16:36:00Z,ANPR_CAM_18,vehicle_sightings.csv
+KA05LL8056,Anil Patel,"Whitefield, Bengaluru",2026-08-04T08:07:00Z,ANPR_CAM_17,vehicle_sightings.csv
+KA04FR2229,Deepak Rao,"MG Road, Bengaluru",2026-08-08T15:10:00Z,ANPR_CAM_11,vehicle_sightings.csv
+KA04FR2229,Sameer Singh,"Hebbal, Bengaluru",2026-08-22T17:14:00Z,ANPR_CAM_01,vehicle_sightings.csv
+KA04FR2229,Deepak Kumar,"Indiranagar, Bengaluru",2026-08-10T20:42:00Z,ANPR_CAM_14,vehicle_sightings.csv
+KA02AS5658,Varun Sharma,"Yelahanka, Bengaluru",2026-08-20T23:42:00Z,ANPR_CAM_09,vehicle_sightings.csv
+KA05BB5786,Karan Verma,"MG Road, Bengaluru",2026-08-25T14:40:00Z,ANPR_CAM_02,vehicle_sightings.csv
+KA05VA8622,Varun Joshi,"HSR Layout, Bengaluru",2026-08-04T22:28:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA05BB5786,Ramesh Rao,"HSR Layout, Bengaluru",2026-08-20T02:09:00Z,ANPR_CAM_09,vehicle_sightings.csv
+KA02SU1878,Deepak Bhat,"Indiranagar, Bengaluru",2026-08-10T22:01:00Z,ANPR_CAM_10,vehicle_sightings.csv
+KA02VH5334,Varun Sharma,"Whitefield, Bengaluru",2026-08-05T05:12:00Z,ANPR_CAM_02,vehicle_sightings.csv
+KA01BK1919,Vikram Joshi,"Jayanagar, Bengaluru",2026-08-25T17:15:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA05SB3870,Pankaj Pandey,"Hebbal, Bengaluru",2026-08-13T06:24:00Z,ANPR_CAM_12,vehicle_sightings.csv
+KA08OC1653,Vikram Joshi,"Whitefield, Bengaluru",2026-08-06T22:23:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA02YG4457,Anil Sharma,"MG Road, Bengaluru",2026-08-01T15:17:00Z,ANPR_CAM_08,vehicle_sightings.csv
+KA05KX7807,Ravi Bhat,"Hebbal, Bengaluru",2026-08-08T07:53:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA04ND9922,Priya Joshi,"Marathahalli, Bengaluru",2026-08-10T08:52:00Z,ANPR_CAM_11,vehicle_sightings.csv
+KA07UE2225,Priya Joshi,"Indiranagar, Bengaluru",2026-08-11T10:56:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA07UE2225,Gaurav Patel,"Whitefield, Bengaluru",2026-08-11T16:06:00Z,ANPR_CAM_03,vehicle_sightings.csv
+KA07XR6419,Pankaj Mehta,"MG Road, Bengaluru",2026-08-21T12:01:00Z,ANPR_CAM_13,vehicle_sightings.csv
+KA08SE4804,Sunil Das,"Whitefield, Bengaluru",2026-08-09T07:25:00Z,ANPR_CAM_19,vehicle_sightings.csv
+KA07UE2225,Aman Rao,"MG Road, Bengaluru",2026-08-12T12:11:00Z,ANPR_CAM_03,vehicle_sightings.csv
+KA05RE5719,Rajesh Chauhan,"Hebbal, Bengaluru",2026-08-07T04:55:00Z,ANPR_CAM_14,vehicle_sightings.csv
+KA05WJ1359,Tarun Patel,"Koramangala, Bengaluru",2026-08-24T19:52:00Z,ANPR_CAM_07,vehicle_sightings.csv
+KA01WR3073,Tarun Nair,"Indiranagar, Bengaluru",2026-08-11T21:07:00Z,ANPR_CAM_04,vehicle_sightings.csv
+KA02HD7818,Ravi Pandey,"Whitefield, Bengaluru",2026-08-22T18:42:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA05WJ8438,Karan Gupta,"Yelahanka, Bengaluru",2026-08-10T16:47:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA09MK8994,Nitin Patel,"Whitefield, Bengaluru",2026-08-18T16:54:00Z,ANPR_CAM_11,vehicle_sightings.csv
+KA07WI8484,Alok Verma,"Marathahalli, Bengaluru",2026-08-25T18:34:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA02SU1878,Varun Sharma,"Indiranagar, Bengaluru",2026-08-25T04:39:00Z,ANPR_CAM_12,vehicle_sightings.csv
+KA05XS9595,Aman Verma,"Whitefield, Bengaluru",2026-08-10T03:37:00Z,ANPR_CAM_10,vehicle_sightings.csv
+KA04XC8110,Karan Kumar,"Koramangala, Bengaluru",2026-08-05T14:22:00Z,ANPR_CAM_18,vehicle_sightings.csv
+KA03KN9117,Pankaj Mehta,"Koramangala, Bengaluru",2026-08-13T00:03:00Z,ANPR_CAM_07,vehicle_sightings.csv
+KA09AV9889,Vikram Bhat,"Electronic City, Bengaluru",2026-08-21T13:32:00Z,ANPR_CAM_17,vehicle_sightings.csv
+KA05GM8916,Vikram Reddy,"MG Road, Bengaluru",2026-08-26T23:20:00Z,ANPR_CAM_02,vehicle_sightings.csv
+KA02ZM1228,Pooja Verma,"HSR Layout, Bengaluru",2026-08-04T02:43:00Z,ANPR_CAM_15,vehicle_sightings.csv
+KA09LT9167,Neeraj Sharma,"Electronic City, Bengaluru",2026-08-09T17:58:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA04ND9922,Karan Kumar,"Hebbal, Bengaluru",2026-08-24T06:30:00Z,ANPR_CAM_16,vehicle_sightings.csv
+KA05ST1986,Rohit Kumar,"Hebbal, Bengaluru",2026-08-10T16:36:00Z,ANPR_CAM_13,vehicle_sightings.csv
+KA05VA8622,Ramesh Verma,"Koramangala, Bengaluru",2026-08-02T17:27:00Z,ANPR_CAM_10,vehicle_sightings.csv
+KA09LT9167,Aman Rao,"MG Road, Bengaluru",2026-08-14T08:24:00Z,ANPR_CAM_19,vehicle_sightings.csv
+KA08NB4073,Vikram Joshi,"Indiranagar, Bengaluru",2026-08-13T17:34:00Z,ANPR_CAM_14,vehicle_sightings.csv
+KA01UT4920,Ramesh Rao,"Marathahalli, Bengaluru",2026-08-12T19:51:00Z,ANPR_CAM_07,vehicle_sightings.csv
+KA07UC6383,Vikram Das,"Yelahanka, Bengaluru",2026-08-09T01:22:00Z,ANPR_CAM_10,vehicle_sightings.csv
+KA07GT9327,Priya Joshi,"MG Road, Bengaluru",2026-08-19T11:08:00Z,ANPR_CAM_04,vehicle_sightings.csv
+KA05HM4986,Amit Rao,"MG Road, Bengaluru",2026-08-15T13:55:00Z,ANPR_CAM_12,vehicle_sightings.csv
+KA03CB3718,Pooja Saxena,"Koramangala, Bengaluru",2026-08-20T21:02:00Z,ANPR_CAM_03,vehicle_sightings.csv
+KA08CP6700,Pankaj Joshi,"MG Road, Bengaluru",2026-08-20T03:54:00Z,ANPR_CAM_08,vehicle_sightings.csv
+KA08LK9903,Rohit Yadav,"Hebbal, Bengaluru",2026-08-15T08:28:00Z,ANPR_CAM_19,vehicle_sightings.csv
+KA08LK9903,Aman Kumar,"Indiranagar, Bengaluru",2026-08-13T05:57:00Z,ANPR_CAM_04,vehicle_sightings.csv
+KA07PR4937,Vikram Deshmukh,"Hebbal, Bengaluru",2026-08-07T11:43:00Z,ANPR_CAM_13,vehicle_sightings.csv
+KA07OK4090,Pooja Reddy,"Koramangala, Bengaluru",2026-08-05T19:03:00Z,ANPR_CAM_08,vehicle_sightings.csv
+KA03EZ5978,Vijay Verma,"Yelahanka, Bengaluru",2026-08-10T15:43:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA03GE9837,Varun Sharma,"Hebbal, Bengaluru",2026-08-09T12:29:00Z,ANPR_CAM_18,vehicle_sightings.csv
+KA05WJ8438,Sameer Das,"Indiranagar, Bengaluru",2026-08-22T15:27:00Z,ANPR_CAM_03,vehicle_sightings.csv
+KA05WJ1359,Pooja Verma,"Yelahanka, Bengaluru",2026-08-10T02:26:00Z,ANPR_CAM_09,vehicle_sightings.csv
+KA04KD9779,Rajesh Nair,"Yelahanka, Bengaluru",2026-08-24T07:57:00Z,ANPR_CAM_12,vehicle_sightings.csv
+KA05DG5853,Kiran Singh,"Electronic City, Bengaluru",2026-08-16T07:32:00Z,ANPR_CAM_04,vehicle_sightings.csv
+KA04PA6374,Arjun Chauhan,"Koramangala, Bengaluru",2026-08-24T11:31:00Z,ANPR_CAM_10,vehicle_sightings.csv
+KA03JR1224,Suresh Kumar,"Indiranagar, Bengaluru",2026-08-16T07:06:00Z,ANPR_CAM_17,vehicle_sightings.csv
+KA02UU1645,Suresh Das,"Indiranagar, Bengaluru",2026-08-22T16:57:00Z,ANPR_CAM_01,vehicle_sightings.csv
+KA05VS7046,Neeraj Sharma,"Yelahanka, Bengaluru",2026-08-07T20:55:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA08JY4770,Nitin Pandey,"Whitefield, Bengaluru",2026-08-15T21:58:00Z,ANPR_CAM_09,vehicle_sightings.csv
+KA07PR4937,Ajay Yadav,"Hebbal, Bengaluru",2026-08-02T16:46:00Z,ANPR_CAM_13,vehicle_sightings.csv
+KA04KD9779,Rajesh Pandey,"Electronic City, Bengaluru",2026-08-04T10:10:00Z,ANPR_CAM_18,vehicle_sightings.csv
+KA08PO6582,Deepak Gupta,"HSR Layout, Bengaluru",2026-08-03T11:01:00Z,ANPR_CAM_12,vehicle_sightings.csv
+KA08WP2989,Manish Reddy,"Indiranagar, Bengaluru",2026-08-19T06:38:00Z,ANPR_CAM_06,vehicle_sightings.csv
+KA04XC8110,Vikram Deshmukh,"Hebbal, Bengaluru",2026-08-23T04:21:00Z,ANPR_CAM_19,vehicle_sightings.csv
+KA04ND9922,Aman Das,"HSR Layout, Bengaluru",2026-08-23T12:28:00Z,ANPR_CAM_14,vehicle_sightings.csv
+KA05ST1986,Rohit Kumar,"Hebbal, Bengaluru",2026-08-06T14:39:00Z,ANPR_CAM_07,vehicle_sightings.csv
+KA07WI8484,Suresh Yadav,"Hebbal, Bengaluru",2026-08-07T15:52:00Z,ANPR_CAM_15,vehicle_sightings.csv
+KA08ZI6546,Manish Kumar,"Indiranagar, Bengaluru",2026-08-23T22:33:00Z,ANPR_CAM_07,vehicle_sightings.csv
+KA09OA3361,Manish Patel,"Yelahanka, Bengaluru",2026-08-06T10:52:00Z,ANPR_CAM_12,vehicle_sightings.csv
+KA08ZA2524,Deepak Joshi,"MG Road, Bengaluru",2026-08-05T20:00:00Z,ANPR_CAM_16,vehicle_sightings.csv
+KA07ZR6992,Nitin Joshi,"Whitefield, Bengaluru",2026-08-09T14:57:00Z,ANPR_CAM_09,vehicle_sightings.csv
+KA09BT2121,Sachin Deshmukh,"Jayanagar, Bengaluru",2026-08-20T05:50:00Z,ANPR_CAM_13,vehicle_sightings.csv
+KA06DO2633,Sanjay Deshmukh,"Koramangala, Bengaluru",2026-08-16T10:23:00Z,ANPR_CAM_12,vehicle_sightings.csv
+KA08JY4770,Kiran Patel,"Whitefield, Bengaluru",2026-08-01T19:11:00Z,ANPR_CAM_01,vehicle_sightings.csv
+KA01WR3073,Neeraj Rao,"HSR Layout, Bengaluru",2026-08-07T10:35:00Z,ANPR_CAM_15,vehicle_sightings.csv
+KA05VR3588,Ajay Yadav,"Yelahanka, Bengaluru",2026-08-12T09:30:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA07UE2225,Deepak Gupta,"Marathahalli, Bengaluru",2026-08-15T15:06:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA08DO5982,Anil Sharma,"Koramangala, Bengaluru",2026-08-09T10:47:00Z,ANPR_CAM_10,vehicle_sightings.csv
+KA03CI7798,Sanjay Deshmukh,"MG Road, Bengaluru",2026-08-25T13:43:00Z,ANPR_CAM_15,vehicle_sightings.csv
+KA09AV9889,Karan Das,"Yelahanka, Bengaluru",2026-08-22T06:01:00Z,ANPR_CAM_17,vehicle_sightings.csv
+KA08WJ9337,Ravi Rao,"HSR Layout, Bengaluru",2026-08-23T08:00:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA05XS9595,Anil Patel,"Indiranagar, Bengaluru",2026-08-06T08:35:00Z,ANPR_CAM_16,vehicle_sightings.csv
+KA02YG4457,Varun Chauhan,"Whitefield, Bengaluru",2026-08-18T02:54:00Z,ANPR_CAM_09,vehicle_sightings.csv
+KA07UL2775,Karan Kumar,"Koramangala, Bengaluru",2026-08-21T04:44:00Z,ANPR_CAM_11,vehicle_sightings.csv
+KA06HU4115,Ravi Rao,"MG Road, Bengaluru",2026-08-05T15:13:00Z,ANPR_CAM_03,vehicle_sightings.csv
+KA08UW9041,Tarun Verma,"Yelahanka, Bengaluru",2026-08-26T03:33:00Z,ANPR_CAM_15,vehicle_sightings.csv
+KA07UL2775,Ramesh Roy,"Marathahalli, Bengaluru",2026-08-12T22:50:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA05GM8916,Kiran Nair,"Indiranagar, Bengaluru",2026-08-07T08:52:00Z,ANPR_CAM_18,vehicle_sightings.csv
+KA05VY3240,Rajesh Das,"MG Road, Bengaluru",2026-08-26T21:55:00Z,ANPR_CAM_01,vehicle_sightings.csv
+KA05NP8736,Deepak Deshmukh,"Hebbal, Bengaluru",2026-08-03T22:21:00Z,ANPR_CAM_01,vehicle_sightings.csv
+KA07IQ9847,Manish Kumar,"Hebbal, Bengaluru",2026-08-04T15:59:00Z,ANPR_CAM_01,vehicle_sightings.csv
+KA08BE9229,Ajay Verma,"HSR Layout, Bengaluru",2026-08-22T01:27:00Z,ANPR_CAM_16,vehicle_sightings.csv
+KA07GT9327,Arjun Pandey,"HSR Layout, Bengaluru",2026-08-23T23:20:00Z,ANPR_CAM_11,vehicle_sightings.csv
+KA03JR1224,Ravi Saxena,"Electronic City, Bengaluru",2026-08-02T02:21:00Z,ANPR_CAM_19,vehicle_sightings.csv
+KA08CP6700,Vijay Saxena,"Hebbal, Bengaluru",2026-08-11T09:18:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA02HD7818,Tarun Patel,"Indiranagar, Bengaluru",2026-08-08T20:26:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA06QQ5465,Karan Verma,"Jayanagar, Bengaluru",2026-08-05T22:11:00Z,ANPR_CAM_17,vehicle_sightings.csv
+KA06DY7622,Vikram Reddy,"Whitefield, Bengaluru",2026-08-18T11:18:00Z,ANPR_CAM_05,vehicle_sightings.csv
+KA05VC3573,Rajesh Nair,"Koramangala, Bengaluru",2026-08-22T01:17:00Z,ANPR_CAM_11,vehicle_sightings.csv
+KA05IH2976,Karan Joshi,"Hebbal, Bengaluru",2026-08-13T12:06:00Z,ANPR_CAM_16,vehicle_sightings.csv
+KA07TV4945,Rohit Pandey,"Hebbal, Bengaluru",2026-08-22T14:59:00Z,ANPR_CAM_10,vehicle_sightings.csv
+KA09OA3361,Vikram Rao,"Yelahanka, Bengaluru",2026-08-10T11:27:00Z,ANPR_CAM_13,vehicle_sightings.csv
+KA04OR3369,Amit Rao,"MG Road, Bengaluru",2026-08-16T01:57:00Z,ANPR_CAM_18,vehicle_sightings.csv
+KA05RE5719,Karan Mishra,"Jayanagar, Bengaluru",2026-08-20T00:47:00Z,ANPR_CAM_12,vehicle_sightings.csv
+KA08NB4073,Vijay Patel,"Marathahalli, Bengaluru",2026-08-10T03:04:00Z,ANPR_CAM_03,vehicle_sightings.csv
+KA08BE9229,Aman Kumar,"Jayanagar, Bengaluru",2026-08-16T04:09:00Z,ANPR_CAM_14,vehicle_sightings.csv
+KA06QQ5465,Gaurav Yadav,"HSR Layout, Bengaluru",2026-08-16T03:15:00Z,ANPR_CAM_19,vehicle_sightings.csv
+KA04OR3369,Rajesh Das,"Yelahanka, Bengaluru",2026-08-11T14:29:00Z,ANPR_CAM_16,vehicle_sightings.csv
+KA08BE9229,Rohit Singh,"Indiranagar, Bengaluru",2026-08-10T02:13:00Z,ANPR_CAM_04,vehicle_sightings.csv
+KA06WO5438,Ramesh Rao,"Hebbal, Bengaluru",2026-08-13T05:42:00Z,ANPR_CAM_20,vehicle_sightings.csv
+KA03CI7798,Amit Nair,"Hebbal, Bengaluru",2026-08-08T22:34:00Z,ANPR_CAM_01,vehicle_sightings.csv
+KA05TX5728,Tarun Patel,"MG Road, Bengaluru",2026-08-10T09:30:00Z,ANPR_CAM_19,vehicle_sightings.csv
+KA08CK5135,Nitin Pandey,"Electronic City, Bengaluru",2026-08-04T00:53:00Z,ANPR_CAM_15,vehicle_sightings.csv
+KA03KN9117,Aman Nair,"Yelahanka, Bengaluru",2026-08-06T21:57:00Z,ANPR_CAM_19,vehicle_sightings.csv
+KA04UV5708,Sameer Singh,"Koramangala, Bengaluru",2026-08-23T07:10:00Z,ANPR_CAM_16,vehicle_sightings.csv

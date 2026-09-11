@@ -20,3 +20,11 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def init_db():
+    """
+    Initializes all database tables in PostgreSQL.
+    """
+    import app.models  # noqa: F401
+    Base.metadata.create_all(bind=engine)

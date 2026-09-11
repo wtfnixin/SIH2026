@@ -361,9 +361,125 @@ def get_entity_dossier(entity_id: str) -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=str(e))
 
 
+
+@router.get("/firs")
+def get_all_firs_directory(
+    q: Optional[str] = Query(None, description="Search keyword for FIR, suspect, vehicle, or section"),
+    police_station: Optional[str] = Query(None, description="Filter by police station name"),
+    status: Optional[str] = Query(None, description="Filter by status: all, active, charge_sheet"),
+    limit: int = Query(100, ge=1, le=500)
+) -> Dict[str, Any]:
+    """
+    Returns full directory of all Police First Information Reports (FIRs) with linked suspects,
+    vehicles, locations, law sections, and incident summaries.
+    """
+    try:
+        from app.db.local_store import LocalStore
+        local_store = LocalStore.get_instance()
+    except Exception:
+        local_store = None
+
+    # First attempt querying live Neo4j database
+    try:
+        cypher = """
+        MATCH (f:FIR)
+        OPTIONAL MATCH (f)-[r]-(p:Person)
+        OPTIONAL MATCH (f)-[rv]-(v:Vehicle)
+        OPTIONAL MATCH (f)-[rl]-(l:Location)
+        RETURN f.fir_no AS fir_no,
+               properties(f) AS properties,
+               collect(DISTINCT p.name) AS suspects,
+               collect(DISTINCT v.registration_number) AS vehicles,
+               collect(DISTINCT l.name) AS locations
+        ORDER BY f.fir_no DESC
+        """
+        with get_neo4j_session() as session:
+            records = session.run(cypher).data()
+
+        if records:
+            firs_list = []
+            for r in records:
+                fir_no = r["fir_no"]
+                props = r.get("properties") or {}
+                raw_suspects = [s for s in r["suspects"] if s and s.lower() not in NOISE_WORDS]
+                vehicles = [v for v in r["vehicles"] if v]
+                locations = [l for l in r["locations"] if l]
+                ps = props.get("police_station", "Central Jurisdiction PS")
+                inc_date = props.get("incident_date", "Recorded")
+                source_file = props.get("source_file", "")
+
+                # Enrich with local_store narrative if available
+                local_fir = next((lf for lf in (local_store.firs if local_store else []) if lf["fir_no"] == fir_no), None)
+                narrative = local_fir.get("narrative") if local_fir else f"Official State Police First Information Report filed at {ps} regarding criminal activities."
+                crime_cat = local_fir.get("crime_category") if local_fir else "GENERAL CRIME INVESTIGATION"
+                sections = local_fir.get("sections") if local_fir else ["IPC 120B", "IPC 34"]
+                fir_status = local_fir.get("status") if local_fir else "ACTIVE INVESTIGATION"
+
+                item = {
+                    "fir_no": fir_no,
+                    "police_station": ps,
+                    "incident_date": inc_date,
+                    "status": fir_status,
+                    "crime_category": crime_cat,
+                    "sections": sections,
+                    "narrative": narrative,
+                    "suspects": raw_suspects,
+                    "vehicles": vehicles,
+                    "locations": locations,
+                    "source_file": source_file
+                }
+
+                # Filtering
+                if police_station and police_station.lower() != "all":
+                    if police_station.lower() not in ps.lower():
+                        continue
+                if status and status.lower() != "all":
+                    if status.lower() not in fir_status.lower():
+                        continue
+                if q:
+                    ql = q.lower()
+                    matches = (
+                        ql in fir_no.lower() or
+                        ql in ps.lower() or
+                        ql in crime_cat.lower() or
+                        ql in narrative.lower() or
+                        any(ql in s.lower() for s in raw_suspects) or
+                        any(ql in v.lower() for v in vehicles) or
+                        any(ql in sec.lower() for sec in sections)
+                    )
+                    if not matches:
+                        continue
+
+                firs_list.append(item)
+
+            all_stations = sorted(list(set(x["police_station"] for x in firs_list if x.get("police_station"))))
+            all_suspects = set(s for x in firs_list for s in x.get("suspects", []))
+
+            return {
+                "total": len(firs_list),
+                "firs": firs_list[:limit],
+                "stations": all_stations,
+                "stats": {
+                    "total_firs": len(records),
+                    "active_investigations": sum(1 for x in firs_list if "ACTIVE" in x.get("status", "")),
+                    "charge_sheets": sum(1 for x in firs_list if "CHARGE SHEET" in x.get("status", "")),
+                    "total_suspects_linked": len(all_suspects),
+                    "stations_count": len(all_stations)
+                }
+            }
+    except Exception:
+        pass
+
+    if local_store:
+        return local_store.get_all_firs(q=q, police_station=police_station, status=status, limit=limit)
+
+    return {"total": 0, "firs": [], "stations": [], "stats": {}}
+
+
 @router.get("/aliases")
 def get_probable_aliases() -> Dict[str, Any]:
     """
     Runs entity resolution scan and returns flagged PROBABLE_ALIAS candidate pairs for officer review.
     """
     return resolve_person_nodes_in_neo4j()
+

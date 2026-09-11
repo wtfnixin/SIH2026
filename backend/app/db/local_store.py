@@ -1,4 +1,4 @@
-+"""
+"""
 Local In-Memory Criminal Intelligence & Graph Store
 Provides instant, 100% offline local graph and dossier capabilities without requiring Docker or external services.
 Parses synthetic police evidence (transactions, FIRs, vehicles, surveillance, calls) directly into memory.
@@ -9,10 +9,13 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-# Locate synthetic_data directory
+# Locate data directory (prefer cleaned_datasets if present)
 DATA_PATHS = [
+    Path(__file__).resolve().parents[3] / "data" / "cleaned_datasets",
+    Path("/app/data/cleaned_datasets"),
     Path(__file__).resolve().parents[3] / "data" / "synthetic_data",
     Path("/app/data/synthetic_data"),
+    Path("data/cleaned_datasets"),
     Path("data/synthetic_data"),
     Path("../data/synthetic_data")
 ]
@@ -20,7 +23,6 @@ DATA_PATHS = [
 DATA_DIR = None
 for p in DATA_PATHS:
     if p.exists():
-    
         DATA_DIR = p
         break
 
@@ -127,6 +129,25 @@ class LocalStore:
                     if "Whitefield, Bengaluru" in text: locations.add("Whitefield, Bengaluru")
                     if "Indiranagar, Bengaluru" in text: locations.add("Indiranagar, Bengaluru")
 
+                    # Determine categories and law sections based on text keywords
+                    crime_cat = "GENERAL CRIME INVESTIGATION"
+                    sections = ["IPC 120B", "IPC 34"]
+                    status = "ACTIVE INVESTIGATION"
+
+                    text_lower = text.lower()
+                    if "robbery" in text_lower or "armed" in text_lower:
+                        crime_cat = "ARMED ROBBERY / EXTORTION"
+                        sections = ["IPC 392", "IPC 397", "IPC 120B"]
+                        status = "ACTIVE INVESTIGATION"
+                    elif "receipts" in text_lower or "cash" in text_lower or "hawala" in text_lower or "smurfing" in text_lower:
+                        crime_cat = "ILLICIT CASH & HAWALA COURIER"
+                        sections = ["IPC 420", "IPC 468", "PMLA SEC 3", "IPC 120B"]
+                        status = "CHARGE SHEET FILED"
+                    elif "cyber" in text_lower or "fraud" in text_lower or "sim" in text_lower:
+                        crime_cat = "ORGANIZED CYBER CRIME & SIM FRAUD"
+                        sections = ["IT ACT 66D", "IPC 419", "IPC 420", "IPC 120B"]
+                        status = "ACTIVE INVESTIGATION"
+
                     self.firs.append({
                         "fir_no": fir_no,
                         "police_station": ps,
@@ -134,7 +155,11 @@ class LocalStore:
                         "narrative": text,
                         "persons": list(persons),
                         "vehicles": list(vehicles),
-                        "locations": list(locations)
+                        "locations": list(locations),
+                        "crime_category": crime_cat,
+                        "sections": sections,
+                        "status": status,
+                        "source_file": fpath.name
                     })
                 except Exception as e:
                     print(f"Error parsing FIR {fpath}:", e)
@@ -606,3 +631,49 @@ class LocalStore:
                 })
 
         return {"total_elements": len(elements), "elements": elements}
+
+    def get_all_firs(self, q=None, police_station=None, status=None, limit=100):
+        results = []
+        for f in self.firs:
+            # Filter by police station
+            if police_station and police_station.lower() != "all":
+                if police_station.lower() not in f.get("police_station", "").lower():
+                    continue
+
+            # Filter by status
+            if status and status.lower() != "all":
+                if status.lower() not in f.get("status", "").lower():
+                    continue
+
+            # Search query
+            if q:
+                ql = q.lower()
+                matches = (
+                    ql in f.get("fir_no", "").lower() or
+                    ql in f.get("police_station", "").lower() or
+                    ql in f.get("narrative", "").lower() or
+                    ql in f.get("crime_category", "").lower() or
+                    any(ql in p.lower() for p in f.get("persons", [])) or
+                    any(ql in v.lower() for v in f.get("vehicles", [])) or
+                    any(ql in s.lower() for s in f.get("sections", []))
+                )
+                if not matches:
+                    continue
+
+            results.append(f)
+
+        all_stations = sorted(list(set(x.get("police_station") for x in self.firs if x.get("police_station"))))
+        all_suspects = set(p for x in self.firs for p in x.get("persons", []))
+
+        return {
+            "total": len(results),
+            "firs": results[:limit],
+            "stations": all_stations,
+            "stats": {
+                "total_firs": len(self.firs),
+                "active_investigations": sum(1 for x in self.firs if "ACTIVE" in x.get("status", "")),
+                "charge_sheets": sum(1 for x in self.firs if "CHARGE SHEET" in x.get("status", "")),
+                "total_suspects_linked": len(all_suspects),
+                "stations_count": len(all_stations)
+            }
+        }

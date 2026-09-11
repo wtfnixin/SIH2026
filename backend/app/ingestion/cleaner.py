@@ -87,18 +87,65 @@ def clean_timestamp(ts_raw: Optional[str]) -> Optional[str]:
         return None
 
 
+NOISE_PERSON_WORDS = {
+    "CALL", "SEARCH", "HIMSELF", "DRIVER", "OFFICERS", "INVESTIGATION",
+    "TRANSACTIONS", "MEETINGS", "LOGS", "COMMUNICATION", "RECEIPTS", "NO",
+    "STATEMENT", "REPORT", "POLICE", "STATION", "WITNESS", "ACCUSED",
+    "SUSPECT", "CRIME", "CASE", "INFORMATION", "RECORD", "FIRST"
+}
+
+KNOWN_CANONICAL_ALIASES = {
+    "SUSPECT RAVI VERMA": "Ravi Verma",
+    "VERMA": "Ravi Verma",
+    "R. VERMA": "Ravi Verma",
+    "SHARMA": "Rahul Sharma",
+    "R. SHARMA": "Rahul Sharma",
+    "SUSPECT RAHUL SHARMA": "Rahul Sharma",
+    "AMIT": "Amit Kumar",
+    "SAMEER": "Sameer Roy"
+}
+
+
 def clean_name(name_raw: Optional[str]) -> Optional[str]:
     """
-    Cleans person name strings, removing OCR noise, titles, and extra whitespace.
-    Example: '  Rahul  Sharma ' -> 'Rahul Sharma'
+    Cleans person name strings, removing OCR noise, honorifics, titles, and extra whitespace.
+    Resolves known aliases and fragments to canonical suspect names.
+    Example: 'Suspect Ravi Verma' -> 'Ravi Verma', '  Rahul  Sharma ' -> 'Rahul Sharma'
     """
     if not name_raw:
         return None
 
     s = str(name_raw).strip()
-    if s.upper() in {"NULL", "NONE", "N/A", "UNKNOWN", "UNIDENTIFIED"}:
+    if s.upper() in {"NULL", "NONE", "N/A", "UNKNOWN", "UNIDENTIFIED", ""}:
         return None
 
     # Remove extra spaces between words
-    s = re.sub(r"\s+", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    s_upper = s.upper()
+
+    # Reject if it's a vehicle plate pattern
+    if re.match(r"^[A-Z]{2}\d{1,2}[A-Z]{1,3}\d{1,4}$", re.sub(r"[^A-Z0-9]", "", s_upper)):
+        return None
+
+    # Reject if single noise word or pure digit/punctuation
+    if s_upper in NOISE_PERSON_WORDS or s.isdigit() or len(s) <= 2:
+        return None
+
+    # Strip prefixes like "Suspect ", "Accused ", "Mr. ", "Shri "
+    for prefix in ["SUSPECT ", "ACCUSED ", "MR. ", "MR ", "SHRI "]:
+        if s_upper.startswith(prefix):
+            s = s[len(prefix):].strip()
+            s_upper = s.upper()
+            break
+
+    # Check known alias dictionary
+    if s_upper in KNOWN_CANONICAL_ALIASES:
+        return KNOWN_CANONICAL_ALIASES[s_upper]
+
+    # Reject if only 1 token and that token is a noise word
+    tokens = s.split()
+    if len(tokens) == 1 and tokens[0].upper() in NOISE_PERSON_WORDS:
+        return None
+
     return s.title()
+

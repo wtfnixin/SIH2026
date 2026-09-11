@@ -1,20 +1,226 @@
 """
-Neo4j Graph Loader & Database Pipeline Module
-Performs idempotent Cypher MERGE queries to populate nodes and relationships into Neo4j,
-and writes raw evidence logs into PostgreSQL tables.
+Neo4j Graph & PostgreSQL Database Loader Module
+Performs clean, deduplicated ingestion of criminal intelligence evidence into
+both PostgreSQL relational tables and Neo4j graph nodes and relationships.
+Cleans noise nodes and runs entity resolution.
 """
+import json
 import logging
+from pathlib import Path
 from typing import List, Dict, Any
+from datetime import datetime
+import pandas as pd
+
 from app.db.neo4j_driver import get_neo4j_session
-from app.ingestion.parsers import (
-    parse_calls_csv,
-    parse_transactions_csv,
-    parse_vehicle_sightings,
-    parse_surveillance_json
+from app.db.postgres_driver import SessionLocal, init_db
+from app.models.evidence import (
+    CallRecord,
+    TransactionRecord,
+    VehicleSightingRecord,
+    SurveillanceRecord,
+    FirRecord
 )
-from app.ingestion.nlp_extractor import parse_fir_folder
+from app.ingestion.data_cleaner_pipeline import run_data_cleaning_and_deduplication
+from app.ingestion.cleaner import clean_name, clean_vehicle_plate, NOISE_PERSON_WORDS
+from app.entity_res.graph_merger import resolve_person_nodes_in_neo4j
 
 logger = logging.getLogger(__name__)
+
+
+# ─────────────────────────────────────────────────────────────
+# POSTGRESQL BULK INGESTION
+# ─────────────────────────────────────────────────────────────
+
+def load_all_to_postgres(
+    calls: List[Dict[str, Any]],
+    txs: List[Dict[str, Any]],
+    sightings: List[Dict[str, Any]],
+    surveillance: List[Dict[str, Any]],
+    firs: List[Dict[str, Any]]
+) -> Dict[str, int]:
+    """
+    Initializes PostgreSQL tables and bulk-loads all cleaned evidence records.
+    """
+    init_db()
+    db = SessionLocal()
+    counts = {"calls": 0, "transactions": 0, "vehicles": 0, "surveillance": 0, "firs": 0}
+
+    try:
+        # Clear existing evidence tables for clean state
+        db.query(CallRecord).delete()
+        db.query(TransactionRecord).delete()
+        db.query(VehicleSightingRecord).delete()
+        db.query(SurveillanceRecord).delete()
+        db.query(FirRecord).delete()
+        db.commit()
+
+        # 1. Calls
+        call_objs = []
+        for c in calls:
+            try:
+                ts = datetime.fromisoformat(c["timestamp"].replace("Z", "+00:00"))
+            except Exception:
+                ts = datetime.utcnow()
+            call_objs.append(CallRecord(
+                caller_number=c["caller_number"],
+                receiver_number=c["receiver_number"],
+                timestamp=ts,
+                duration_seconds=c.get("duration_seconds", 0),
+                source_file=c.get("source_file", "calls.csv")
+            ))
+        if call_objs:
+            db.bulk_save_objects(call_objs)
+            db.commit()
+            counts["calls"] = len(call_objs)
+
+        # 2. Transactions
+        tx_objs = []
+        for t in txs:
+            try:
+                ts = datetime.fromisoformat(t["timestamp"].replace("Z", "+00:00"))
+            except Exception:
+                ts = datetime.utcnow()
+            tx_objs.append(TransactionRecord(
+                transaction_id=t["transaction_id"],
+                sender=t["sender"],
+                receiver=t["receiver"],
+                amount=float(t["amount"]),
+                timestamp=ts,
+                mode=t.get("mode", "UPI"),
+                is_structured=bool(t.get("is_structured", False)),
+                source_file=t.get("source_file", "transactions.csv")
+            ))
+        if tx_objs:
+            db.bulk_save_objects(tx_objs)
+            db.commit()
+            counts["transactions"] = len(tx_objs)
+
+        # 3. Vehicles
+        v_objs = []
+        for v in sightings:
+            try:
+                ts = datetime.fromisoformat(v["timestamp"].replace("Z", "+00:00"))
+            except Exception:
+                ts = datetime.utcnow()
+            v_objs.append(VehicleSightingRecord(
+                registration_number=v["registration_number"],
+                registered_owner=v.get("registered_owner"),
+                location=v["location"],
+                timestamp=ts,
+                camera_id=v.get("camera_id"),
+                source_file=v.get("source_file", "vehicle_sightings.csv")
+            ))
+        if v_objs:
+            db.bulk_save_objects(v_objs)
+            db.commit()
+            counts["vehicles"] = len(v_objs)
+
+        # 4. Surveillance
+        s_objs = []
+        for s in surveillance:
+            try:
+                ts = datetime.fromisoformat(s["timestamp"].replace("Z", "+00:00"))
+            except Exception:
+                ts = datetime.utcnow()
+            s_objs.append(SurveillanceRecord(
+                report_id=s["report_id"],
+                entity_type=s["entity_type"],
+                entity_value=s["entity_value"],
+                location=s["location"],
+                timestamp=ts,
+                observed_by=s.get("observed_by", "Field Unit"),
+                source_file=s.get("source_file", "surveillance.json")
+            ))
+        if s_objs:
+            db.bulk_save_objects(s_objs)
+            db.commit()
+            counts["surveillance"] = len(s_objs)
+
+        # 5. FIRs
+        f_objs = []
+        for f in firs:
+            try:
+                inc_date_raw = f.get("incident_date")
+                inc_date = datetime.fromisoformat(inc_date_raw.replace("Z", "+00:00")) if inc_date_raw else None
+            except Exception:
+                inc_date = None
+            f_objs.append(FirRecord(
+                fir_no=f["fir_no"],
+                police_station=f.get("police_station", "Central PS"),
+                incident_date=inc_date,
+                crime_category=f.get("crime_category", "GENERAL CRIME"),
+                status=f.get("status", "ACTIVE INVESTIGATION"),
+                sections=f.get("sections", []),
+                suspects=f.get("persons", []),
+                vehicles=f.get("vehicles", []),
+                locations=f.get("locations", []),
+                narrative=f.get("narrative", ""),
+                source_file=f.get("source_file", "")
+            ))
+        if f_objs:
+            db.bulk_save_objects(f_objs)
+            db.commit()
+            counts["firs"] = len(f_objs)
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error bulk-loading to PostgreSQL: {e}")
+        raise
+    finally:
+        db.close()
+
+    logger.info(f"PostgreSQL Ingestion Complete: {counts}")
+    return counts
+
+
+# ─────────────────────────────────────────────────────────────
+# NEO4J GRAPH INGESTION
+# ─────────────────────────────────────────────────────────────
+
+def cleanup_dirty_nodes_in_neo4j():
+    """
+    Cleans up noise Person nodes (e.g. 'Call', 'Driver', 'Himself', 'Investigation', vehicle plates).
+    """
+    with get_neo4j_session() as session:
+        # 1. Delete person nodes matching noise keywords
+        cypher_noise = """
+        MATCH (p:Person)
+        WHERE toUpper(p.name) IN $noise_words 
+           OR size(p.name) <= 2
+           OR p.name =~ '^[A-Za-z]{2}[0-9]{1,2}[A-Za-z]{1,3}[0-9]{1,4}$'
+        DETACH DELETE p
+        """
+        session.run(cypher_noise, noise_words=list(NOISE_PERSON_WORDS))
+
+        # 2. Canonicalize known alias Person nodes
+        cypher_merge_verma = """
+        MATCH (p1:Person) WHERE toUpper(p1.name) IN ['SUSPECT RAVI VERMA', 'VERMA']
+        MERGE (target:Person {name: 'Ravi Verma'})
+        WITH p1, target
+        OPTIONAL MATCH (p1)-[r]->(m)
+        FOREACH (ignore IN CASE WHEN r IS NOT NULL THEN [1] ELSE [] END |
+            MERGE (target)-[:INTERACTED_WITH {evidence: 'Merged Alias'}]->(m)
+        )
+        WITH p1
+        DETACH DELETE p1
+        """
+        cypher_merge_sharma = """
+        MATCH (p1:Person) WHERE toUpper(p1.name) IN ['SHARMA', 'SUSPECT RAHUL SHARMA']
+        MERGE (target:Person {name: 'Rahul Sharma'})
+        WITH p1, target
+        OPTIONAL MATCH (p1)-[r]->(m)
+        FOREACH (ignore IN CASE WHEN r IS NOT NULL THEN [1] ELSE [] END |
+            MERGE (target)-[:INTERACTED_WITH {evidence: 'Merged Alias'}]->(m)
+        )
+        WITH p1
+        DETACH DELETE p1
+        """
+        try:
+            session.run(cypher_merge_verma)
+            session.run(cypher_merge_sharma)
+        except Exception as e:
+            logger.warning(f"Alias cleanup notice: {e}")
+
 
 
 def load_calls_to_neo4j(calls: List[Dict[str, Any]]) -> int:
@@ -66,7 +272,7 @@ def load_sightings_to_neo4j(sightings: List[Dict[str, Any]]) -> int:
     SET r.camera_id = row.camera_id,
         r.source_file = row.source_file
 
-    FOREACH (ignoreMe IN CASE WHEN row.registered_owner IS NOT NULL THEN [1] ELSE [] END |
+    FOREACH (ignoreMe IN CASE WHEN row.registered_owner IS NOT NULL AND row.registered_owner <> 'Unknown Owner' THEN [1] ELSE [] END |
         MERGE (p:Person {name: row.registered_owner})
         MERGE (p)-[:OWNS_VEHICLE]->(v)
     )
@@ -109,7 +315,7 @@ def load_surveillance_to_neo4j(reports: List[Dict[str, Any]]) -> int:
 
 def load_firs_to_neo4j(firs: List[Dict[str, Any]]) -> int:
     """
-    Creates (:FIR) nodes and connects extracted (:Person), (:Phone), (:Vehicle), and (:Location) nodes via (:MENTIONED_IN).
+    Creates (:FIR) nodes and connects extracted (:Person), (:Phone), (:Vehicle), and (:Location) nodes.
     """
     cypher = """
     UNWIND $batch AS row
@@ -117,8 +323,8 @@ def load_firs_to_neo4j(firs: List[Dict[str, Any]]) -> int:
     SET f.police_station = row.police_station,
         f.incident_date = row.incident_date,
         f.source_file = row.source_file,
-        f.money_values = COALESCE(row.money, []),
-        f.dates_mentioned = COALESCE(row.dates, [])
+        f.crime_category = row.crime_category,
+        f.status = row.status
 
     FOREACH (p_name IN row.persons |
         MERGE (p:Person {name: p_name})
@@ -139,67 +345,69 @@ def load_firs_to_neo4j(firs: List[Dict[str, Any]]) -> int:
         MERGE (l:Location {name: loc_name})
         MERGE (f)-[:OCCURRED_AT]->(l)
     )
-    
-    FOREACH (org_name IN COALESCE(row.organizations, []) |
-        MERGE (o:Organization {name: org_name})
-        MERGE (o)-[:MENTIONED_IN]->(f)
-    )
-
-    FOREACH (event_name IN COALESCE(row.events, []) |
-        MERGE (e:Event {name: event_name})
-        MERGE (e)-[:MENTIONED_IN]->(f)
-    )
-    
-    FOREACH (rel IN COALESCE(row.relations, []) |
-        FOREACH (ignoreMe IN CASE WHEN rel.subject IS NOT NULL AND rel.object IS NOT NULL THEN [1] ELSE [] END |
-            MERGE (sub:Person {name: rel.subject})
-            MERGE (obj:Person {name: rel.object})
-            MERGE (sub)-[r:INTERACTED_WITH {action: rel.action}]->(obj)
-            SET r.evidence = rel.evidence,
-                r.confidence = rel.confidence
-            MERGE (sub)-[:MENTIONED_IN]->(f)
-            MERGE (obj)-[:MENTIONED_IN]->(f)
-        )
-    )
     """
     with get_neo4j_session() as session:
         session.run(cypher, batch=firs)
     return len(firs)
 
 
-def run_full_ingestion_pipeline(data_dir: str = "/app/data/synthetic_data") -> Dict[str, int]:
-    """
-    Orchestrates parsing of all files in data_dir and ingests them into Neo4j.
-    """
-    logger.info("Starting Full Data Ingestion Pipeline...")
+# ─────────────────────────────────────────────────────────────
+# FULL END-TO-END PIPELINE ORCHESTRATOR
+# ─────────────────────────────────────────────────────────────
 
-    stats = {
-        "calls": 0,
-        "transactions": 0,
-        "sightings": 0,
-        "surveillance": 0,
-        "firs": 0
+def run_full_ingestion_pipeline(
+    data_dir: str = "/app/data/synthetic_data",
+    cleaned_dir: str = "/app/data/cleaned_datasets"
+) -> Dict[str, Any]:
+    """
+    Orchestrates full data cleaning, deduplication, and database ingestion into both
+    PostgreSQL and Neo4j, followed by automated entity resolution.
+    """
+    logger.info("Starting Full Clean Data Ingestion Pipeline...")
+
+    # 1. Run Data Cleaning and Deduplication
+    cleaning_res = run_data_cleaning_and_deduplication(source_dir=data_dir, output_dir=cleaned_dir)
+
+    # 2. Read Cleaned Datasets
+    clean_path = Path(cleaned_dir)
+    df_calls = pd.read_csv(clean_path / "calls_cleaned.csv")
+    calls = df_calls.to_dict(orient="records")
+
+    df_tx = pd.read_csv(clean_path / "transactions_cleaned.csv")
+    txs = df_tx.to_dict(orient="records")
+
+    df_veh = pd.read_csv(clean_path / "vehicles_cleaned.csv")
+    sightings = df_veh.to_dict(orient="records")
+
+    with open(clean_path / "surveillance_cleaned.json", "r", encoding="utf-8") as f:
+        surveillance = json.load(f)
+
+    with open(clean_path / "firs_cleaned.json", "r", encoding="utf-8") as f:
+        firs = json.load(f)
+
+    # 3. Ingest into PostgreSQL
+    postgres_stats = load_all_to_postgres(calls, txs, sightings, surveillance, firs)
+
+    # 4. Clean Dirty Noise Nodes in Neo4j
+    cleanup_dirty_nodes_in_neo4j()
+
+    # 5. Ingest Clean Records into Neo4j
+    neo4j_stats = {
+        "calls": load_calls_to_neo4j(calls),
+        "transactions": load_transactions_to_neo4j(txs),
+        "sightings": load_sightings_to_neo4j(sightings),
+        "surveillance": load_surveillance_to_neo4j(surveillance),
+        "firs": load_firs_to_neo4j(firs)
     }
 
-    # 1. Calls CSV
-    calls = parse_calls_csv(f"{data_dir}/calls.csv")
-    stats["calls"] = load_calls_to_neo4j(calls)
+    # 6. Run Entity Resolution Scan
+    resolution_stats = resolve_person_nodes_in_neo4j()
 
-    # 2. Transactions CSV
-    txs = parse_transactions_csv(f"{data_dir}/transactions.csv")
-    stats["transactions"] = load_transactions_to_neo4j(txs)
-
-    # 3. Vehicle Sightings CSV
-    sightings = parse_vehicle_sightings(f"{data_dir}/vehicle_sightings.csv")
-    stats["sightings"] = load_sightings_to_neo4j(sightings)
-
-    # 4. Surveillance JSON
-    surv = parse_surveillance_json(f"{data_dir}/surveillance.json")
-    stats["surveillance"] = load_surveillance_to_neo4j(surv)
-
-    # 5. Text FIRs
-    firs = parse_fir_folder(f"{data_dir}/firs")
-    stats["firs"] = load_firs_to_neo4j(firs)
-
-    logger.info(f"Ingestion Complete! Stats: {stats}")
-    return stats
+    logger.info("Ingestion & Resolution Complete!")
+    return {
+        "status": "success",
+        "cleaning_summary": cleaning_res["summary"],
+        "postgres_ingestion": postgres_stats,
+        "neo4j_ingestion": neo4j_stats,
+        "entity_resolution": resolution_stats
+    }

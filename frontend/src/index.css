@@ -5813,14 +5813,15 @@ body {
 }
 
 [data-theme="dark"] .shadcn-button-secondary {
-  background: rgba(15, 23, 42, 0.8) !important;
-  color: #f8fafc !important;
-  border-color: rgba(56, 189, 248, 0.25) !important;
+  background: #18181b !important;
+  color: #fafafa !important;
+  border-color: #27272a !important;
 }
 
 [data-theme="dark"] .shadcn-button-secondary:hover:not(:disabled) {
-  border-color: #38bdf8 !important;
-  background: rgba(56, 189, 248, 0.12) !important;
+  border-color: #3f3f46 !important;
+  background: #27272a !important;
+  color: #ffffff !important;
 }
 
 [data-theme="light"] .shadcn-input {
@@ -5839,14 +5840,14 @@ body {
 }
 
 [data-theme="dark"] .shadcn-input {
-  background: rgba(15, 23, 42, 0.9) !important;
-  border-color: rgba(56, 189, 248, 0.25) !important;
-  color: #f8fafc !important;
+  background: #121215 !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
 }
 
 [data-theme="dark"] .shadcn-input:focus {
-  border-color: #38bdf8 !important;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15) !important;
+  border-color: #52525b !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08) !important;
 }
 
 .shadcn-scroll-area::-webkit-scrollbar {
@@ -5857,6 +5858,37 @@ body {
   background: var(--scrollbar-thumb);
   border-radius: 6px;
 }
+
+/* FIR Directory Card Styles */
+.fir-case-card {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* No translateY on hover to completely prevent top clipping inside scrollable containers */
+.fir-case-card:hover {
+  transform: none !important;
+}
+
+[data-theme="light"] .fir-case-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .fir-case-card:hover {
+  border-color: #94a3b8 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="dark"] .fir-case-card {
+  background: #101013 !important;
+  border-color: #222226 !important;
+}
+
+[data-theme="dark"] .fir-case-card:hover {
+  border-color: #3f3f46 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+}
+
 
 
 
