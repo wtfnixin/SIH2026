@@ -11,6 +11,7 @@ router = APIRouter()
 
 # Coordinates mapping for location nodes in sample dataset (Delhi-NCR & Western Corridor)
 LOCATION_COORDINATES = {
+    # Delhi-NCR & Western Corridor
     "Delhi Gate Toll": {"lat": 28.6415, "lng": 77.2410, "type": "Toll Gantry", "city": "Delhi"},
     "Sector 62 Noida Gantry": {"lat": 28.6271, "lng": 77.3726, "type": "Surveillance Cam", "city": "Noida"},
     "NH-48 Gurgaon Plaza": {"lat": 28.4817, "lng": 77.0805, "type": "Highway Toll", "city": "Gurgaon"},
@@ -21,21 +22,154 @@ LOCATION_COORDINATES = {
     "Faridabad Toll Plaza": {"lat": 28.4089, "lng": 77.3178, "type": "Highway Toll", "city": "Faridabad"},
     "Mumbai Sea Link Plaza": {"lat": 19.0330, "lng": 72.8166, "type": "Toll Plaza", "city": "Mumbai"},
     "Pune Expressway Toll": {"lat": 18.6672, "lng": 73.7438, "type": "Highway Toll", "city": "Pune"},
+    # Bengaluru Surveillance Corridor
+    "MG Road, Bengaluru": {"lat": 12.9756, "lng": 77.6066, "type": "Surveillance Cam", "city": "Bengaluru"},
+    "MG Road": {"lat": 12.9756, "lng": 77.6066, "type": "Surveillance Cam", "city": "Bengaluru"},
+    "Whitefield, Bengaluru": {"lat": 12.9698, "lng": 77.7499, "type": "ANPR Gantry", "city": "Bengaluru"},
+    "Whitefield": {"lat": 12.9698, "lng": 77.7499, "type": "ANPR Gantry", "city": "Bengaluru"},
+    "Koramangala, Bengaluru": {"lat": 12.9352, "lng": 77.6245, "type": "City Cam", "city": "Bengaluru"},
+    "Indiranagar, Bengaluru": {"lat": 12.9784, "lng": 77.6408, "type": "ANPR Gantry", "city": "Bengaluru"},
+    "Indiranagar": {"lat": 12.9784, "lng": 77.6408, "type": "ANPR Gantry", "city": "Bengaluru"},
+    "Jayanagar, Bengaluru": {"lat": 12.9308, "lng": 77.5838, "type": "City Cam", "city": "Bengaluru"},
+    "Hebbal, Bengaluru": {"lat": 13.0358, "lng": 77.5970, "type": "Highway Toll", "city": "Bengaluru"},
+    "Marathahalli, Bengaluru": {"lat": 12.9591, "lng": 77.6974, "type": "Toll Gantry", "city": "Bengaluru"},
+    "HSR Layout, Bengaluru": {"lat": 12.9121, "lng": 77.6446, "type": "Surveillance Cam", "city": "Bengaluru"},
+    "Electronic City, Bengaluru": {"lat": 12.8452, "lng": 77.6602, "type": "Highway Toll", "city": "Bengaluru"},
+    "Yelahanka, Bengaluru": {"lat": 13.1007, "lng": 77.5963, "type": "ANPR Gantry", "city": "Bengaluru"},
+    "Bengaluru": {"lat": 12.9716, "lng": 77.5946, "type": "Regional Hub", "city": "Bengaluru"},
 }
 
 # Fallback generator for unknown locations
 def get_coords(location_name: str) -> Dict[str, float]:
     if location_name in LOCATION_COORDINATES:
         return LOCATION_COORDINATES[location_name]
-    # Generate deterministic hash-based offsets around Delhi-NCR center
+    
+    # Check if location contains city keywords
+    is_blr = "bengaluru" in location_name.lower() or "bangalore" in location_name.lower()
+    base_lat = 12.9716 if is_blr else 28.6139
+    base_lng = 77.5946 if is_blr else 77.2090
+    city_name = "Bengaluru Corridor" if is_blr else "NCR Corridor"
+
+    # Generate deterministic hash-based offsets
     h = sum(ord(c) for c in location_name)
     lat_offset = ((h % 100) - 50) / 500.0
     lng_offset = (((h * 13) % 100) - 50) / 500.0
     return {
-        "lat": round(28.6139 + lat_offset, 4),
-        "lng": round(77.2090 + lng_offset, 4),
+        "lat": round(base_lat + lat_offset, 4),
+        "lng": round(base_lng + lng_offset, 4),
         "type": "ANPR Camera",
-        "city": "NCR Corridor"
+        "city": city_name
+    }
+
+
+@router.get("/vehicles")
+def get_all_suspect_vehicles() -> Dict[str, Any]:
+    """
+    Returns list of suspect vehicles indexed in the database with their registered suspect owners,
+    sighting frequencies, and recent sighting locations for autocomplete & search.
+    """
+    cypher = """
+    MATCH (v:Vehicle)
+    OPTIONAL MATCH (p:Person)-[:OWNS_VEHICLE]->(v)
+    OPTIONAL MATCH (v)-[r:SIGHTED_AT|OBSERVED_AT]->(l:Location)
+    WITH v,
+         collect(DISTINCT p.name) AS owners,
+         count(r) AS sighting_count,
+         collect(DISTINCT l.name)[..4] AS locations
+    RETURN v.registration_number AS plate,
+           CASE WHEN size(owners) > 0 THEN owners[0] ELSE 'Unknown Suspect' END AS primary_owner,
+           owners,
+           sighting_count,
+           locations
+    ORDER BY sighting_count DESC, plate ASC
+    """
+    vehicles = []
+    # Curated Pre-Defined Tracked Vehicles (High Value Targets in Suspect Database)
+    PREDEFINED_PLATES = ["KA05RE5719", "KA07UE2225", "KA08NB4073", "KA02HD7818", "KA04FR2229"]
+    try:
+        with get_neo4j_session() as session:
+            records = session.run(cypher).data()
+            seen_plates = set()
+            # First add matching predefined plates from DB
+            for rec in records:
+                plate = rec["plate"]
+                if not plate:
+                    continue
+                if plate in PREDEFINED_PLATES:
+                    seen_plates.add(plate)
+                    vehicles.append({
+                        "plate": plate,
+                        "owner": rec["primary_owner"],
+                        "all_owners": rec["owners"],
+                        "model": "Sedan / SUV",
+                        "sighting_count": rec["sighting_count"],
+                        "locations": rec["locations"],
+                        "threat_level": "CRITICAL" if rec["sighting_count"] >= 10 else "SUSPECT",
+                        "is_predefined": True
+                    })
+            
+            # Ensure all 5 pre-defined plates are present
+            predefined_defaults = [
+                ("KA05RE5719", "Varun Pandey", 16, ["MG Road, Bengaluru", "Hebbal, Bengaluru", "Marathahalli, Bengaluru", "Jayanagar, Bengaluru"]),
+                ("KA07UE2225", "Priya Joshi", 16, ["Indiranagar, Bengaluru", "Whitefield, Bengaluru", "MG Road, Bengaluru", "Marathahalli, Bengaluru"]),
+                ("KA08NB4073", "Vikram Joshi", 12, ["Marathahalli, Bengaluru", "Indiranagar, Bengaluru", "HSR Layout, Bengaluru"]),
+                ("KA02HD7818", "Ravi Pandey", 9, ["Indiranagar, Bengaluru", "Koramangala, Bengaluru", "Whitefield, Bengaluru"]),
+                ("KA04FR2229", "Deepak Kumar", 9, ["MG Road, Bengaluru", "Indiranagar, Bengaluru", "Hebbal, Bengaluru"]),
+            ]
+            for plate, owner, count, locs in predefined_defaults:
+                if plate not in seen_plates:
+                    seen_plates.add(plate)
+                    vehicles.append({
+                        "plate": plate,
+                        "owner": owner,
+                        "all_owners": [owner],
+                        "model": "Sedan / SUV",
+                        "sighting_count": count,
+                        "locations": locs,
+                        "threat_level": "CRITICAL" if count >= 10 else "SUSPECT",
+                        "is_predefined": True
+                    })
+
+            # Append other vehicles from database
+            for rec in records:
+                plate = rec["plate"]
+                if plate and plate not in seen_plates:
+                    seen_plates.add(plate)
+                    vehicles.append({
+                        "plate": plate,
+                        "owner": rec["primary_owner"],
+                        "all_owners": rec["owners"],
+                        "model": "Sedan / SUV",
+                        "sighting_count": rec["sighting_count"],
+                        "locations": rec["locations"],
+                        "threat_level": "CRITICAL" if rec["sighting_count"] >= 10 else "SUSPECT",
+                        "is_predefined": False
+                    })
+    except Exception as e:
+        print(f"Error fetching suspect vehicles: {e}")
+        fallback_plates = [
+            ("KA05RE5719", "Varun Pandey", 16, ["MG Road, Bengaluru", "Jayanagar, Bengaluru"]),
+            ("KA07UE2225", "Priya Joshi", 16, ["Whitefield, Bengaluru", "Marathahalli, Bengaluru"]),
+            ("KA08NB4073", "Vikram Joshi", 12, ["HSR Layout, Bengaluru", "Indiranagar, Bengaluru"]),
+            ("KA02HD7818", "Ravi Pandey", 9, ["Koramangala, Bengaluru", "Whitefield, Bengaluru"]),
+            ("KA04FR2229", "Deepak Kumar", 9, ["MG Road, Bengaluru", "Indiranagar, Bengaluru"]),
+        ]
+        for plate, owner, count, locs in fallback_plates:
+            vehicles.append({
+                "plate": plate,
+                "owner": owner,
+                "all_owners": [owner],
+                "model": "Sedan / SUV",
+                "sighting_count": count,
+                "locations": locs,
+                "threat_level": "CRITICAL" if count >= 10 else "SUSPECT",
+                "is_predefined": True
+            })
+
+    return {
+        "total": len(vehicles),
+        "predefined_plates": PREDEFINED_PLATES,
+        "vehicles": vehicles
     }
 
 
@@ -46,11 +180,12 @@ def get_all_anpr_sightings() -> Dict[str, Any]:
     and associated vehicles for spatial map rendering.
     """
     cypher = """
-    MATCH (v:Vehicle)-[r:SIGHTED_AT]->(l:Location)
+    MATCH (v:Vehicle)-[r:SIGHTED_AT|OBSERVED_AT]->(l:Location)
+    OPTIONAL MATCH (p:Person)-[:OWNS_VEHICLE]->(v)
     RETURN l.name AS location,
            count(r) AS sighting_count,
            collect(DISTINCT v.registration_number)[..5] AS recent_vehicles,
-           collect(DISTINCT v.registered_owner)[..5] AS owners
+           collect(DISTINCT p.name)[..5] AS owners
     ORDER BY sighting_count DESC
     """
     gantries = []
@@ -61,6 +196,8 @@ def get_all_anpr_sightings() -> Dict[str, Any]:
             records = session.run(cypher).data()
             for rec in records:
                 loc_name = rec["location"]
+                if not loc_name:
+                    continue
                 coords = get_coords(loc_name)
                 s_count = rec["sighting_count"]
                 total_sightings += s_count
@@ -72,12 +209,11 @@ def get_all_anpr_sightings() -> Dict[str, Any]:
                     "type": coords["type"],
                     "city": coords["city"],
                     "sighting_count": s_count,
-                    "recent_vehicles": rec["recent_vehicles"],
-                    "owners": rec["owners"]
+                    "recent_vehicles": rec.get("recent_vehicles", []),
+                    "owners": [o for o in rec.get("owners", []) if o]
                 })
     except Exception as e:
         print(f"Error fetching ANPR sightings: {e}")
-        # Fallback sample gantries if database query is empty
         for loc_name, coords in LOCATION_COORDINATES.items():
             gantries.append({
                 "id": loc_name,
@@ -87,8 +223,8 @@ def get_all_anpr_sightings() -> Dict[str, Any]:
                 "type": coords["type"],
                 "city": coords["city"],
                 "sighting_count": 12,
-                "recent_vehicles": ["DL-01-AB-1234", "MH-12-PQ-9981"],
-                "owners": ["Rahul Verma", "Unknown"]
+                "recent_vehicles": ["KA05RE5719", "KA07UE2225"],
+                "owners": ["Varun Pandey", "Priya Joshi"]
             })
 
     return {
@@ -104,49 +240,91 @@ def get_vehicle_trajectory(vehicle_plate: str) -> Dict[str, Any]:
     Retrieves chronological movement path & camera gantries passed by a specific vehicle plate.
     """
     cypher = """
-    MATCH (v:Vehicle {registration_number: $plate})-[r:SIGHTED_AT]->(l:Location)
+    MATCH (v:Vehicle {registration_number: $plate})
+    OPTIONAL MATCH (p:Person)-[:OWNS_VEHICLE]->(v)
+    OPTIONAL MATCH (v)-[r:SIGHTED_AT|OBSERVED_AT]->(l:Location)
     RETURN v.registration_number AS vehicle_plate,
-           v.registered_owner AS owner,
-           v.model AS model,
+           collect(DISTINCT p.name) AS owners,
+           coalesce(v.model, 'Sedan / SUV') AS model,
            l.name AS location,
            properties(r) AS sighting_props
     """
     trajectory_points = []
-    vehicle_info = {"registration_number": vehicle_plate, "registered_owner": "Unknown Owner", "model": "Unknown"}
+    vehicle_info = {
+        "registration_number": vehicle_plate,
+        "registered_owner": "Unknown Suspect",
+        "all_owners": [],
+        "model": "Sedan / SUV",
+        "threat_level": "SUSPECT"
+    }
 
     try:
         with get_neo4j_session() as session:
             records = session.run(cypher, plate=vehicle_plate).data()
-            for idx, rec in enumerate(records):
-                vehicle_info["registered_owner"] = rec.get("owner", "Unknown Owner")
-                vehicle_info["model"] = rec.get("model", "SUV / Sedan")
-                loc_name = rec["location"]
-                coords = get_coords(loc_name)
-                props = rec.get("sighting_props", {})
+            raw_sightings = []
+            for rec in records:
+                owners = rec.get("owners", [])
+                if owners:
+                    vehicle_info["all_owners"] = owners
+                    vehicle_info["registered_owner"] = owners[0]
+                if rec.get("model"):
+                    vehicle_info["model"] = rec["model"]
+
+                loc_name = rec.get("location")
+                if loc_name:
+                    props = rec.get("sighting_props", {}) or {}
+                    raw_sightings.append({
+                        "location": loc_name,
+                        "timestamp": props.get("timestamp", "2026-08-01T00:00:00Z"),
+                        "camera_id": props.get("camera_id", "ANPR_CAM_01")
+                    })
+
+            # Deduplicate same location with identical timestamps and sort chronologically
+            seen = set()
+            deduped = []
+            for item in raw_sightings:
+                key = (item["location"], item["timestamp"])
+                if key not in seen:
+                    seen.add(key)
+                    deduped.append(item)
+
+            deduped.sort(key=lambda x: x["timestamp"])
+
+            for idx, item in enumerate(deduped):
+                coords = get_coords(item["location"])
                 trajectory_points.append({
                     "sequence": idx + 1,
-                    "location": loc_name,
+                    "location": item["location"],
                     "lat": coords["lat"],
                     "lng": coords["lng"],
-                    "timestamp": props.get("timestamp", f"2026-09-10T14:{10+idx*15}:00Z"),
-                    "camera_id": props.get("camera_id", f"CAM_{idx+101}")
+                    "city": coords["city"],
+                    "timestamp": item["timestamp"],
+                    "camera_id": item["camera_id"]
                 })
     except Exception as e:
         print(f"Error fetching trajectory for {vehicle_plate}: {e}")
 
-    # If no records in DB, construct realistic fallback route for demo
+    # If no records in DB, construct realistic fallback route
     if not trajectory_points:
-        sample_locs = ["Delhi Gate Toll", "Sector 62 Noida Gantry", "NH-48 Gurgaon Plaza", "Cyber City Flyover"]
-        for idx, loc_name in enumerate(sample_locs):
+        sample_locs = [
+            ("Hebbal, Bengaluru", "2026-08-07T04:55:00Z", "ANPR_CAM_14"),
+            ("MG Road, Bengaluru", "2026-08-09T08:49:00Z", "ANPR_CAM_20"),
+            ("Marathahalli, Bengaluru", "2026-08-16T06:32:00Z", "ANPR_CAM_17"),
+            ("Jayanagar, Bengaluru", "2026-08-20T00:47:00Z", "ANPR_CAM_12")
+        ]
+        for idx, (loc_name, ts, cam) in enumerate(sample_locs):
             coords = get_coords(loc_name)
             trajectory_points.append({
                 "sequence": idx + 1,
                 "location": loc_name,
                 "lat": coords["lat"],
                 "lng": coords["lng"],
-                "timestamp": f"2026-09-10T08:{15 + idx*25:02d}:00Z",
-                "camera_id": f"ANPR_CAM_{201+idx}"
+                "city": coords["city"],
+                "timestamp": ts,
+                "camera_id": cam
             })
+
+    vehicle_info["threat_level"] = "CRITICAL" if len(trajectory_points) >= 4 else "SUSPECT"
 
     return {
         "vehicle": vehicle_info,

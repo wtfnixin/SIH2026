@@ -687,7 +687,7 @@ export default function App() {
               <GeospatialMapCanvas
                 onSelectEntity={(id) => setFocusedEntityId(id)}
                 onOpenDossier={(id) => openDossier(id)}
-                initialVehiclePlate="MH-12-PQ-9981"
+                initialVehiclePlate={null}
               />
             </div>
           )}

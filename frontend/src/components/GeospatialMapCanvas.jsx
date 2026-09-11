@@ -16,27 +16,27 @@ import {
   Camera,
   ShieldAlert,
   Car,
-  Play,
-  Pause,
-  RotateCcw,
   Search,
   ExternalLink,
   MapPin,
   Clock,
-  ChevronRight,
-  ChevronLeft,
-  Plus,
-  Minus,
   Compass,
   Layers,
   Crosshair,
   Radio,
   FileText,
-  X
+  X,
+  ChevronRight,
+  Route,
+  Activity,
+  AlertTriangle,
+  ArrowRight,
+  Target,
+  CheckCircle2
 } from 'lucide-react';
 
 /* ──────────────────────────────────────────
-   CUSTOM LEAFLET ICONS (CLEAN, NO GLOW, NO EMOJIS)
+   CUSTOM LEAFLET ICONS
 ────────────────────────────────────────── */
 const createGantryIcon = (count) => {
   const size = 28;
@@ -90,40 +90,83 @@ const createConvoyIcon = () => {
   });
 };
 
-const createVehicleIcon = (seq, isCurrent) => {
-  const s = isCurrent ? 26 : 20;
-  const color = isCurrent ? '#059669' : '#0369a1';
-  const border = isCurrent ? '2px solid #34d399' : '1.5px solid #38bdf8';
+const createVehicleIcon = (seq, isLatest, isSelected) => {
+  const s = isLatest ? 30 : 22;
+  const bg = isLatest
+    ? 'linear-gradient(135deg, #10b981, #059669)'
+    : isSelected
+    ? 'linear-gradient(135deg, #0284c7, #0369a1)'
+    : 'rgba(15, 23, 42, 0.92)';
+  const border = isLatest
+    ? '2px solid #6ee7b7'
+    : isSelected
+    ? '2px solid #38bdf8'
+    : '1.5px solid rgba(56, 189, 248, 0.5)';
+  const shadow = isLatest
+    ? '0 0 14px rgba(16, 185, 129, 0.7)'
+    : isSelected
+    ? '0 0 10px rgba(56, 189, 248, 0.5)'
+    : '0 2px 6px rgba(0, 0, 0, 0.6)';
+
   return L.divIcon({
     className: '',
     html: `
-      <div style="
-        width:${s}px;height:${s}px;
-        background:${color};
-        border:${border};
-        border-radius:50%;
-        box-shadow:0 2px 6px rgba(0, 0, 0, 0.6);
-        display:flex;align-items:center;justify-content:center;
-        color:#ffffff;font-weight:800;font-size:${isCurrent ? 11 : 9}px;font-family:monospace;
-      ">${seq}</div>`,
+      <div style="position:relative; width:${s}px; height:${s}px;">
+        ${isLatest ? '<div class="trail-radar-pulse"></div>' : ''}
+        <div style="
+          width:${s}px;height:${s}px;
+          background:${bg};
+          border:${border};
+          border-radius:50%;
+          box-shadow:${shadow};
+          display:flex;align-items:center;justify-content:center;
+          color:#ffffff;font-weight:800;font-size:${isLatest ? 11 : 9.5}px;font-family:monospace;
+          position:relative;z-index:2;cursor:pointer;
+        ">${seq}</div>
+      </div>`,
     iconSize: [s, s],
     iconAnchor: [s / 2, s / 2]
   });
 };
 
-/* ──────────────────────────────────────────
-   MAP SUB-COMPONENTS
-────────────────────────────────────────── */
-function FlyTo({ center, zoom }) {
+function MapController({ flyTarget, fitCoords, onZoomChange }) {
   const map = useMap();
-  useEffect(() => {
-    if (center) map.flyTo(center, zoom || 12, { duration: 1.4, easeLinearity: 0.3 });
-  }, [center, zoom, map]);
-  return null;
-}
+  const lastFlyRef = useRef(null);
+  const lastFitRef = useRef(null);
 
-function ZoomWatcher({ onZoomChange }) {
-  useMapEvents({ zoomend: (e) => onZoomChange(e.target.getZoom()) });
+  useMapEvents({
+    zoomend: (e) => onZoomChange && onZoomChange(e.target.getZoom())
+  });
+
+  // Only fly when flyTarget explicitly changes
+  useEffect(() => {
+    if (!flyTarget) return;
+    const key = `${flyTarget.lat},${flyTarget.lng},${flyTarget.zoom || ''}`;
+    if (lastFlyRef.current !== key) {
+      lastFlyRef.current = key;
+      map.flyTo([flyTarget.lat, flyTarget.lng], flyTarget.zoom || map.getZoom(), {
+        duration: 1.2,
+        easeLinearity: 0.3
+      });
+    }
+  }, [flyTarget, map]);
+
+  // Only fit bounds once when a new trajectory with >=2 points is loaded
+  useEffect(() => {
+    if (!fitCoords || fitCoords.length < 2) return;
+    const key = fitCoords.map(c => `${c[0].toFixed(3)},${c[1].toFixed(3)}`).join('|');
+    if (lastFitRef.current !== key) {
+      lastFitRef.current = key;
+      const bounds = L.latLngBounds(fitCoords);
+      map.fitBounds(bounds, {
+        padding: [80, 80],
+        maxZoom: 16,
+        animate: true,
+        duration: 1.2
+      });
+    }
+  }, [fitCoords, map]);
+
   return null;
 }
 
@@ -149,13 +192,13 @@ function TacticalMapControls({ activeTargetCoords }) {
   return (
     <div style={{
       position: 'absolute',
-      top: 80,
+      top: 140,
       right: 16,
-      zIndex: 1000,
+      zIndex: 800,
       display: 'flex',
       flexDirection: 'column',
       gap: 6,
-      background: 'rgba(8, 14, 26, 0.85)',
+      background: 'rgba(8, 14, 26, 0.9)',
       backdropFilter: 'blur(16px)',
       border: '1px solid rgba(56, 189, 248, 0.25)',
       borderRadius: 12,
@@ -169,7 +212,7 @@ function TacticalMapControls({ activeTargetCoords }) {
         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.2)'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.6)'; }}
         onMouseLeave={e => { e.currentTarget.style.background = 'rgba(15, 23, 42, 0.9)'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.25)'; }}
       >
-        <Plus size={15} color="#38bdf8" />
+        <span style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>+</span>
       </button>
       <button
         onClick={() => map.zoomOut()}
@@ -178,12 +221,12 @@ function TacticalMapControls({ activeTargetCoords }) {
         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.2)'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.6)'; }}
         onMouseLeave={e => { e.currentTarget.style.background = 'rgba(15, 23, 42, 0.9)'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.25)'; }}
       >
-        <Minus size={15} color="#38bdf8" />
+        <span style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>−</span>
       </button>
       <div style={{ height: 1, background: 'rgba(56, 189, 248, 0.2)', margin: '2px 0' }} />
       <button
-        onClick={() => map.flyTo([28.6139, 77.209], 11, { duration: 1.2 })}
-        title="Reset Delhi Grid"
+        onClick={() => map.flyTo([12.9716, 77.5946], 12, { duration: 1.2 })}
+        title="Center Bengaluru"
         style={btnStyle}
         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.2)'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.6)'; }}
         onMouseLeave={e => { e.currentTarget.style.background = 'rgba(15, 23, 42, 0.9)'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.25)'; }}
@@ -192,7 +235,7 @@ function TacticalMapControls({ activeTargetCoords }) {
       </button>
       {activeTargetCoords && (
         <button
-          onClick={() => map.flyTo(activeTargetCoords, 14, { duration: 1.2 })}
+          onClick={() => map.flyTo(activeTargetCoords, 15, { duration: 1.2 })}
           title="Center on Target"
           style={{ ...btnStyle, borderColor: 'rgba(16, 185, 129, 0.45)' }}
           onMouseEnter={e => { e.currentTarget.style.background = 'rgba(16, 185, 129, 0.2)'; e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.8)'; }}
@@ -208,28 +251,27 @@ function TacticalMapControls({ activeTargetCoords }) {
 /* ──────────────────────────────────────────
    MAIN COMPONENT
 ────────────────────────────────────────── */
-export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, initialVehiclePlate = 'MH-12-PQ-9981' }) {
+export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, initialVehiclePlate = null }) {
   const [gantries, setGantries] = useState([]);
   const [convoys, setConvoys] = useState([]);
+  const [suspectVehicles, setSuspectVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [searchPlate, setSearchPlate] = useState(initialVehiclePlate || '');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeVehicle, setActiveVehicle] = useState(null);
   const [trajectory, setTrajectory] = useState([]);
+  const [selectedStopIdx, setSelectedStopIdx] = useState(null);
   const [loadingTrajectory, setLoadingTrajectory] = useState(false);
 
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [playbackIndex, setPlaybackIndex] = useState(0);
-  const playbackRef = useRef(null);
-
-  const [mapCenter, setMapCenter] = useState([28.6139, 77.209]);
-  const [mapZoom, setMapZoom] = useState(11);
-  const [currentZoom, setCurrentZoom] = useState(11);
+  const [flyTarget, setFlyTarget] = useState(null);
+  const [currentZoom, setCurrentZoom] = useState(12);
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedGantry, setSelectedGantry] = useState(null);
-  const [mapKey] = useState('tactical-map-v2');
 
-  // CSS injection for clean overrides
+  const searchBoxRef = useRef(null);
+
+  // CSS injection for trail animations and leaflet overrides
   useEffect(() => {
     const id = 'geo-map-styles';
     if (document.getElementById(id)) return;
@@ -240,6 +282,29 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
       @keyframes livePulse {
         0%, 100% { opacity: 1; transform: scale(1); }
         50% { opacity: 0.35; transform: scale(0.85); }
+      }
+      @keyframes radarWave {
+        0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.9; }
+        100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+      }
+      @keyframes dashFlow {
+        from { stroke-dashoffset: 60; }
+        to { stroke-dashoffset: 0; }
+      }
+      .trail-radar-pulse {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        background: rgba(16, 185, 129, 0.25);
+        border: 1.5px solid #34d399;
+        animation: radarWave 2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+        pointer-events: none;
+        z-index: 1;
+      }
+      .trail-flow-anim {
+        stroke-dasharray: 10, 14;
+        animation: dashFlow 1.8s linear infinite !important;
       }
       .leaflet-popup-content-wrapper {
         background: transparent !important;
@@ -255,35 +320,49 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
     document.head.appendChild(style);
   }, []);
 
-  // Fetch geospatial data
+  // Close search dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Fetch initial geospatial data & suspect vehicle catalog
   useEffect(() => {
     Promise.all([
       fetch('http://localhost:8000/api/v1/geo/anpr-sightings').then(r => r.json()),
-      fetch('http://localhost:8000/api/v1/geo/convoys').then(r => r.json())
+      fetch('http://localhost:8000/api/v1/geo/convoys').then(r => r.json()),
+      fetch('http://localhost:8000/api/v1/geo/vehicles').then(r => r.json())
     ])
-      .then(([g, c]) => {
+      .then(([g, c, v]) => {
         setGantries(g.gantries || []);
         setConvoys(c.convoys || []);
+        setSuspectVehicles(v.vehicles || []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
+  // Fetch trajectory for selected plate
   const fetchTrajectory = useCallback((plate) => {
     if (!plate?.trim()) return;
     setLoadingTrajectory(true);
-    setIsPlaying(false);
+    setIsDropdownOpen(false);
+    setSelectedStopIdx(null);
     fetch(`http://localhost:8000/api/v1/geo/vehicle-trajectory/${encodeURIComponent(plate.trim())}`)
       .then(r => r.json())
       .then(data => {
         setActiveVehicle(data.vehicle);
         const pts = data.trajectory || [];
         setTrajectory(pts);
-        setPlaybackIndex(pts.length ? pts.length - 1 : 0);
         setLoadingTrajectory(false);
         if (pts.length > 0) {
-          setMapCenter([pts[0].lat, pts[0].lng]);
-          setMapZoom(13);
+          setSelectedStopIdx(pts.length - 1);
+          setFlyTarget({ lat: pts[0].lat, lng: pts[0].lng, zoom: 13 });
         }
       })
       .catch(() => setLoadingTrajectory(false));
@@ -293,22 +372,36 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
     if (initialVehiclePlate) fetchTrajectory(initialVehiclePlate);
   }, [initialVehiclePlate, fetchTrajectory]);
 
-  // Playback animation
-  useEffect(() => {
-    if (isPlaying && trajectory.length > 0) {
-      playbackRef.current = setInterval(() => {
-        setPlaybackIndex(prev => {
-          if (prev >= trajectory.length - 1) { setIsPlaying(false); return prev; }
-          return prev + 1;
-        });
-      }, 1400);
-    } else clearInterval(playbackRef.current);
-    return () => clearInterval(playbackRef.current);
-  }, [isPlaying, trajectory]);
+  // Curated list of 5 pre-defined tracked targets
+  const PREDEFINED_TARGETS = [
+    { plate: 'KA05RE5719', owner: 'Varun Pandey', threat: 'CRITICAL', hits: 16, loc: 'MG Road' },
+    { plate: 'KA07UE2225', owner: 'Priya Joshi', threat: 'CRITICAL', hits: 16, loc: 'Whitefield' },
+    { plate: 'KA08NB4073', owner: 'Vikram Joshi', threat: 'HIGH RISK', hits: 12, loc: 'HSR Layout' },
+    { plate: 'KA02HD7818', owner: 'Ravi Pandey', threat: 'SUSPECT', hits: 9, loc: 'Koramangala' },
+    { plate: 'KA04FR2229', owner: 'Deepak Kumar', threat: 'SUSPECT', hits: 9, loc: 'Hebbal' },
+  ];
 
-  const visibleTrajectory = trajectory.slice(0, playbackIndex + 1);
-  const polylineCoords = visibleTrajectory.map(pt => [pt.lat, pt.lng]);
-  const currentPt = trajectory[playbackIndex];
+  // Filtered suspect vehicles for dropdown search (prioritizing predefined tracked targets)
+  const filteredVehicles = suspectVehicles.length > 0
+    ? suspectVehicles.filter(v => {
+        const q = (searchPlate || '').toLowerCase().trim();
+        if (!q) return true;
+        return (
+          (v.plate || '').toLowerCase().includes(q) ||
+          (v.owner || '').toLowerCase().includes(q) ||
+          (v.locations || []).some(l => l.toLowerCase().includes(q))
+        );
+      }).slice(0, 8)
+    : PREDEFINED_TARGETS.map(pt => ({
+        plate: pt.plate,
+        owner: pt.owner,
+        threat_level: pt.threat,
+        sighting_count: pt.hits,
+        locations: [pt.loc]
+      }));
+
+  const polylineCoords = trajectory.map(pt => [pt.lat, pt.lng]);
+  const latestPt = trajectory[trajectory.length - 1];
 
   const filters = [
     { id: 'all', label: 'ALL', icon: Layers, color: '#38bdf8' },
@@ -353,12 +446,12 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
       {/* ── TOP HUD BAR ── */}
       <div style={{
         position: 'absolute', top: 14, left: 16, right: 16,
-        zIndex: 1000,
+        zIndex: 2500,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         flexWrap: 'wrap', gap: 12,
-        background: 'rgba(8, 14, 26, 0.88)',
+        background: 'rgba(8, 14, 26, 0.94)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(56, 189, 248, 0.22)',
+        border: '1px solid rgba(56, 189, 248, 0.25)',
         borderRadius: 14,
         padding: '8px 16px',
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(56, 189, 248, 0.15)',
@@ -400,7 +493,13 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
                   boxShadow: '0 0 8px #10b981',
                   display: 'inline-block', animation: 'livePulse 1.8s infinite'
                 }} />
-                LIVE FEED
+                LIVE MESH
+              </span>
+              <span style={{ color: '#334155' }}>|</span>
+              <span style={{ fontSize: 9, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Car size={10} color="#38bdf8" />
+                <span>INDEXED:</span>
+                <span style={{ color: '#38bdf8', fontWeight: 700 }}>{suspectVehicles.length || '100+'}</span>
               </span>
               <span style={{ color: '#334155' }}>|</span>
               <span style={{ fontSize: 9, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -418,72 +517,269 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
           </div>
         </div>
 
-        {/* Center: Search & Plate Trace */}
-        <form
-          onSubmit={e => { e.preventDefault(); fetchTrajectory(searchPlate); }}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            background: 'rgba(15, 23, 42, 0.85)',
-            border: '1px solid rgba(56, 189, 248, 0.25)',
-            borderRadius: 10, padding: '5px 8px 5px 12px',
-            flex: '0 1 360px',
-            boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.5)',
-            transition: 'all 0.2s'
-          }}
-          onFocus={e => e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.65)'}
-          onBlur={e => e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.25)'}
-        >
-          <Search size={14} color="#38bdf8" style={{ flexShrink: 0 }} />
-          <input
-            type="text"
-            value={searchPlate}
-            onChange={e => setSearchPlate(e.target.value.toUpperCase())}
-            placeholder="ENTER VEHICLE REGISTRATION..."
-            style={{
-              background: 'transparent', border: 'none', outline: 'none',
-              color: '#f8fafc', fontSize: 11, fontFamily: 'inherit',
-              letterSpacing: '0.08em', flex: 1, fontWeight: 600
-            }}
-          />
-          {searchPlate && (
-            <button
-              type="button"
-              onClick={() => setSearchPlate('')}
-              style={{
-                background: 'transparent', border: 'none', color: '#64748b',
-                cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center'
+        {/* Center: Search & Suspect Database Autocomplete */}
+        <div ref={searchBoxRef} style={{ position: 'relative', flex: '0 1 480px', minWidth: 320 }}>
+          <div style={{ position: 'relative' }}>
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                fetchTrajectory(searchPlate);
               }}
-              title="Clear"
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                background: 'rgba(15, 23, 42, 0.95)',
+                border: isDropdownOpen
+                  ? '1px solid rgba(56, 189, 248, 0.7)'
+                  : '1px solid rgba(56, 189, 248, 0.25)',
+                borderRadius: isDropdownOpen ? '10px 10px 0 0' : 10,
+                padding: '6px 10px 6px 12px',
+                boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4)',
+                transition: 'all 0.2s'
+              }}
             >
-              <X size={12} />
-            </button>
-          )}
-          <button
-            type="submit"
-            disabled={loadingTrajectory}
-            style={{
-              background: loadingTrajectory
-                ? 'rgba(6, 182, 212, 0.15)'
-                : 'linear-gradient(135deg, #0284c7, #0369a1)',
-              border: '1px solid rgba(56, 189, 248, 0.4)',
-              borderRadius: 7,
-              color: loadingTrajectory ? '#64748b' : '#ffffff',
-              fontSize: 10, fontWeight: 800, padding: '5px 12px',
-              cursor: loadingTrajectory ? 'not-allowed' : 'pointer',
-              fontFamily: 'inherit', letterSpacing: '0.08em',
-              display: 'flex', alignItems: 'center', gap: 5,
-              boxShadow: loadingTrajectory ? 'none' : '0 0 12px rgba(2, 132, 199, 0.35)',
-              transition: 'all 0.2s'
-            }}
-          >
-            <Crosshair size={12} />
-            <span>{loadingTrajectory ? 'TRACING...' : 'TRACE'}</span>
-          </button>
-        </form>
+              <Search size={14} color="#38bdf8" style={{ flexShrink: 0 }} />
+              <input
+                type="text"
+                value={searchPlate}
+                onFocus={() => setIsDropdownOpen(true)}
+                onChange={e => {
+                  setSearchPlate(e.target.value.toUpperCase());
+                  setIsDropdownOpen(true);
+                }}
+                placeholder="SEARCH VEHICLE PLATE / SUSPECT..."
+                style={{
+                  background: 'transparent', border: 'none', outline: 'none',
+                  color: '#f8fafc', fontSize: 11, fontFamily: 'inherit',
+                  letterSpacing: '0.08em', flex: 1, fontWeight: 600,
+                  minWidth: 160
+                }}
+              />
+              {searchPlate && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchPlate('');
+                    setIsDropdownOpen(true);
+                  }}
+                  style={{
+                    background: 'transparent', border: 'none', color: '#64748b',
+                    cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center'
+                  }}
+                  title="Clear"
+                >
+                  <X size={12} />
+                </button>
+              )}
+              <button
+                type="submit"
+                disabled={loadingTrajectory}
+                style={{
+                  background: loadingTrajectory
+                    ? 'rgba(6, 182, 212, 0.15)'
+                    : 'linear-gradient(135deg, #0284c7, #0369a1)',
+                  border: '1px solid rgba(56, 189, 248, 0.4)',
+                  borderRadius: 7,
+                  color: loadingTrajectory ? '#64748b' : '#ffffff',
+                  fontSize: 10, fontWeight: 800, padding: '5px 12px',
+                  cursor: loadingTrajectory ? 'not-allowed' : 'pointer',
+                  fontFamily: 'inherit', letterSpacing: '0.08em',
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  boxShadow: loadingTrajectory ? 'none' : '0 0 12px rgba(2, 132, 199, 0.35)',
+                  transition: 'all 0.2s', flexShrink: 0
+                }}
+              >
+                <Crosshair size={12} />
+                <span>{loadingTrajectory ? 'TRACING...' : 'TRACE'}</span>
+              </button>
+            </form>
+
+            {/* Autocomplete Dropdown List - Safely Positioned Directly Below Input */}
+            {isDropdownOpen && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                background: 'rgba(8, 14, 26, 0.98)',
+                backdropFilter: 'blur(24px)',
+                border: '1px solid rgba(56, 189, 248, 0.5)',
+                borderTop: 'none',
+                borderRadius: '0 0 12px 12px',
+                padding: '6px 0',
+                maxHeight: 260,
+                overflowY: 'auto',
+                zIndex: 3500,
+                boxShadow: '0 20px 48px rgba(0, 0, 0, 0.98), 0 0 24px rgba(56, 189, 248, 0.2)'
+              }}>
+                <div style={{
+                  padding: '5px 12px 6px',
+                  fontSize: 8.5,
+                  color: '#64748b',
+                  fontWeight: 700,
+                  letterSpacing: '0.1em',
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <span>SUSPECT VEHICLES IN DATABASE</span>
+                  <span>{filteredVehicles.length} MATCHES</span>
+                </div>
+
+                {filteredVehicles.length === 0 ? (
+                  <div style={{ padding: '12px', fontSize: 10, color: '#94a3b8', textAlign: 'center' }}>
+                    No vehicle or suspect matches "{searchPlate}"
+                  </div>
+                ) : (
+                  filteredVehicles.map(v => (
+                    <div
+                      key={v.plate}
+                      onClick={() => {
+                        setSearchPlate(v.plate);
+                        fetchTrajectory(v.plate);
+                      }}
+                      style={{
+                        padding: '8px 12px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+                        transition: 'background 0.15s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(56, 189, 248, 0.12)'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Car size={13} color="#38bdf8" />
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{ fontSize: 11, fontWeight: 800, color: '#f8fafc', letterSpacing: '0.06em' }}>
+                              {v.plate}
+                            </span>
+                            <span style={{
+                              fontSize: 7.5, padding: '1px 5px', borderRadius: 3,
+                              background: v.threat_level === 'CRITICAL' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(56, 189, 248, 0.18)',
+                              color: v.threat_level === 'CRITICAL' ? '#fca5a5' : '#38bdf8',
+                              fontWeight: 800, letterSpacing: '0.06em'
+                            }}>
+                              {v.threat_level}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 2 }}>
+                            {v.owner} {v.locations?.[0] ? `· ${v.locations[0]}` : ''}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <span style={{
+                          fontSize: 9,
+                          color: '#10b981',
+                          fontWeight: 700,
+                          background: 'rgba(16, 185, 129, 0.12)',
+                          padding: '2px 6px',
+                          borderRadius: 4,
+                          border: '1px solid rgba(16, 185, 129, 0.25)'
+                        }}>
+                          {v.sighting_count} hits
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+          {/* Quick Pre-Defined Tracked Vehicle Chips */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            marginTop: 6,
+            overflowX: 'auto',
+            paddingBottom: 2
+          }}>
+            <span style={{ fontSize: 8, color: '#64748b', fontWeight: 700, letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
+              TARGETS:
+            </span>
+            {PREDEFINED_TARGETS.map(t => {
+              const isSelected = activeVehicle?.registration_number === t.plate;
+              return (
+                <button
+                  key={t.plate}
+                  type="button"
+                  onClick={() => {
+                    setSearchPlate(t.plate);
+                    fetchTrajectory(t.plate);
+                  }}
+                  style={{
+                    background: isSelected
+                      ? 'rgba(16, 185, 129, 0.25)'
+                      : 'rgba(15, 23, 42, 0.8)',
+                    border: isSelected
+                      ? '1px solid #34d399'
+                      : '1px solid rgba(56, 189, 248, 0.25)',
+                    borderRadius: 5,
+                    padding: '2px 7px',
+                    color: isSelected ? '#34d399' : '#e2e8f0',
+                    fontSize: 8.5,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    fontFamily: 'inherit',
+                    transition: 'all 0.15s',
+                    boxShadow: isSelected ? '0 0 8px rgba(16, 185, 129, 0.4)' : 'none'
+                  }}
+                  onMouseEnter={e => {
+                    if (!isSelected) {
+                      e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.6)';
+                      e.currentTarget.style.background = 'rgba(56, 189, 248, 0.15)';
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!isSelected) {
+                      e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.25)';
+                      e.currentTarget.style.background = 'rgba(15, 23, 42, 0.8)';
+                    }
+                  }}
+                  title={`Track ${t.plate} (${t.owner})`}
+                >
+                  <span style={{ color: t.threat === 'CRITICAL' ? '#f87171' : '#38bdf8', marginRight: 4 }}>●</span>
+                  {t.plate}
+                </button>
+              );
+            })}
+            {activeVehicle && (
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveVehicle(null);
+                  setTrajectory([]);
+                  setSearchPlate('');
+                  setSelectedStopIdx(null);
+                }}
+                style={{
+                  background: 'rgba(239, 68, 68, 0.15)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  borderRadius: 5,
+                  padding: '2px 6px',
+                  color: '#fca5a5',
+                  fontSize: 8,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap'
+                }}
+                title="Clear current track"
+              >
+                CLEAR TRACK
+              </button>
+            )}
+          </div>
+        </div>
 
         {/* Right Section: Filter Pills & Telemetry Readout */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {/* Segmented Filter Pills */}
           <div style={{
             display: 'flex', gap: 4,
             background: 'rgba(15, 23, 42, 0.8)',
@@ -516,7 +812,6 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
             })}
           </div>
 
-          {/* Coordinate Readout */}
           <div style={{
             background: 'rgba(56, 189, 248, 0.08)',
             border: '1px solid rgba(56, 189, 248, 0.22)',
@@ -526,34 +821,43 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
             whiteSpace: 'nowrap'
           }}>
             <Compass size={12} color="#38bdf8" />
-            <span>Z:{currentZoom} · 28.61°N 77.21°E</span>
+            <span>Z:{currentZoom} · 12.97°N 77.59°E</span>
           </div>
         </div>
       </div>
 
-      {/* ── LEAFLET MAP ── */}
+      {/* ── LEAFLET MAP (COMPLETELY OPEN ZOOM & SCROLL ANYWHERE) ── */}
       <div style={{ position: 'absolute', inset: 0 }}>
         <MapContainer
-          key={mapKey}
-          center={mapCenter}
-          zoom={mapZoom}
+          center={[12.9716, 77.5946]}
+          zoom={12}
+          minZoom={3}
+          maxZoom={19}
           zoomControl={false}
+          scrollWheelZoom={true}
+          dragging={true}
+          doubleClickZoom={true}
+          touchZoom={true}
           style={{ width: '100%', height: '100%', background: '#020617' }}
         >
-          <FlyTo center={mapCenter} zoom={mapZoom} />
-          <ZoomWatcher onZoomChange={setCurrentZoom} />
+          <MapController
+            flyTarget={flyTarget}
+            fitCoords={polylineCoords}
+            onZoomChange={setCurrentZoom}
+          />
           <TacticalMapControls
-            activeTargetCoords={currentPt ? [currentPt.lat, currentPt.lng] : null}
+            activeTargetCoords={latestPt ? [latestPt.lat, latestPt.lng] : null}
           />
 
           {/* Stadia Alidade Smooth Dark */}
           <TileLayer
             url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; OpenStreetMap'
-            maxZoom={20}
+            minZoom={3}
+            maxZoom={19}
           />
 
-          {/* ANPR Gantries (Clean, compact, no blur glow) */}
+          {/* ANPR Gantries */}
           {(activeFilter === 'all' || activeFilter === 'gantries') &&
             gantries.map(g => (
               <Marker
@@ -590,7 +894,7 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
                     {g.recent_vehicles?.length > 0 && (
                       <div>
                         <div style={{ fontSize: 9, color: '#64748b', marginBottom: 6, letterSpacing: '0.08em' }}>
-                          RECENT VEHICLES DETECTED:
+                          RECENT SUSPECT VEHICLES:
                         </div>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                           {g.recent_vehicles.map((v, i) => (
@@ -617,7 +921,7 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
               </Marker>
             ))}
 
-          {/* Convoy Alerts (Clean, compact, no giant pulsating rings) */}
+          {/* Convoy Alerts */}
           {(activeFilter === 'all' || activeFilter === 'convoys') &&
             convoys.map(c => (
               <Marker key={`convoy-${c.cluster_id}`} position={[c.lat, c.lng]} icon={createConvoyIcon()}>
@@ -680,257 +984,369 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
               </Marker>
             ))}
 
-          {/* Trajectory Polyline */}
+          {/* Improved Multi-Layer Glowing Trail with Flowing Animation */}
           {polylineCoords.length > 1 && (
             <>
+              {/* Outer Glow Path */}
               <Polyline
                 positions={polylineCoords}
-                pathOptions={{ color: '#10b981', weight: 6, opacity: 0.15, lineCap: 'round', lineJoin: 'round' }}
+                pathOptions={{
+                  color: '#10b981',
+                  weight: 10,
+                  opacity: 0.25,
+                  lineCap: 'round',
+                  lineJoin: 'round'
+                }}
               />
+              {/* Core Solid Path */}
               <Polyline
                 positions={polylineCoords}
-                pathOptions={{ color: '#10b981', weight: 2.5, dashArray: '8,6', opacity: 0.95, lineCap: 'round' }}
+                pathOptions={{
+                  color: '#059669',
+                  weight: 4,
+                  opacity: 0.9,
+                  lineCap: 'round',
+                  lineJoin: 'round'
+                }}
+              />
+              {/* Flowing Dashed Foreground Line */}
+              <Polyline
+                positions={polylineCoords}
+                pathOptions={{
+                  color: '#6ee7b7',
+                  weight: 3,
+                  className: 'trail-flow-anim',
+                  lineCap: 'round',
+                  lineJoin: 'round'
+                }}
               />
             </>
           )}
 
-          {/* Trajectory Points */}
-          {visibleTrajectory.map((pt, idx) => (
-            <Marker
-              key={`tp-${idx}`}
-              position={[pt.lat, pt.lng]}
-              icon={createVehicleIcon(pt.sequence, idx === playbackIndex)}
-            >
-              <Popup>
-                <div style={{
-                  background: 'rgba(8, 14, 26, 0.96)', backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: 10,
-                  padding: 12, minWidth: 200, color: '#e2e8f0',
-                  boxShadow: '0 12px 30px rgba(0, 0, 0, 0.9)'
-                }}>
+          {/* Sequential Checkpoint Markers */}
+          {trajectory.map((pt, idx) => {
+            const isLatest = idx === trajectory.length - 1;
+            const isSelected = selectedStopIdx === idx;
+            return (
+              <Marker
+                key={`tp-${idx}`}
+                position={[pt.lat, pt.lng]}
+                icon={createVehicleIcon(pt.sequence, isLatest, isSelected)}
+                eventHandlers={{
+                  click: () => setSelectedStopIdx(idx)
+                }}
+              >
+                <Popup>
                   <div style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    color: '#10b981', fontWeight: 800, fontSize: 10.5, marginBottom: 8
+                    background: 'rgba(8, 14, 26, 0.96)', backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(16, 185, 129, 0.45)', borderRadius: 10,
+                    padding: 12, minWidth: 220, color: '#e2e8f0',
+                    boxShadow: '0 12px 30px rgba(0, 0, 0, 0.9)'
                   }}>
-                    <MapPin size={12} color="#10b981" />
-                    <span>STOP #{pt.sequence}: {pt.location}</span>
-                  </div>
-                  <div style={{ fontSize: 9, color: '#94a3b8', display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <Clock size={11} color="#10b981" />
-                      <span>{pt.timestamp}</span>
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      color: isLatest ? '#34d399' : '#38bdf8', fontWeight: 800, fontSize: 10.5, marginBottom: 8
+                    }}>
+                      <MapPin size={12} color={isLatest ? '#34d399' : '#38bdf8'} />
+                      <span>CHECKPOINT #{pt.sequence}: {pt.location}</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <Camera size={11} color="#38bdf8" />
-                      <span>Camera: {pt.camera_id}</span>
+                    <div style={{ fontSize: 9, color: '#94a3b8', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <Clock size={11} color="#10b981" />
+                        <span>TIME: {pt.timestamp}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <Camera size={11} color="#38bdf8" />
+                        <span>CAMERA ID: {pt.camera_id}</span>
+                      </div>
+                      {isLatest && (
+                        <div style={{
+                          marginTop: 6,
+                          padding: '3px 6px',
+                          borderRadius: 4,
+                          background: 'rgba(16, 185, 129, 0.15)',
+                          border: '1px solid rgba(16, 185, 129, 0.3)',
+                          color: '#6ee7b7',
+                          fontSize: 8.5,
+                          fontWeight: 700,
+                          textAlign: 'center'
+                        }}>
+                          MOST RECENT CONFIRMED SIGHTING
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
+                </Popup>
+              </Marker>
+            );
+          })}
         </MapContainer>
       </div>
 
-      {/* ── BOTTOM TRAJECTORY PLAYER (FLOATING TACTICAL DOCK) ── */}
-      {activeVehicle && trajectory.length > 0 && (
+      {/* ── TACTICAL VEHICLE INFORMATION CARD (WHEN TRACKING ACTIVE) ── */}
+      {activeVehicle && trajectory.length > 0 ? (
         <div style={{
           position: 'absolute',
-          bottom: 24,
+          bottom: 20,
           left: '50%',
           transform: 'translateX(-50%)',
-          width: 'min(90%, 750px)',
+          width: 'min(94%, 900px)',
           zIndex: 1000,
-          background: 'rgba(8, 14, 26, 0.92)',
+          background: 'rgba(8, 14, 26, 0.94)',
           backdropFilter: 'blur(24px)',
-          border: '1px solid rgba(16, 185, 129, 0.35)',
+          border: '1px solid rgba(16, 185, 129, 0.4)',
           borderRadius: 16,
-          padding: '12px 18px',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+          padding: '14px 20px',
+          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.9), 0 0 24px rgba(16, 185, 129, 0.12)',
         }}>
-          {/* Top row: Target info & Media controls */}
+          {/* Header row: Target Registration, Owner & Dossier action */}
           <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            marginBottom: 10, flexWrap: 'wrap', gap: 10
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 12,
+            paddingBottom: 10,
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
           }}>
             {/* Target Identity */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
-                width: 34, height: 34, borderRadius: 8,
-                background: 'rgba(16, 185, 129, 0.12)',
-                border: '1px solid rgba(16, 185, 129, 0.35)',
+                width: 40, height: 40, borderRadius: 10,
+                background: 'rgba(16, 185, 129, 0.14)',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0
+                flexShrink: 0,
+                boxShadow: '0 0 12px rgba(16, 185, 129, 0.25)'
               }}>
-                <Car size={16} color="#10b981" />
+                <Car size={20} color="#34d399" />
               </div>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 13, fontWeight: 800, color: '#34d399', letterSpacing: '0.08em' }}>
+                  <span style={{ fontSize: 15, fontWeight: 900, color: '#f8fafc', letterSpacing: '0.08em' }}>
                     {activeVehicle.registration_number}
                   </span>
-                  <span style={{ fontSize: 10.5, color: '#cbd5e1' }}>
-                    {activeVehicle.registered_owner}
+                  <span style={{
+                    fontSize: 8.5, padding: '2px 8px', borderRadius: 4,
+                    background: 'rgba(16, 185, 129, 0.18)', border: '1px solid rgba(16, 185, 129, 0.4)',
+                    color: '#6ee7b7', fontWeight: 800, letterSpacing: '0.08em'
+                  }}>
+                    {activeVehicle.threat_level || 'SUSPECT'}
                   </span>
                   <span style={{
-                    fontSize: 8.5, padding: '2px 7px', borderRadius: 4,
-                    background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)',
-                    color: '#6ee7b7', fontWeight: 700, letterSpacing: '0.08em'
+                    fontSize: 8.5, padding: '2px 8px', borderRadius: 4,
+                    background: 'rgba(56, 189, 248, 0.12)', border: '1px solid rgba(56, 189, 248, 0.25)',
+                    color: '#7dd3fc', fontWeight: 700
                   }}>
-                    {activeVehicle.model || 'VEHICLE'}
+                    {activeVehicle.model || 'SEDAN / SUV'}
                   </span>
                 </div>
-                <div style={{ fontSize: 9.5, color: '#64748b', marginTop: 3 }}>
-                  STOP {playbackIndex + 1} OF {trajectory.length} · {trajectory.length} CHECKPOINTS RECORDED
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 3 }}>
+                  <span style={{ fontSize: 10.5, color: '#cbd5e1', fontWeight: 600 }}>
+                    SUSPECT OWNER: <span style={{ color: '#38bdf8' }}>{activeVehicle.registered_owner}</span>
+                  </span>
+                  {activeVehicle.all_owners?.length > 1 && (
+                    <span style={{ fontSize: 9, color: '#64748b' }}>
+                      (+{activeVehicle.all_owners.length - 1} linked suspects)
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Playback Controls */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <button
-                onClick={() => { setPlaybackIndex(0); setIsPlaying(false); }}
-                style={{
-                  width: 32, height: 32, borderRadius: 8,
-                  background: 'rgba(30, 41, 59, 0.8)', border: '1px solid rgba(51, 65, 85, 0.8)',
-                  color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  transition: 'all 0.18s'
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#f8fafc'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.5)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.borderColor = 'rgba(51, 65, 85, 0.8)'; }}
-                title="Restart Scrubber"
-              >
-                <RotateCcw size={14} />
-              </button>
-              <button
-                onClick={() => setPlaybackIndex(p => Math.max(0, p - 1))}
-                style={{
-                  width: 32, height: 32, borderRadius: 8,
-                  background: 'rgba(30, 41, 59, 0.8)', border: '1px solid rgba(51, 65, 85, 0.8)',
-                  color: '#94a3b8', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  transition: 'all 0.18s'
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#f8fafc'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.5)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.borderColor = 'rgba(51, 65, 85, 0.8)'; }}
-                title="Previous Stop"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <button
-                onClick={() => setIsPlaying(p => !p)}
-                style={{
-                  height: 32, padding: '0 16px', borderRadius: 8,
-                  background: isPlaying
-                    ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(185, 28, 28, 0.9))'
-                    : 'linear-gradient(135deg, #059669, #0d9488)',
-                  border: 'none', color: '#ffffff', fontSize: 10, fontWeight: 800,
-                  cursor: 'pointer', fontFamily: 'inherit', letterSpacing: '0.08em',
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  boxShadow: isPlaying ? '0 0 12px rgba(239, 68, 68, 0.35)' : '0 0 12px rgba(16, 185, 129, 0.35)',
-                  transition: 'all 0.2s'
-                }}
-              >
-                {isPlaying ? <Pause size={13} /> : <Play size={13} />}
-                <span>{isPlaying ? 'PAUSE' : 'ANIMATE'}</span>
-              </button>
-              <button
-                onClick={() => setPlaybackIndex(p => Math.min(trajectory.length - 1, p + 1))}
-                style={{
-                  width: 32, height: 32, borderRadius: 8,
-                  background: 'rgba(30, 41, 59, 0.8)', border: '1px solid rgba(51, 65, 85, 0.8)',
-                  color: '#94a3b8', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  transition: 'all 0.18s'
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#f8fafc'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.5)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.borderColor = 'rgba(51, 65, 85, 0.8)'; }}
-                title="Next Stop"
-              >
-                <ChevronRight size={16} />
-              </button>
+            {/* Quick Metrics & Dossier CTA */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{
+                textAlign: 'right',
+                borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+                paddingRight: 14
+              }}>
+                <div style={{ fontSize: 8.5, color: '#64748b', letterSpacing: '0.06em' }}>TOTAL TRAIL STOPS</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: '#10b981' }}>
+                  {trajectory.length} Checkpoints
+                </div>
+              </div>
+              <div style={{
+                textAlign: 'right',
+                borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+                paddingRight: 14
+              }}>
+                <div style={{ fontSize: 8.5, color: '#64748b', letterSpacing: '0.06em' }}>LAST DETECTED</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#f8fafc' }}>
+                  {latestPt?.timestamp ? latestPt.timestamp.replace('T', ' ').replace('Z', '') : 'Active'}
+                </div>
+              </div>
+
               {onOpenDossier && (
                 <button
                   onClick={() => onOpenDossier(activeVehicle.registered_owner)}
                   style={{
-                    height: 32, padding: '0 12px', borderRadius: 8,
-                    background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.35)',
-                    color: '#38bdf8', fontSize: 9.5, fontWeight: 800, cursor: 'pointer',
+                    height: 34, padding: '0 14px', borderRadius: 8,
+                    background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(2, 132, 199, 0.35))',
+                    border: '1px solid rgba(56, 189, 248, 0.5)',
+                    color: '#38bdf8', fontSize: 10, fontWeight: 800, cursor: 'pointer',
                     fontFamily: 'inherit', letterSpacing: '0.08em',
                     display: 'flex', alignItems: 'center', gap: 6,
-                    transition: 'all 0.18s'
+                    boxShadow: '0 0 12px rgba(56, 189, 248, 0.2)',
+                    transition: 'all 0.18s', flexShrink: 0
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.2)'; e.currentTarget.style.borderColor = '#38bdf8'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.35)'; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.3)'; e.currentTarget.style.borderColor = '#38bdf8'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(2, 132, 199, 0.35))'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.5)'; }}
                 >
-                  <FileText size={12} />
-                  <span>DOSSIER</span>
+                  <FileText size={13} />
+                  <span>VIEW DOSSIER</span>
                 </button>
               )}
             </div>
           </div>
 
-          {/* Timeline Scrubber */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 9.5, color: '#64748b', minWidth: 48, textAlign: 'right', fontWeight: 700 }}>
-              #{playbackIndex + 1}/{trajectory.length}
-            </span>
-            <div style={{ flex: 1, position: 'relative' }}>
-              {/* Track BG */}
-              <div style={{
-                position: 'absolute', top: '50%', left: 0, right: 0, height: 4,
-                background: 'rgba(30, 41, 59, 0.8)', borderRadius: 2, transform: 'translateY(-50%)'
-              }} />
-              {/* Fill */}
-              <div style={{
-                position: 'absolute', top: '50%', left: 0, height: 4,
-                width: `${trajectory.length > 1 ? (playbackIndex / (trajectory.length - 1)) * 100 : 0}%`,
-                background: 'linear-gradient(90deg, #059669, #06b6d4)', borderRadius: 2,
-                transform: 'translateY(-50%)',
-                boxShadow: '0 0 6px rgba(16, 185, 129, 0.4)',
-                transition: 'width 0.25s ease'
-              }} />
-              {/* Dot markers */}
-              {trajectory.map((_, i) => (
-                <div
-                  key={i}
-                  onClick={() => setPlaybackIndex(i)}
-                  title={`Stop #${i + 1}`}
-                  style={{
-                    position: 'absolute', top: '50%',
-                    left: `${trajectory.length > 1 ? (i / (trajectory.length - 1)) * 100 : 0}%`,
-                    width: i === playbackIndex ? 10 : 5,
-                    height: i === playbackIndex ? 10 : 5,
-                    background: i <= playbackIndex ? '#10b981' : '#1e293b',
-                    border: `1.5px solid ${i <= playbackIndex ? '#10b981' : '#334155'}`,
-                    borderRadius: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    cursor: 'pointer', zIndex: 2,
-                    boxShadow: i === playbackIndex ? '0 0 6px rgba(16, 185, 129, 0.6)' : 'none',
-                    transition: 'all 0.2s'
-                  }}
-                />
-              ))}
-              {/* Invisible range input for scrubbing */}
-              <input
-                type="range" min={0} max={trajectory.length - 1} value={playbackIndex}
-                onChange={e => setPlaybackIndex(parseInt(e.target.value))}
-                style={{
-                  position: 'absolute', top: '50%', left: 0, right: 0, width: '100%',
-                  transform: 'translateY(-50%)', opacity: 0, cursor: 'pointer', zIndex: 3,
-                  margin: 0, height: 20
-                }}
-              />
-            </div>
+          {/* Movement Trail Sequence Checkpoints */}
+          <div style={{ marginTop: 10 }}>
             <div style={{
-              fontSize: 9.5, color: '#34d399', fontWeight: 700, minWidth: 155,
-              background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)',
-              borderRadius: 6, padding: '4px 10px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 8
             }}>
-              <Clock size={11} color="#34d399" />
-              <span>{currentPt?.timestamp || '—'}</span>
+              <span style={{ fontSize: 8.5, color: '#94a3b8', fontWeight: 700, letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: 5 }}>
+                <Route size={12} color="#10b981" />
+                SURVEILLANCE TRAIL CHRONOLOGY (CLICK CHECKPOINT TO INSPECT):
+              </span>
+              <span style={{ fontSize: 8.5, color: '#34d399', fontWeight: 700 }}>
+                {latestPt ? `LATEST HIT: ${latestPt.location}` : ''}
+              </span>
             </div>
+
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              overflowX: 'auto',
+              paddingBottom: 4
+            }}>
+              {trajectory.map((pt, i) => {
+                const isSelected = selectedStopIdx === i;
+                const isLast = i === trajectory.length - 1;
+                return (
+                  <React.Fragment key={i}>
+                    <div
+                      onClick={() => {
+                        setSelectedStopIdx(i);
+                        setFlyTarget({ lat: pt.lat, lng: pt.lng, zoom: 15 });
+                      }}
+                      style={{
+                        padding: '6px 10px',
+                        borderRadius: 8,
+                        background: isSelected
+                          ? 'rgba(16, 185, 129, 0.22)'
+                          : 'rgba(15, 23, 42, 0.75)',
+                        border: isSelected
+                          ? '1.5px solid #34d399'
+                          : isLast
+                          ? '1px solid rgba(16, 185, 129, 0.4)'
+                          : '1px solid rgba(255, 255, 255, 0.08)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        minWidth: 150,
+                        flexShrink: 0,
+                        boxShadow: isSelected ? '0 0 12px rgba(16, 185, 129, 0.3)' : 'none',
+                        transition: 'all 0.15s'
+                      }}
+                      onMouseEnter={e => {
+                        if (!isSelected) e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                      }}
+                      onMouseLeave={e => {
+                        if (!isSelected) e.currentTarget.style.background = 'rgba(15, 23, 42, 0.75)';
+                      }}
+                    >
+                      <div style={{
+                        width: 20, height: 20, borderRadius: '50%',
+                        background: isLast ? '#10b981' : isSelected ? '#0284c7' : '#1e293b',
+                        color: '#ffffff', fontSize: 9.5, fontWeight: 800,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0
+                      }}>
+                        {pt.sequence}
+                      </div>
+                      <div style={{ overflow: 'hidden' }}>
+                        <div style={{
+                          fontSize: 9.5,
+                          fontWeight: 700,
+                          color: isSelected ? '#34d399' : '#f8fafc',
+                          whiteSpace: 'nowrap',
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden'
+                        }}>
+                          {pt.location.split(',')[0]}
+                        </div>
+                        <div style={{ fontSize: 8, color: '#94a3b8', whiteSpace: 'nowrap' }}>
+                          {pt.timestamp ? pt.timestamp.split('T')[1]?.substring(0, 5) || pt.timestamp : ''} · {pt.camera_id}
+                        </div>
+                      </div>
+                    </div>
+
+                    {i < trajectory.length - 1 && (
+                      <ArrowRight size={12} color="#475569" style={{ flexShrink: 0 }} />
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Standby Dock: No vehicle currently tracked */
+        <div style={{
+          position: 'absolute',
+          bottom: 20,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 1000,
+          background: 'rgba(8, 14, 26, 0.88)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(56, 189, 248, 0.25)',
+          borderRadius: 14,
+          padding: '10px 22px',
+          boxShadow: '0 16px 40px rgba(0, 0, 0, 0.85)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12
+        }}>
+          <div style={{
+            width: 8, height: 8, borderRadius: '50%', background: '#64748b'
+          }} />
+          <span style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 600, letterSpacing: '0.06em' }}>
+            NO VEHICLE BEING TRACKED · SELECT A TARGET OR SEARCH A NUMBER PLATE ABOVE TO TRACE ROUTE
+          </span>
+          <div style={{ display: 'flex', gap: 6, marginLeft: 6 }}>
+            {PREDEFINED_TARGETS.slice(0, 3).map(t => (
+              <button
+                key={t.plate}
+                type="button"
+                onClick={() => {
+                  setSearchPlate(t.plate);
+                  fetchTrajectory(t.plate);
+                }}
+                style={{
+                  background: 'rgba(56, 189, 248, 0.1)',
+                  border: '1px solid rgba(56, 189, 248, 0.3)',
+                  borderRadius: 6,
+                  padding: '3px 8px',
+                  color: '#38bdf8',
+                  fontSize: 9,
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  transition: 'background 0.15s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(56, 189, 248, 0.25)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)'}
+              >
+                Track {t.plate}
+              </button>
+            ))}
           </div>
         </div>
       )}
