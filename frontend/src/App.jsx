@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  Shield, 
-  Search, 
-  Upload, 
-  RefreshCw, 
+import {
+  Shield,
+  Search,
+  Upload,
+  RefreshCw,
   Sun,
   Moon,
   ArrowLeft,
-  Crown, 
-  AlertTriangle, 
-  PhoneOff, 
-  Car, 
-  User, 
+  Crown,
+  AlertTriangle,
+  PhoneOff,
+  Car,
+  User,
   Users,
-  X, 
-  CheckCircle, 
-  Share2, 
+  X,
+  CheckCircle,
+  Share2,
   Network,
   PanelLeftClose,
   PanelLeftOpen,
@@ -76,7 +76,7 @@ export default function App() {
   const [totalCriminals, setTotalCriminals] = useState(0);
   const [criminalFilter, setCriminalFilter] = useState('all');
   const [criminalSearch, setCriminalSearch] = useState('');
-  
+
   // Dossier Workspace State
   const [selectedDossierEntity, setSelectedDossierEntity] = useState(null);
   const [dossierData, setDossierData] = useState(null);
@@ -288,11 +288,11 @@ export default function App() {
 
   return (
     <div className="app-container">
-      
+
       {/* Top Cyber Command Bar */}
       <header className="command-header">
         <div className="header-brand">
-          <button 
+          <button
             className="sidebar-toggle-btn"
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
@@ -300,9 +300,9 @@ export default function App() {
             {isSidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
           </button>
           <div className="brand-logo">
-            <img 
-              src="/Emblem_of_India_no_text.svg" 
-              alt="Government of India Emblem" 
+            <img
+              src="/Emblem_of_India_no_text.svg"
+              alt="Government of India Emblem"
               className="emblem-logo-img"
             />
           </div>
@@ -398,9 +398,9 @@ export default function App() {
 
         {/* Action Controls */}
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button 
+          <button
             id="theme-toggle-btn"
-            className="theme-toggle-btn" 
+            className="theme-toggle-btn"
             onClick={toggleTheme}
             title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
             aria-label="Toggle theme"
@@ -421,12 +421,12 @@ export default function App() {
 
       {/* Main Grid Workspace */}
       <div className={`dashboard-grid ${isSidebarCollapsed ? 'sidebar-hidden' : ''}`}>
-        
+
         {/* Navigation Sidebar */}
         {!isSidebarCollapsed && (
           <aside className="standard-sidebar">
             <div className="sidebar-scrollable-content">
-              
+
               {/* SECTION: THREAT INTELLIGENCE */}
               <div className="sidebar-group">
                 <div className="sidebar-group-title">
@@ -435,13 +435,12 @@ export default function App() {
                 <div className="sidebar-nav-list">
                   {/* Parent Dropdown: Live Threat Feed */}
                   <div
-                    className={`sidebar-nav-item ${
-                      activeView === 'threats' && threatCategory === 'all'
+                    className={`sidebar-nav-item ${activeView === 'threats' && threatCategory === 'all'
                         ? 'active'
                         : activeView === 'threats'
-                        ? 'active-parent'
-                        : ''
-                    }`}
+                          ? 'active-parent'
+                          : ''
+                      }`}
                     onClick={() => {
                       setActiveView('threats');
                       if (activeView === 'threats' && threatCategory === 'all') {
@@ -597,7 +596,7 @@ export default function App() {
 
         {/* Main Stage: Dynamic View Switcher */}
         <div className="main-threat-stage">
-          
+
           {/* VIEW: EXECUTIVE COMMAND CENTER (DEFAULT LANDING VIEW) */}
           {activeView === 'threats' && (
             <div className="executive-dashboard-wrapper">
@@ -657,7 +656,6 @@ export default function App() {
               <GeospatialMapCanvas
                 onSelectEntity={(id) => setFocusedEntityId(id)}
                 onOpenDossier={(id) => openDossier(id)}
-                initialVehiclePlate="MH-12-PQ-9981"
               />
             </div>
           )}
@@ -809,7 +807,7 @@ export default function App() {
           {/* VIEW: SUSPECT DOSSIERS WORKSPACE (DEDICATED FULL VIEW) */}
           {activeView === 'dossiers' && (
             <div className="dossier-workspace-layout">
-              
+
               {/* Middle: Dossier Detail Pane (or Search Landing when no suspect selected) */}
               <div className="dossier-detail-pane">
                 {loadingDossier ? (
