@@ -67,24 +67,38 @@ def process_copilot_chat(user_message: str, selected_target_id: str = None) -> D
 
     # Case 3: Intent & Entity extraction
     intent_result = parse_intent_and_extract_entities(user_message)
-    candidates = intent_result["candidates"]
+    candidates = intent_result.get("candidates", [])
+    search_term = intent_result.get("search_term", user_message).strip()
 
-    # Case 3A: No entities found -> Conversational assistance with general advice
+    # Case 3A: No entities found -> Inform officer of 0 matches with search guidance
     if not candidates:
-        conv_response = ""
-        if groq_key:
+        if groq_key and len(user_message.split()) > 3:
+            # For complex conversational questions that didn't match a specific entity
             conv_response = call_groq_general_chat(user_message, groq_key)
-        if not conv_response:
-            conv_response = f"I am your AI Cyber Crime Intelligence Co-Pilot. I couldn't locate specific target entities matching '{intent_result.get('search_term', user_message)}' in the database. You can ask me general investigative questions (e.g. Hawala smurfing, ANPR convoy tracking) or search by suspect name, phone (+91...), or vehicle plate."
+            if conv_response:
+                return {
+                    "response": conv_response,
+                    "multiple_matches": [],
+                    "ui_action": None
+                }
+
+        not_found_response = (
+            f"🔍 **Investigation Search Result**: No suspect, phone number, vehicle plate, or case entity found matching '**{search_term}**' across the current investigation datasets (CDR, ANPR, Banking, FIRs).\n\n"
+            f"**Investigative Guidance:**\n"
+            f"• Try searching by partial name (e.g. `Vikrant` or `Sharma`)\n"
+            f"• Search with full international phone format (e.g. `+91-98765-43210`)\n"
+            f"• Search vehicle plate in standard format (e.g. `KA-01-HH-1234`)\n"
+            f"• Ask me a general intelligence question (e.g. *'Show Hawala Smurfing Ring'* or *'Explain burner SIM anomalies'*)"
+        )
         return {
-            "response": conv_response,
+            "response": not_found_response,
             "multiple_matches": [],
             "ui_action": None
         }
 
     # Case 3B: Multiple matches found (Disambiguation candidate cards)
-    if len(candidates) > 1 and not is_exact_match(intent_result['search_term'], candidates):
-        intro_text = f"I retrieved **{len(candidates)} records** matching '{intent_result['search_term']}'. Select a target suspect card below to investigate their full network graph:"
+    if len(candidates) > 1 and not is_exact_match(search_term, candidates):
+        intro_text = f"I retrieved **{len(candidates)} records** matching '{search_term}'. Select a target suspect card below to investigate their full network graph:"
         return {
             "response": intro_text,
             "multiple_matches": [
@@ -107,13 +121,18 @@ def is_general_conversation(text: str) -> bool:
     """Detects if prompt is a greeting, general question, or analytical guidance query."""
     text_lower = text.lower().strip()
     
-    # Greetings & Introductions
-    greetings = {"hi", "hello", "hey", "who are you", "help", "what can you do", "thanks", "thank you"}
-    if text_lower in greetings or any(text_lower.startswith(g) for g in ["hi ", "hello ", "hey ", "who are"]):
+    # Common conversational greetings
+    greetings = {"hi", "hello", "hey", "who are you", "help", "what can you do", "thanks", "thank you", "good morning", "good evening", "good afternoon", "namaste"}
+    if text_lower in greetings:
         return True
 
-    # General concept questions (no specific name/phone/plate specified)
-    general_keywords = ["how does", "what is", "explain hawala", "explain burner", "how to use", "what should i", "give me tips"]
+    # Explicit greeting phrases
+    greeting_starters = ["hi ", "hello ", "hey ", "who are you", "what can you do", "what is your name"]
+    if any(text_lower.startswith(g) for g in greeting_starters):
+        return True
+
+    # General concept and how-to questions
+    general_keywords = ["how does", "what is", "explain hawala", "explain burner", "how to use", "what should i", "give me tips", "tell me about", "guide me"]
     if any(k in text_lower for k in general_keywords):
         return True
 
@@ -255,7 +274,8 @@ def call_groq_general_chat(user_message: str, api_key: str) -> str:
             "Content-Type": "application/json"
         }
         system_prompt = """
-        You are an expert AI Cyber Crime Intelligence Co-Pilot assisting law enforcement officers at the National Cyber Crime Command Center.
+        You are Sathi, an expert AI Cyber Crime Intelligence Co-Pilot assisting law enforcement officers at the National Cyber Crime Command Center.
+        Always address the user as "Officer". Never assume the user is introducing themselves with a person's name unless they explicitly say "My name is X" or "I am Officer X".
         Speak conversationally, professionally, and authoritatively like an experienced senior intelligence analyst and active AI co-pilot assistant.
         Do NOT reply with rigid templates or sterile summaries. Have an active, fluid, natural conversation.
         Help officers understand Hawala smurfing, burner SIM anomalies, ANPR convoy tracking, or how to search and investigate suspects in the system.
