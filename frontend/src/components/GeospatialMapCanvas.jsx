@@ -598,69 +598,6 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
           </div>
         </div>
 
-        {/* FIR Case Selector Dropdown */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 6,
-            background: selectedFir ? 'rgba(168, 85, 247, 0.18)' : 'rgba(15, 23, 42, 0.85)',
-            border: selectedFir ? '1px solid rgba(168, 85, 247, 0.6)' : '1px solid rgba(56, 189, 248, 0.3)',
-            borderRadius: 10,
-            padding: '4px 10px',
-            boxShadow: selectedFir ? '0 0 16px rgba(168, 85, 247, 0.25)' : 'none',
-            transition: 'all 0.2s'
-          }}>
-            <FileText size={14} color={selectedFir ? '#c084fc' : '#38bdf8'} />
-            <select
-              value={selectedFir}
-              onChange={(e) => setSelectedFir(e.target.value)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: selectedFir ? '#e9d5ff' : '#f8fafc',
-                fontSize: 10.5,
-                fontWeight: 800,
-                fontFamily: 'inherit',
-                letterSpacing: '0.06em',
-                cursor: 'pointer',
-                outline: 'none'
-              }}
-            >
-              <option value="" style={{ background: '#0f172a', color: '#94a3b8' }}>
-                -- SELECT FIR CASE (ALL 25 FIRs) --
-              </option>
-              {Array.from({ length: 25 }, (_, i) => {
-                const num = String(i + 1).padStart(3, '0');
-                const firNo = `FIR-2026-${num}`;
-                return (
-                  <option key={firNo} value={firNo} style={{ background: '#0f172a', color: '#e2e8f0' }}>
-                    {firNo} (All Vehicles Movement)
-                  </option>
-                );
-              })}
-            </select>
-            {selectedFir && (
-              <button
-                type="button"
-                onClick={() => setSelectedFir('')}
-                style={{
-                  background: 'rgba(239, 68, 68, 0.25)',
-                  border: '1px solid rgba(239, 68, 68, 0.5)',
-                  borderRadius: 5,
-                  color: '#fca5a5',
-                  fontSize: 8.5,
-                  fontWeight: 800,
-                  padding: '2px 6px',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit'
-                }}
-                title="Clear FIR Filter"
-              >
-                CLEAR
-              </button>
-            )}
-          </div>
-        </div>
-
         {/* Center: Search & Suspect Database Autocomplete */}
         <div ref={searchBoxRef} style={{ position: 'relative', flex: '0 1 480px', minWidth: 320 }}>
           <div style={{ position: 'relative' }}>
