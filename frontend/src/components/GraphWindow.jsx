@@ -29,7 +29,8 @@ import cola from 'cytoscape-cola';
 import {
   GripHorizontal, Maximize2, Minimize2, Minus, X,
   RotateCcw, ZoomIn, ZoomOut, Network, Info,
-  Users, ExternalLink, Loader2, AlertTriangle
+  Users, ExternalLink, Loader2, AlertTriangle,
+  Layers, Phone, CreditCard, Car, MapPin
 } from 'lucide-react';
 
 // ── Cytoscape plugins ──────────────────────────────────────────────────────
@@ -42,11 +43,12 @@ const API_BASE = 'http://localhost:8000/api/v1';
 
 // ── Node type palette ──────────────────────────────────────────────────────
 const TYPE = {
-  Person:   { color: '#e11d48', border: '#f43f5e', dim: 'rgba(225,29,72,0.15)',   label: 'Suspect',  shape: 'ellipse'         },
-  Phone:    { color: '#d97706', border: '#f59e0b', dim: 'rgba(217,119,6,0.15)',   label: 'Phone',    shape: 'round-rectangle'  },
-  Vehicle:  { color: '#0284c7', border: '#38bdf8', dim: 'rgba(2,132,199,0.15)',   label: 'Vehicle',  shape: 'diamond'          },
-  Location: { color: '#7c3aed', border: '#a78bfa', dim: 'rgba(124,58,237,0.15)', label: 'Location', shape: 'pentagon'         },
-  FIR:      { color: '#059669', border: '#34d399', dim: 'rgba(5,150,105,0.15)',  label: 'Case',     shape: 'round-tag'        },
+  Person:   { color: '#4ade80', border: '#22c55e', dim: 'rgba(74,222,128,0.15)',   label: 'Person Node', shape: 'ellipse'         },
+  Phone:    { color: '#38bdf8', border: '#0284c7', dim: 'rgba(56,189,248,0.15)',   label: 'Phone Node',  shape: 'ellipse'         },
+  Broker:   { color: '#f97316', border: '#ea580c', dim: 'rgba(249,115,22,0.15)',   label: 'Key Intermediary / Broker', shape: 'ellipse' },
+  Vehicle:  { color: '#06b6d4', border: '#0891b2', dim: 'rgba(6,182,212,0.15)',    label: 'Vehicle',  shape: 'diamond'          },
+  Location: { color: '#a855f7', border: '#9333ea', dim: 'rgba(168,85,247,0.15)',   label: 'Location', shape: 'pentagon'         },
+  FIR:      { color: '#10b981', border: '#059669', dim: 'rgba(16,185,129,0.15)',   label: 'Case',     shape: 'round-tag'        },
 };
 const DEFAULT_TYPE = { color: '#6b7280', border: '#9ca3af', dim: 'rgba(107,114,128,0.15)', label: 'Entity', shape: 'ellipse' };
 const t = (type) => TYPE[type] || DEFAULT_TYPE;
@@ -57,7 +59,7 @@ const CY_STYLE = [
     selector: 'node',
     style: {
       'label': 'data(label)',
-      'color': '#d4d4d8',
+      'color': '#f4f4f5',
       'font-size': '10px',
       'font-weight': '600',
       'font-family': 'Inter, system-ui, sans-serif',
@@ -68,12 +70,12 @@ const CY_STYLE = [
       'text-background-opacity': 1,
       'text-background-padding': '2px 5px',
       'text-wrap': 'ellipsis',
-      'text-max-width': '80px',
+      'text-max-width': '100px',
       'background-color': '#6b7280',
       'border-width': 2,
       'border-color': '#9ca3af',
-      'width': '36px',
-      'height': '36px',
+      'width': '34px',
+      'height': '34px',
       'shape': 'ellipse',
       'transition-property': 'opacity, border-width, width, height',
       'transition-duration': '160ms',
@@ -84,18 +86,18 @@ const CY_STYLE = [
     selector: `node[node_type = "${type}"]`,
     style: { 'background-color': m.color, 'border-color': m.border, 'shape': m.shape },
   })),
-  // Target node (the person we're investigating)
+  // Target node (the person or case being investigated)
   {
     selector: 'node[?isTarget]',
     style: {
-      'width': '54px', 'height': '54px',
+      'width': '48px', 'height': '48px',
       'border-width': 3, 'font-size': '11px', 'font-weight': '800', 'z-index': 10,
     },
   },
   // Selected
   {
     selector: 'node:selected',
-    style: { 'border-width': 4, 'border-color': '#fff', 'width': '46px', 'height': '46px', 'z-index': 20 },
+    style: { 'border-width': 4, 'border-color': '#fff', 'width': '42px', 'height': '42px', 'z-index': 20 },
   },
   { selector: 'node.dimmed',        style: { 'opacity': 0.15 } },
   { selector: 'edge.dimmed',        style: { 'opacity': 0.05 } },
@@ -103,30 +105,178 @@ const CY_STYLE = [
   {
     selector: 'edge',
     style: {
-      'width': 1.2,
-      'line-color': 'rgba(113,113,122,0.4)',
-      'target-arrow-color': 'rgba(113,113,122,0.4)',
+      'width': 1.4,
+      'line-color': 'rgba(113,113,122,0.5)',
+      'target-arrow-color': 'rgba(113,113,122,0.5)',
       'target-arrow-shape': 'triangle',
       'arrow-scale': 0.85,
       'curve-style': 'bezier',
       'label': 'data(label)',
       'font-size': '8px',
       'font-family': 'JetBrains Mono, monospace',
-      'color': '#71717a',
+      'color': '#a1a1aa',
       'text-rotation': 'autorotate',
-      'text-background-color': 'rgba(9,9,11,0.82)',
+      'text-background-color': 'rgba(9,9,11,0.85)',
       'text-background-opacity': 1,
-      'text-background-padding': '1px 3px',
+      'text-background-padding': '1px 4px',
       'transition-property': 'opacity, width',
       'transition-duration': '160ms',
     },
   },
+  // Edge styling matching user reference design
+  {
+    selector: 'edge[relationship = "TRANSFERRED_FUNDS"], edge[label ^= "Sent"], edge[label ^= "TRANSFERRED"], edge[label ^= "Rs"], edge[label ^= "₹"]',
+    style: {
+      'line-color': '#ef4444',
+      'target-arrow-color': '#ef4444',
+      'color': '#f87171',
+      'width': 1.8,
+    },
+  },
+  {
+    selector: 'edge[relationship = "CALLED"], edge[label ^= "Called"], edge[label ^= "CALLED"]',
+    style: {
+      'line-color': '#3b82f6',
+      'target-arrow-color': '#3b82f6',
+      'color': '#60a5fa',
+      'width': 1.6,
+    },
+  },
+  {
+    selector: 'edge[relationship = "SIGHTED_AT"], edge[relationship = "OWNS_VEHICLE"], edge[label ^= "OWNS"], edge[label ^= "Sighted"]',
+    style: {
+      'line-color': '#06b6d4',
+      'target-arrow-color': '#06b6d4',
+      'color': '#38bdf8',
+    },
+  },
+  {
+    selector: 'edge[relationship = "OBSERVED_AT"], edge[label ^= "Observed"]',
+    style: {
+      'line-color': '#a855f7',
+      'target-arrow-color': '#a855f7',
+      'color': '#c084fc',
+    },
+  },
 ];
 
+// ── Label & formatting helpers ──────────────────────────────────────────────
+function formatMoney(amount) {
+  if (!amount) return '';
+  const num = Number(amount);
+  if (isNaN(num)) return String(amount);
+  if (num >= 100000) return `₹${(num / 100000).toFixed(1)}L`;
+  if (num >= 1000) return `₹${(num / 1000).toFixed(1)}K`;
+  return `₹${num.toLocaleString('en-IN')}`;
+}
+
+function formatTimestamp(ts) {
+  if (!ts) return '';
+  try {
+    const d = new Date(String(ts).replace('Z', '+00:00'));
+    if (isNaN(d.getTime())) return String(ts);
+    const dateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    const timeStr = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false });
+    return `${dateStr} ${timeStr}`;
+  } catch (_) {
+    return String(ts);
+  }
+}
+
 // ── Data helpers ───────────────────────────────────────────────────────────
-function buildCyElements(apiElements, targetId) {
-  const nodes = apiElements.filter(e => !e.data.source);
-  const edges = apiElements.filter(e => e.data.source && e.data.target);
+function buildCyElements(apiElements, targetId, activeTab = 'ALL') {
+  let nodes = apiElements.filter(e => !e.data.source);
+  let edges = apiElements.filter(e => e.data.source && e.data.target);
+
+  // ── Exclude FIR Case Node in specific sub-graphs ──
+  if (activeTab !== 'ALL') {
+    const isFirNode = (n) =>
+      n.data.node_type === 'FIR' ||
+      String(n.data.id).toUpperCase().startsWith('FIR') ||
+      String(n.data.id).toUpperCase().includes('SYNTHETIC_DATA');
+
+    const firNodeIds = new Set(nodes.filter(isFirNode).map(n => n.data.id));
+
+    nodes = nodes.filter(n => !firNodeIds.has(n.data.id));
+    edges = edges.filter(e => !firNodeIds.has(e.data.source) && !firNodeIds.has(e.data.target));
+  }
+
+  // ── Categorical Filtering & Action Label Formatting ──
+  if (activeTab === 'CALLS') {
+    const callEdges = edges.filter(e => {
+      const rel = (e.data.relationship || e.data.label || '').toUpperCase();
+      return rel.includes('CALL') || rel.includes('PHONE') || rel.includes('CONTACT') || rel.includes('CDR');
+    });
+
+    const connectedNodeIds = new Set(callEdges.flatMap(e => [e.data.source, e.data.target]));
+    nodes = nodes.filter(n => n.data.node_type === 'Phone' || connectedNodeIds.has(n.data.id) || n.data.id === targetId);
+
+    edges = callEdges.map(e => {
+      const d = e.data.details || {};
+      const ts = formatTimestamp(d.timestamp || e.data.timestamp);
+      const dur = d.duration_seconds || e.data.duration_seconds || d.duration || e.data.duration;
+      let actionLabel = 'CALLED';
+      if (ts && dur) actionLabel = `${ts} (${dur}s)`;
+      else if (ts) actionLabel = `Called ${ts}`;
+      else if (dur) actionLabel = `Call ${dur}s`;
+      return { ...e, data: { ...e.data, formatted_label: actionLabel } };
+    });
+
+  } else if (activeTab === 'TRANSACTIONS') {
+    const txEdges = edges.filter(e => {
+      const rel = (e.data.relationship || e.data.label || '').toUpperCase();
+      return rel.includes('TRANSFER') || rel.includes('MONEY') || rel.includes('FUNDS') || rel.includes('HAWALA') || rel.includes('PAYMENT') || rel.includes('INR') || rel.includes('₹') || rel.includes('TXN');
+    });
+
+    const connectedNodeIds = new Set(txEdges.flatMap(e => [e.data.source, e.data.target]));
+    nodes = nodes.filter(n => connectedNodeIds.has(n.data.id) || n.data.id === targetId || n.data.node_type === 'Organization');
+
+    edges = txEdges.map(e => {
+      const d = e.data.details || {};
+      const amt = e.data.amount || d.amount || e.data.label;
+      const mode = d.mode || e.data.mode || '';
+      const formattedAmt = formatMoney(amt);
+      let actionLabel = formattedAmt ? `Sent ${formattedAmt}` : 'TRANSFERRED FUNDS';
+      if (formattedAmt && mode) actionLabel = `Sent ${formattedAmt} (${mode})`;
+      return { ...e, data: { ...e.data, formatted_label: actionLabel } };
+    });
+
+  } else if (activeTab === 'VEHICLES') {
+    const vehEdges = edges.filter(e => {
+      const rel = (e.data.relationship || e.data.label || '').toUpperCase();
+      return rel.includes('VEHICLE') || rel.includes('SIGHTED') || rel.includes('OWNS') || rel.includes('DRIVING') || rel.includes('ANPR');
+    });
+
+    const connectedNodeIds = new Set(vehEdges.flatMap(e => [e.data.source, e.data.target]));
+    nodes = nodes.filter(n => n.data.node_type === 'Vehicle' || connectedNodeIds.has(n.data.id) || n.data.id === targetId);
+
+    edges = vehEdges.map(e => {
+      const d = e.data.details || {};
+      const ts = formatTimestamp(d.timestamp || e.data.timestamp);
+      const rel = (e.data.relationship || '').toUpperCase();
+      let actionLabel = e.data.label || 'SIGHTED';
+      if (rel.includes('OWNS')) actionLabel = 'OWNS VEHICLE';
+      else if (ts) actionLabel = `Sighted ${ts}`;
+      return { ...e, data: { ...e.data, formatted_label: actionLabel } };
+    });
+
+  } else if (activeTab === 'SURVEILLANCE') {
+    const survEdges = edges.filter(e => {
+      const rel = (e.data.relationship || e.data.label || '').toUpperCase();
+      return rel.includes('OBSERVED') || rel.includes('LOCATION') || rel.includes('OCCURRED') || rel.includes('SURV');
+    });
+
+    const connectedNodeIds = new Set(survEdges.flatMap(e => [e.data.source, e.data.target]));
+    nodes = nodes.filter(n => n.data.node_type === 'Location' || connectedNodeIds.has(n.data.id) || n.data.id === targetId);
+
+    edges = survEdges.map(e => {
+      const d = e.data.details || {};
+      const ts = formatTimestamp(d.timestamp || e.data.timestamp);
+      let actionLabel = 'OBSERVED AT';
+      if (ts) actionLabel = `Observed ${ts}`;
+      return { ...e, data: { ...e.data, formatted_label: actionLabel } };
+    });
+  }
 
   // Node cap: always keep target + direct neighbours, fill rest by degree
   let kept = nodes;
@@ -158,7 +308,7 @@ function buildCyElements(apiElements, targetId) {
     if (!kept.find(n => n.data.id === e.data.source) || !kept.find(n => n.data.id === e.data.target)) return;
     const key = [e.data.source, e.data.target].sort().join('||');
     if (!edgeMap[key]) edgeMap[key] = { ...e, data: { ...e.data, labels: [] } };
-    const lbl = e.data.relationship || e.data.label || '';
+    const lbl = e.data.formatted_label || e.data.relationship || e.data.label || '';
     if (lbl && !edgeMap[key].data.labels.includes(lbl)) edgeMap[key].data.labels.push(lbl);
   });
 
@@ -274,6 +424,7 @@ export default function GraphWindow({
   const [graphMeta, setGraphMeta] = useState({ nodeCount: 0, edgeCount: 0, hidden: 0 });
   const [selected, setSelected]   = useState(null);  // { id, label, type, degree }
   const [hover, setHover]         = useState(null);   // { label, type, x, y }
+  const [activeCategoryTab, setActiveCategoryTab] = useState('ALL');
 
   // ── Fetch ego-network data ───────────────────────────────────────────────
   useEffect(() => {
@@ -289,12 +440,12 @@ export default function GraphWindow({
       .catch(e => { setError(e.message); setLoading(false); });
   }, [targetEntity, isOpen]);
 
-  // ── Build & load graph when data arrives ─────────────────────────────────
+  // ── Build & load graph when data arrives or category tab changes ──────────
   useEffect(() => {
     if (!apiData?.elements) return;
     const compact = !isMax;
     const { cyNodes, cyEdges, nodeCount, edgeCount, hidden } =
-      buildCyElements(apiData.elements, targetEntity);
+      buildCyElements(apiData.elements, targetEntity, activeCategoryTab);
     setGraphMeta({ nodeCount, edgeCount, hidden });
     setSelected(null);
 
@@ -320,7 +471,7 @@ export default function GraphWindow({
       pendingInit.current = load;
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiData, isMax]);
+  }, [apiData, isMax, activeCategoryTab]);
 
   // ── Two-phase Cytoscape init: wait for real container dimensions ─────────
   useEffect(() => {
@@ -589,6 +740,53 @@ export default function GraphWindow({
         </div>
       </div>
 
+      {/* ── Sub-header Category Navigation Menu Bar ── */}
+      <div style={{
+        height: 40,
+        flexShrink: 0,
+        padding: '0 12px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+        background: 'rgba(15,15,20,0.99)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        overflowX: 'auto',
+        scrollbarWidth: 'none',
+        zIndex: 10,
+      }}>
+        {[
+          { id: 'ALL',          label: 'Overview Graph',          icon: Layers,     color: '#38bdf8' },
+          { id: 'CALLS',        label: 'Call Logs (CDR)',         icon: Phone,      color: '#f59e0b' },
+          { id: 'TRANSACTIONS', label: 'Financial Transactions',  icon: CreditCard, color: '#10b981' },
+          { id: 'VEHICLES',     label: 'Vehicle Sightings',       icon: Car,        color: '#0284c7' },
+          { id: 'SURVEILLANCE', label: 'Surveillance & Intel',    icon: MapPin,     color: '#a78bfa' },
+        ].map(tab => {
+          const Icon = tab.icon;
+          const isActive = activeCategoryTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveCategoryTab(tab.id)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '5px 12px', borderRadius: 6,
+                background: isActive ? 'rgba(56,189,248,0.15)' : 'rgba(255,255,255,0.03)',
+                border: isActive ? '1px solid rgba(56,189,248,0.45)' : '1px solid rgba(255,255,255,0.07)',
+                color: isActive ? tab.color : '#a1a1aa',
+                fontSize: 11, fontWeight: isActive ? 700 : 500,
+                fontFamily: 'Inter, system-ui, sans-serif',
+                cursor: 'pointer', whiteSpace: 'nowrap',
+                transition: 'all 0.16s ease',
+                boxShadow: isActive ? '0 0 14px rgba(56,189,248,0.18)' : 'none',
+              }}
+            >
+              <Icon size={13} color={isActive ? tab.color : '#71717a'} />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* ── Body ── */}
       <div style={{ flex: 1, minHeight: 0, position: 'relative', overflow: 'hidden', background: '#09090b' }}>
 
@@ -622,21 +820,36 @@ export default function GraphWindow({
           </div>
         )}
 
-        {/* ── Legend (top-left) ── */}
-        {!loading && presentTypes.length > 0 && (
+        {/* ── Legend (top-left horizontal bar) ── */}
+        {!loading && apiData && (
           <div style={{
             position: 'absolute', top: 10, left: 10, zIndex: 20,
             background: 'rgba(9,9,11,0.92)', backdropFilter: 'blur(10px)',
             border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
-            padding: isMax ? '7px 12px' : '5px 9px',
-            display: 'flex', flexDirection: 'column', gap: 4,
+            padding: '6px 12px',
+            display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap',
+            fontSize: 10, fontWeight: 600, fontFamily: 'Inter, sans-serif',
           }}>
-            {presentTypes.map(type => (
-              <span key={type} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, fontWeight: 600, color: t(type).color, fontFamily: 'Inter, sans-serif', whiteSpace: 'nowrap' }}>
-                <span style={{ width: 8, height: 8, borderRadius: type === 'Vehicle' ? 2 : '50%', background: t(type).color, flexShrink: 0 }} />
-                {t(type).label}
-              </span>
-            ))}
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#f97316' }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#f97316', display: 'inline-block' }} />
+              Key Intermediary / Broker
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#4ade80' }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#4ade80', display: 'inline-block' }} />
+              Person Node
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#38bdf8' }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#38bdf8', display: 'inline-block' }} />
+              Phone Node
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#f87171' }}>
+              <span style={{ width: 14, height: 2, background: '#ef4444', display: 'inline-block' }} />
+              Suspicious Financial Layering Edge
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#60a5fa' }}>
+              <span style={{ width: 14, height: 2, background: '#3b82f6', display: 'inline-block' }} />
+              CDR Call Edge
+            </span>
           </div>
         )}
 

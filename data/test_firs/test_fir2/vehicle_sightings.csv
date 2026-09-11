@@ -1,0 +1,101 @@
+vehicle_number,registered_owner,location,timestamp,camera_id
+KA05MN8888,Kavya Nair,"Electronic City, Bengaluru",2026-09-01 10:46:00,ANPR_BLR_CAM_09
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-01 17:11:00,ANPR_BLR_CAM_02
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-12 02:36:00,ANPR_BLR_CAM_17
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-06 10:10:00,ANPR_BLR_CAM_18
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-09 05:06:00,ANPR_BLR_CAM_02
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-11 11:35:00,ANPR_BLR_CAM_12
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-14 20:33:00,ANPR_BLR_CAM_09
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-09 11:33:00,ANPR_BLR_CAM_15
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-10 11:42:00,ANPR_BLR_CAM_15
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-08 03:55:00,ANPR_BLR_CAM_06
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-02 02:05:00,ANPR_BLR_CAM_17
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-07 14:58:00,ANPR_BLR_CAM_17
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-06 07:25:00,ANPR_BLR_CAM_10
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-12 15:48:00,ANPR_BLR_CAM_07
+TS07AB2002,Rajesh Khurana,"Whitefield, Bengaluru",2026-09-14 04:51:00,ANPR_BLR_CAM_14
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-12 14:03:00,ANPR_BLR_CAM_10
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-04 11:22:00,ANPR_BLR_CAM_13
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-09 21:08:00,ANPR_BLR_CAM_13
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-04 12:59:00,ANPR_BLR_CAM_17
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-02 08:48:00,ANPR_BLR_CAM_15
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-06 15:53:00,ANPR_BLR_CAM_03
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-04 08:18:00,ANPR_BLR_CAM_13
+KA05MN8888,Kavya Nair,"Indiranagar, Bengaluru",2026-09-15 04:25:00,ANPR_BLR_CAM_05
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-12 12:57:00,ANPR_BLR_CAM_07
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-01 12:02:00,ANPR_BLR_CAM_03
+TS07AB2002,Rajesh Khurana,"Indiranagar, Bengaluru",2026-09-06 06:32:00,ANPR_BLR_CAM_09
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-13 13:23:00,ANPR_BLR_CAM_10
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-11 18:59:00,ANPR_BLR_CAM_12
+KA05MN8888,Kavya Nair,"Electronic City, Bengaluru",2026-09-05 14:05:00,ANPR_BLR_CAM_12
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-06 15:14:00,ANPR_BLR_CAM_10
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-04 04:06:00,ANPR_BLR_CAM_05
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-14 12:02:00,ANPR_BLR_CAM_08
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-11 08:02:00,ANPR_BLR_CAM_03
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-11 22:27:00,ANPR_BLR_CAM_10
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-15 01:27:00,ANPR_BLR_CAM_18
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-08 10:17:00,ANPR_BLR_CAM_17
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-02 07:42:00,ANPR_BLR_CAM_03
+KA05MN8888,Kavya Nair,"Electronic City, Bengaluru",2026-09-09 15:00:00,ANPR_BLR_CAM_06
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-14 23:59:00,ANPR_BLR_CAM_03
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-09 01:43:00,ANPR_BLR_CAM_16
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-12 10:57:00,ANPR_BLR_CAM_12
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-07 09:12:00,ANPR_BLR_CAM_06
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-12 23:59:00,ANPR_BLR_CAM_02
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-10 07:01:00,ANPR_BLR_CAM_15
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-13 15:51:00,ANPR_BLR_CAM_11
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-15 11:31:00,ANPR_BLR_CAM_07
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-02 06:03:00,ANPR_BLR_CAM_07
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-03 02:40:00,ANPR_BLR_CAM_10
+TS07AB2002,Rajesh Khurana,"Whitefield, Bengaluru",2026-09-04 12:04:00,ANPR_BLR_CAM_06
+TS09EX1001,Devendra Varma,"Whitefield, Bengaluru",2026-09-14 09:14:00,ANPR_BLR_CAM_02
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-08 05:36:00,ANPR_BLR_CAM_12
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-10 04:39:00,ANPR_BLR_CAM_08
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-05 13:30:00,ANPR_BLR_CAM_06
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-01 15:49:00,ANPR_BLR_CAM_03
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-14 13:11:00,ANPR_BLR_CAM_04
+KA05MN8888,Kavya Nair,"Electronic City, Bengaluru",2026-09-03 14:33:00,ANPR_BLR_CAM_08
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-01 19:00:00,ANPR_BLR_CAM_09
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-15 21:02:00,ANPR_BLR_CAM_02
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-01 18:14:00,ANPR_BLR_CAM_07
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-02 21:41:00,ANPR_BLR_CAM_08
+TS07AB2002,Rajesh Khurana,"Indiranagar, Bengaluru",2026-09-15 18:36:00,ANPR_BLR_CAM_03
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-04 18:01:00,ANPR_BLR_CAM_04
+TS09EX1001,Devendra Varma,"Whitefield, Bengaluru",2026-09-06 01:52:00,ANPR_BLR_CAM_16
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-12 10:52:00,ANPR_BLR_CAM_01
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-11 05:59:00,ANPR_BLR_CAM_13
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-04 01:14:00,ANPR_BLR_CAM_01
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-11 08:56:00,ANPR_BLR_CAM_10
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-02 08:29:00,ANPR_BLR_CAM_11
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-12 23:32:00,ANPR_BLR_CAM_12
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-01 17:42:00,ANPR_BLR_CAM_11
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-03 03:20:00,ANPR_BLR_CAM_04
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-10 09:12:00,ANPR_BLR_CAM_12
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-11 18:22:00,ANPR_BLR_CAM_10
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-05 20:29:00,ANPR_BLR_CAM_15
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-14 14:53:00,ANPR_BLR_CAM_08
+TS09EX1001,Devendra Varma,"Whitefield, Bengaluru",2026-09-16 05:41:00,ANPR_BLR_CAM_18
+TS07AB2002,Rajesh Khurana,"Whitefield, Bengaluru",2026-09-12 17:41:00,ANPR_BLR_CAM_09
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-05 23:59:00,ANPR_BLR_CAM_14
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-14 12:18:00,ANPR_BLR_CAM_02
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-06 17:31:00,ANPR_BLR_CAM_04
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-10 00:20:00,ANPR_BLR_CAM_02
+TS09EX1001,Devendra Varma,"Whitefield, Bengaluru",2026-09-13 04:45:00,ANPR_BLR_CAM_10
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-06 20:05:00,ANPR_BLR_CAM_16
+KA05MN8888,Kavya Nair,"Electronic City, Bengaluru",2026-09-08 20:32:00,ANPR_BLR_CAM_13
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-04 00:26:00,ANPR_BLR_CAM_15
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-14 17:03:00,ANPR_BLR_CAM_16
+TS09EX1001,Devendra Varma,"Whitefield, Bengaluru",2026-09-11 16:23:00,ANPR_BLR_CAM_17
+TS07AB2002,Rajesh Khurana,"Whitefield, Bengaluru",2026-09-15 15:07:00,ANPR_BLR_CAM_13
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-04 18:57:00,ANPR_BLR_CAM_04
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-11 16:56:00,ANPR_BLR_CAM_18
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-08 01:03:00,ANPR_BLR_CAM_12
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-06 16:20:00,ANPR_BLR_CAM_10
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-13 22:42:00,ANPR_BLR_CAM_10
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-11 03:15:00,ANPR_BLR_CAM_10
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-09 02:55:00,ANPR_BLR_CAM_07
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-09 10:09:00,ANPR_BLR_CAM_13
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-14 11:14:00,ANPR_BLR_CAM_13
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-09 09:58:00,ANPR_BLR_CAM_14
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-06 19:50:00,ANPR_BLR_CAM_02
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-14 08:52:00,ANPR_BLR_CAM_04

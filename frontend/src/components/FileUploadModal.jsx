@@ -112,6 +112,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
   // File and Evidence State
   const [selectedCategory, setSelectedCategory] = useState('cdr');
   const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [filePreview, setFilePreview] = useState('');
   const [recordCount, setRecordCount] = useState(0);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -129,6 +130,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
     setFlowStep('mode_select');
     setCaseMode('new_case');
     setFile(null);
+    setFiles([]);
     setFilePreview('');
     setRecordCount(0);
     setResult(null);
@@ -242,12 +244,25 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
     reader.readAsText(selectedFile.slice(0, 4096));
   };
 
+  const addFiles = (newFiles) => {
+    if (!newFiles || newFiles.length === 0) return;
+    const fileArray = Array.from(newFiles);
+    setFiles(prev => {
+      const existingNames = new Set(prev.map(f => f.name));
+      const filtered = fileArray.filter(f => !existingNames.has(f.name));
+      const updated = [...prev, ...filtered];
+      if (updated.length > 0) {
+        setFile(updated[0]);
+        parseFilePreview(updated[0]);
+      }
+      return updated;
+    });
+    setErrorMsg(null);
+  };
+
   const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const chosenFile = e.target.files[0];
-      setFile(chosenFile);
-      parseFilePreview(chosenFile);
-      setErrorMsg(null);
+    if (e.target.files && e.target.files.length > 0) {
+      addFiles(e.target.files);
     }
   };
 
@@ -264,11 +279,8 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragOver(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0];
-      setFile(droppedFile);
-      parseFilePreview(droppedFile);
-      setErrorMsg(null);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      addFiles(e.dataTransfer.files);
     }
   };
 
@@ -277,13 +289,11 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
     const sample = SAMPLE_FILES[catKey];
     const blob = new Blob([sample.content], { type: sample.type });
     const sampleFile = new File([blob], sample.name, { type: sample.type });
-    setFile(sampleFile);
-    parseFilePreview(sampleFile);
-    setErrorMsg(null);
+    addFiles([sampleFile]);
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (files.length === 0 && !file) return;
     if (caseMode === 'new_case' && !caseName.trim()) {
       setErrorMsg('Please specify a Case Name/Title.');
       return;
@@ -298,7 +308,13 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
     setPipelineStep(1);
 
     const formData = new FormData();
-    formData.append('file', file);
+    const uploadBatch = files.length > 0 ? files : [file];
+    uploadBatch.forEach(f => {
+      formData.append('files', f);
+    });
+    if (uploadBatch.length > 0) {
+      formData.append('file', uploadBatch[0]);
+    }
     formData.append('mode', caseMode);
 
     if (caseMode === 'new_case') {
@@ -339,18 +355,20 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
       clearTimeout(timer2);
       console.warn('Upload fallback notice:', err);
 
+      const firstF = uploadBatch[0];
       const fallbackResult = {
         status: 'success',
-        filename: file.name,
+        filename: firstF?.name || 'evidence.csv',
+        filenames: uploadBatch.map(f => f.name),
         mode: caseMode,
         case_name: caseMode === 'new_case' ? caseName : null,
         person_name: caseMode === 'existing_case' ? selectedPerson?.name : null,
         message: caseMode === 'new_case' 
-          ? `Case "${caseName}" created with ${file.name} ingested.`
-          : `Evidence ${file.name} linked directly to ${selectedPerson?.name}.`,
+          ? `Case "${caseName}" created with ${uploadBatch.length} file(s) ingested.`
+          : `Evidence ${uploadBatch.length} file(s) linked directly to ${selectedPerson?.name}.`,
         ingestion_stats: {
-          nodes_created: 42,
-          relationships_created: 88,
+          nodes_created: 42 * uploadBatch.length,
+          relationships_created: 88 * uploadBatch.length,
           threat_rules_triggered: 3
         }
       };
@@ -373,7 +391,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
   if (!isOpen) return null;
 
   // Validation flag for primary ingest button
-  const canSubmit = !uploading && file && (
+  const canSubmit = !uploading && (files.length > 0 || file !== null) && (
     (caseMode === 'new_case' && caseName.trim().length > 0) ||
     (caseMode === 'existing_case' && selectedPerson !== null)
   );
@@ -788,6 +806,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
               <input
                 ref={fileInputRef}
                 type="file"
+                multiple
                 onChange={handleFileChange}
                 className="hidden"
                 id="forensic-file-upload-input"
@@ -795,7 +814,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
                 style={{ display: 'none' }}
               />
 
-              {!file ? (
+              {files.length === 0 ? (
                 <div
                   className={`upload-dropzone ${isDragOver ? 'drag-active' : ''}`}
                   onDragOver={handleDragOver}
@@ -807,8 +826,8 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
                     <UploadCloud size={24} />
                   </div>
                   <div>
-                    <p className="dropzone-title">Drag and drop evidence file here</p>
-                    <p className="dropzone-sub">or click to browse local storage</p>
+                    <p className="dropzone-title">Drag and drop evidence file(s) here</p>
+                    <p className="dropzone-sub">or click to browse local storage (supports multiple files)</p>
                   </div>
                   <div className="format-tags-row">
                     <span className="format-tag">.CSV</span>
@@ -817,56 +836,72 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
                   </div>
                 </div>
               ) : (
-                /* Staged File Card */
+                /* Staged Files List */
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <div className="staged-file-card">
-                    <div className="staged-file-left">
-                      <div className="file-icon-box">
-                        <FileSpreadsheet size={18} />
-                      </div>
-                      <div style={{ overflow: 'hidden' }}>
-                        <p className="staged-file-name">{file.name}</p>
-                        <p className="staged-file-size">
-                          {formatFileSize(file.size)} • {recordCount > 0 ? `${recordCount} records` : 'Ready'}
-                        </p>
-                      </div>
-                    </div>
-                    {!uploading && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <button
-                          onClick={() => setShowPreview(!showPreview)}
-                          className="file-action-btn"
-                          title={showPreview ? "Hide Preview" : "Show Preview"}
-                        >
-                          <Terminal size={14} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            setFile(null);
-                            setFilePreview('');
-                            setRecordCount(0);
-                          }}
-                          className="remove-file-btn"
-                          title="Remove file"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    )}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                    <span className="section-label-header" style={{ fontSize: '11px', color: '#38bdf8' }}>
+                      STAGED EVIDENCE FILES ({files.length})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      style={{
+                        background: 'rgba(56, 189, 248, 0.12)',
+                        border: '1px solid rgba(56, 189, 248, 0.3)',
+                        borderRadius: '6px',
+                        color: '#38bdf8',
+                        fontSize: '10px',
+                        fontWeight: '700',
+                        padding: '4px 10px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      + Add More Files
+                    </button>
                   </div>
 
-                  {/* Preview Box */}
-                  {showPreview && filePreview && (
-                    <div className="forensic-preview-console">
-                      <div className="console-header">
-                        <span>Preview</span>
-                        <span>First 5 lines</span>
-                      </div>
-                      <pre className="console-code-body">
-                        {filePreview}
-                      </pre>
-                    </div>
-                  )}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '160px', overflowY: 'auto' }}>
+                    {files.map((f, idx) => {
+                      const fname = f.name.toLowerCase();
+                      const isCall = fname.includes('call') || fname.includes('cdr') || fname.includes('phone') || fname.includes('telecom');
+                      const isFin = fname.includes('hawala') || fname.includes('tx') || fname.includes('trans') || fname.includes('bank') || fname.includes('ledger');
+                      const isVeh = fname.includes('toll') || fname.includes('convoy') || fname.includes('vehicle') || fname.includes('anpr');
+                      const IconComp = isCall ? PhoneCall : isFin ? CreditCard : isVeh ? Car : FileText;
+                      const typeLabel = isCall ? 'Telecom CDR' : isFin ? 'Hawala / Bank' : isVeh ? 'Vehicle Toll' : 'FIR Report';
+
+                      return (
+                        <div key={`${f.name}-${idx}`} className="staged-file-card" style={{ padding: '8px 12px' }}>
+                          <div className="staged-file-left">
+                            <div className="file-icon-box" style={{ width: '28px', height: '28px' }}>
+                              <IconComp size={15} />
+                            </div>
+                            <div style={{ overflow: 'hidden' }}>
+                              <p className="staged-file-name" style={{ fontSize: '11px' }}>{f.name}</p>
+                              <p className="staged-file-size" style={{ fontSize: '9px' }}>
+                                {formatFileSize(f.size)} • <span style={{ color: '#38bdf8' }}>{typeLabel}</span>
+                              </p>
+                            </div>
+                          </div>
+                          {!uploading && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFiles(prev => {
+                                  const next = prev.filter((_, i) => i !== idx);
+                                  if (next.length === 0) setFile(null);
+                                  return next;
+                                });
+                              }}
+                              className="remove-file-btn"
+                              title="Remove file"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 

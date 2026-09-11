@@ -149,3 +149,451 @@ KA05TX5728,Tarun Patel,"MG Road, Bengaluru",2026-08-10T09:30:00Z,ANPR_CAM_19,veh
 KA08CK5135,Nitin Pandey,"Electronic City, Bengaluru",2026-08-04T00:53:00Z,ANPR_CAM_15,vehicle_sightings.csv
 KA03KN9117,Aman Nair,"Yelahanka, Bengaluru",2026-08-06T21:57:00Z,ANPR_CAM_19,vehicle_sightings.csv
 KA04UV5708,Sameer Singh,"Koramangala, Bengaluru",2026-08-23T07:10:00Z,ANPR_CAM_16,vehicle_sightings.csv
+DL01AX9999,Kabir Malhotra,"Connaught Place, Delhi",2026-09-01T18:30:00Z,DEL_CAM_01,vehicle_sightings.csv
+DL11VF5245,Mayank Kapoor,"Aerocity, Delhi",2026-09-06T09:00:00Z,DEL_CAM_15,vehicle_sightings.csv
+DL06JD2955,Ashish Kakkar,"Connaught Place, Delhi",2026-09-10T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL05XS4797,Gaurav Aggarwal,"Connaught Place, Delhi",2026-09-03T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL01DY3884,Deepankar Gulati,"Karol Bagh, Delhi",2026-09-11T09:00:00Z,DEL_CAM_12,vehicle_sightings.csv
+DL10MV5729,Pranav Sethi,"Cyber City, Gurugram",2026-09-01T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL04ZZ2922,Farhan Wadhwa,"Vasant Kunj, Delhi",2026-09-08T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL04YR6787,Dev Batra,"Sector 62, Noida",2026-09-09T09:00:00Z,DEL_CAM_13,vehicle_sightings.csv
+DL08HG3556,Naveen Malhotra,"Aerocity, Delhi",2026-09-06T09:00:00Z,DEL_CAM_06,vehicle_sightings.csv
+DL06WA8174,Chaganti Aggarwal,"Sector 62, Noida",2026-09-10T09:00:00Z,DEL_CAM_02,vehicle_sightings.csv
+DL08JK9760,Bhavya Grover,"Karol Bagh, Delhi",2026-09-05T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL04QF7027,Dev Nangia,"Cyber City, Gurugram",2026-09-02T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL12ER7713,Farhan Kakkar,"Sector 62, Noida",2026-09-03T09:00:00Z,DEL_CAM_02,vehicle_sightings.csv
+DL05SC7358,Bhavya Aggarwal,"Cyber City, Gurugram",2026-09-07T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL04XZ7447,Harsh Kapoor,"Karol Bagh, Delhi",2026-09-01T09:00:00Z,DEL_CAM_01,vehicle_sightings.csv
+DL07FG2828,Chaganti Tiwari,"Rohini, Delhi",2026-09-11T09:00:00Z,DEL_CAM_04,vehicle_sightings.csv
+DL10MV5729,Bhavya Tiwari,"Cyber City, Gurugram",2026-09-05T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL01ZR1489,Naveen Kakkar,"Sector 62, Noida",2026-09-01T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL09GB7436,Nikhil Grover,"Sector 62, Noida",2026-09-07T09:00:00Z,DEL_CAM_04,vehicle_sightings.csv
+DL08WE1778,Nikhil Bhasin,"Rohini, Delhi",2026-09-07T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL11HE8116,Rohan Bhasin,"Rohini, Delhi",2026-09-03T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL04BG1903,Gaurav Gulati,"Rohini, Delhi",2026-09-11T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL08DM2068,Yash Gulati,"Karol Bagh, Delhi",2026-09-07T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL10MV5729,Vivek Bhasin,"Karol Bagh, Delhi",2026-09-11T09:00:00Z,DEL_CAM_04,vehicle_sightings.csv
+DL05XS4797,Tushar Khurana,"Cyber City, Gurugram",2026-09-04T09:00:00Z,DEL_CAM_13,vehicle_sightings.csv
+DL02TG8669,Siddharth Singhal,"Connaught Place, Delhi",2026-09-03T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL03GB8224,Tushar Kapoor,"Sector 62, Noida",2026-09-05T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL12CE7331,Ishaan Khurana,"Aerocity, Delhi",2026-09-07T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL11ED8794,Eshwar Batra,"Hauz Khas, Delhi",2026-09-06T09:00:00Z,DEL_CAM_09,vehicle_sightings.csv
+DL01AC2849,Nikhil Khurana,"Aerocity, Delhi",2026-09-01T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL01DY3884,Siddharth Chhabra,"Cyber City, Gurugram",2026-09-11T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL12VN1875,Gaurav Grover,"Karol Bagh, Delhi",2026-09-05T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL09GB7436,Yash Kakkar,"Vasant Kunj, Delhi",2026-09-05T09:00:00Z,DEL_CAM_01,vehicle_sightings.csv
+DL01DY3884,Siddharth Malhotra,"Karol Bagh, Delhi",2026-09-08T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL08JK9760,Tushar Tiwari,"Connaught Place, Delhi",2026-09-07T09:00:00Z,DEL_CAM_12,vehicle_sightings.csv
+DL12WF6775,Deepankar Batra,"Sector 62, Noida",2026-09-05T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL01IM6388,Nikhil Khurana,"Hauz Khas, Delhi",2026-09-04T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL04XZ7447,Eshwar Kapoor,"Karol Bagh, Delhi",2026-09-10T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL11HE8116,Nikhil Kakkar,"Karol Bagh, Delhi",2026-09-11T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL12JB1408,Rohan Kapoor,"Karol Bagh, Delhi",2026-09-08T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL05VR7038,Gaurav Kapoor,"Hauz Khas, Delhi",2026-09-08T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL01AC2849,Yash Kakkar,"Connaught Place, Delhi",2026-09-06T09:00:00Z,DEL_CAM_09,vehicle_sightings.csv
+DL04QH7634,Bhavya Chhabra,"Hauz Khas, Delhi",2026-09-10T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL04SE5431,Vivek Bhasin,"Connaught Place, Delhi",2026-09-01T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL08GW6127,Eshwar Khurana,"Hauz Khas, Delhi",2026-09-10T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL12AU6907,Kabir Sethi,"Hauz Khas, Delhi",2026-09-01T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL04XZ7447,Mayank Malhotra,"Rohini, Delhi",2026-09-09T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL09TR1430,Farhan Singhal,"Hauz Khas, Delhi",2026-09-06T09:00:00Z,DEL_CAM_15,vehicle_sightings.csv
+DL02SS7489,Gaurav Khurana,"Sector 62, Noida",2026-09-01T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL01BX4407,Eshwar Bhasin,"Aerocity, Delhi",2026-09-11T09:00:00Z,DEL_CAM_13,vehicle_sightings.csv
+DL09SR6210,Dev Nangia,"Hauz Khas, Delhi",2026-09-10T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL11LX8068,Dev Tiwari,"Vasant Kunj, Delhi",2026-09-06T09:00:00Z,DEL_CAM_12,vehicle_sightings.csv
+DL10XQ6333,Nikhil Grover,"Rohini, Delhi",2026-09-07T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL12VN1875,Bhavya Tiwari,"Hauz Khas, Delhi",2026-09-09T09:00:00Z,DEL_CAM_09,vehicle_sightings.csv
+DL09YH1329,Vivek Bhasin,"Sector 62, Noida",2026-09-10T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL11LX8068,Farhan Kakkar,"Vasant Kunj, Delhi",2026-09-05T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL11NC8731,Chaganti Kapoor,"Rohini, Delhi",2026-09-08T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL05IU2049,Eshwar Malhotra,"Vasant Kunj, Delhi",2026-09-06T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL05HM7962,Siddharth Bansal,"Sector 62, Noida",2026-09-11T09:00:00Z,DEL_CAM_13,vehicle_sightings.csv
+DL09SR6210,Gaurav Gulati,"Sector 62, Noida",2026-09-10T09:00:00Z,DEL_CAM_02,vehicle_sightings.csv
+DL08HG3556,Pranav Grover,"Karol Bagh, Delhi",2026-09-06T09:00:00Z,DEL_CAM_01,vehicle_sightings.csv
+DL03JV6335,Dev Wadhwa,"Aerocity, Delhi",2026-09-03T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL03JV6335,Mayank Batra,"Sector 62, Noida",2026-09-10T09:00:00Z,DEL_CAM_15,vehicle_sightings.csv
+DL04AQ6675,Harsh Chhabra,"Connaught Place, Delhi",2026-09-08T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL05HM7962,Siddharth Gulati,"Vasant Kunj, Delhi",2026-09-08T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL05HM7962,Farhan Kakkar,"Connaught Place, Delhi",2026-09-01T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL11LX8068,Pranav Khurana,"Aerocity, Delhi",2026-09-02T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL12LN3799,Vivek Bhasin,"Rohini, Delhi",2026-09-03T09:00:00Z,DEL_CAM_01,vehicle_sightings.csv
+DL05XS4797,Nikhil Aggarwal,"Hauz Khas, Delhi",2026-09-06T09:00:00Z,DEL_CAM_06,vehicle_sightings.csv
+DL01ZR1489,Siddharth Sethi,"Rohini, Delhi",2026-09-02T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL04WH1448,Bhavya Khurana,"Vasant Kunj, Delhi",2026-09-03T09:00:00Z,DEL_CAM_02,vehicle_sightings.csv
+DL05WM2021,Bhavya Khurana,"Sector 62, Noida",2026-09-04T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL05VR7038,Bhavya Grover,"Sector 62, Noida",2026-09-01T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL11VM3899,Deepankar Tiwari,"Karol Bagh, Delhi",2026-09-07T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL04QH7634,Naveen Kakkar,"Connaught Place, Delhi",2026-09-05T09:00:00Z,DEL_CAM_02,vehicle_sightings.csv
+DL04EC9132,Eshwar Nangia,"Aerocity, Delhi",2026-09-02T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL10CC8370,Siddharth Sethi,"Rohini, Delhi",2026-09-11T09:00:00Z,DEL_CAM_06,vehicle_sightings.csv
+DL04FO5459,Ashish Nangia,"Hauz Khas, Delhi",2026-09-05T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL08EF9410,Mayank Nangia,"Connaught Place, Delhi",2026-09-01T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL04SE5431,Yash Tiwari,"Sector 62, Noida",2026-09-11T09:00:00Z,DEL_CAM_02,vehicle_sightings.csv
+DL09FG3973,Mayank Malhotra,"Rohini, Delhi",2026-09-08T09:00:00Z,DEL_CAM_01,vehicle_sightings.csv
+DL09FG3973,Ishaan Khurana,"Connaught Place, Delhi",2026-09-02T09:00:00Z,DEL_CAM_09,vehicle_sightings.csv
+DL09GB7436,Vivek Wadhwa,"Aerocity, Delhi",2026-09-11T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL12KM4797,Gaurav Aggarwal,"Karol Bagh, Delhi",2026-09-10T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL11LX8068,Eshwar Nangia,"Cyber City, Gurugram",2026-09-06T09:00:00Z,DEL_CAM_06,vehicle_sightings.csv
+DL07GD8722,Ishaan Bhasin,"Rohini, Delhi",2026-09-01T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL01IM6388,Farhan Malhotra,"Karol Bagh, Delhi",2026-09-01T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL01PY6939,Nikhil Tiwari,"Sector 62, Noida",2026-09-04T09:00:00Z,DEL_CAM_15,vehicle_sightings.csv
+DL01AC2849,Mayank Gulati,"Connaught Place, Delhi",2026-09-04T09:00:00Z,DEL_CAM_15,vehicle_sightings.csv
+DL04WH1448,Ashish Gulati,"Hauz Khas, Delhi",2026-09-02T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL09UQ7492,Gaurav Gulati,"Rohini, Delhi",2026-09-01T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL06WA8174,Tushar Bhasin,"Hauz Khas, Delhi",2026-09-08T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL05GO7256,Vivek Aggarwal,"Sector 62, Noida",2026-09-08T09:00:00Z,DEL_CAM_15,vehicle_sightings.csv
+DL01BX4407,Naveen Sethi,"Connaught Place, Delhi",2026-09-03T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL11NC8731,Nikhil Bhasin,"Rohini, Delhi",2026-09-05T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL01PY6939,Dev Malhotra,"Sector 62, Noida",2026-09-07T09:00:00Z,DEL_CAM_04,vehicle_sightings.csv
+DL01UL2924,Eshwar Khurana,"Aerocity, Delhi",2026-09-08T09:00:00Z,DEL_CAM_04,vehicle_sightings.csv
+DL08QG1426,Bhavya Khurana,"Cyber City, Gurugram",2026-09-09T09:00:00Z,DEL_CAM_12,vehicle_sightings.csv
+DL04TF8411,Ishaan Malhotra,"Aerocity, Delhi",2026-09-11T09:00:00Z,DEL_CAM_13,vehicle_sightings.csv
+DL09KV9041,Deepankar Wadhwa,"Vasant Kunj, Delhi",2026-09-10T09:00:00Z,DEL_CAM_06,vehicle_sightings.csv
+DL04WH1448,Harsh Kapoor,"Rohini, Delhi",2026-09-06T09:00:00Z,DEL_CAM_06,vehicle_sightings.csv
+DL09SR6210,Vivek Bhasin,"Cyber City, Gurugram",2026-09-10T09:00:00Z,DEL_CAM_04,vehicle_sightings.csv
+DL04QF7027,Pranav Sethi,"Connaught Place, Delhi",2026-09-07T09:00:00Z,DEL_CAM_02,vehicle_sightings.csv
+DL01XW6571,Nikhil Bhasin,"Connaught Place, Delhi",2026-09-06T09:00:00Z,DEL_CAM_09,vehicle_sightings.csv
+DL05HM7962,Mayank Grover,"Cyber City, Gurugram",2026-09-07T09:00:00Z,DEL_CAM_06,vehicle_sightings.csv
+DL11NC8731,Nikhil Tiwari,"Cyber City, Gurugram",2026-09-01T09:00:00Z,DEL_CAM_06,vehicle_sightings.csv
+DL11LX8068,Siddharth Singhal,"Cyber City, Gurugram",2026-09-11T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL12YI1222,Yash Kakkar,"Cyber City, Gurugram",2026-09-02T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL11VM3899,Harsh Bhasin,"Cyber City, Gurugram",2026-09-07T09:00:00Z,DEL_CAM_06,vehicle_sightings.csv
+DL06LT1049,Mayank Wadhwa,"Karol Bagh, Delhi",2026-09-07T09:00:00Z,DEL_CAM_01,vehicle_sightings.csv
+DL08WE1778,Bhavya Malhotra,"Hauz Khas, Delhi",2026-09-04T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL08WE1778,Bhavya Singhal,"Aerocity, Delhi",2026-09-03T09:00:00Z,DEL_CAM_04,vehicle_sightings.csv
+DL05VR7038,Ishaan Kakkar,"Sector 62, Noida",2026-09-07T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL09YH1329,Gaurav Grover,"Hauz Khas, Delhi",2026-09-01T09:00:00Z,DEL_CAM_06,vehicle_sightings.csv
+DL04OQ2280,Eshwar Khurana,"Vasant Kunj, Delhi",2026-09-05T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL12LN3799,Pranav Khurana,"Aerocity, Delhi",2026-09-10T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL02SC4632,Gaurav Wadhwa,"Cyber City, Gurugram",2026-09-07T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL04SE5431,Harsh Kakkar,"Hauz Khas, Delhi",2026-09-03T09:00:00Z,DEL_CAM_09,vehicle_sightings.csv
+DL09YH1329,Farhan Gulati,"Vasant Kunj, Delhi",2026-09-08T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL09TR1430,Kabir Singhal,"Vasant Kunj, Delhi",2026-09-08T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL02TG8669,Mayank Kakkar,"Vasant Kunj, Delhi",2026-09-10T09:00:00Z,DEL_CAM_01,vehicle_sightings.csv
+DL11VM3899,Deepankar Kapoor,"Cyber City, Gurugram",2026-09-02T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL09GB7436,Siddharth Malhotra,"Cyber City, Gurugram",2026-09-11T09:00:00Z,DEL_CAM_14,vehicle_sightings.csv
+DL01BX4407,Harsh Kakkar,"Aerocity, Delhi",2026-09-08T09:00:00Z,DEL_CAM_01,vehicle_sightings.csv
+DL05GO7256,Yash Gulati,"Vasant Kunj, Delhi",2026-09-05T09:00:00Z,DEL_CAM_04,vehicle_sightings.csv
+DL04AQ6675,Bhavya Chhabra,"Sector 62, Noida",2026-09-05T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL09YH1329,Siddharth Sethi,"Vasant Kunj, Delhi",2026-09-04T09:00:00Z,DEL_CAM_15,vehicle_sightings.csv
+DL04BG1903,Rohan Kakkar,"Aerocity, Delhi",2026-09-11T09:00:00Z,DEL_CAM_08,vehicle_sightings.csv
+DL12FR9925,Nikhil Tiwari,"Hauz Khas, Delhi",2026-09-04T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL04BG1903,Farhan Aggarwal,"Connaught Place, Delhi",2026-09-09T09:00:00Z,DEL_CAM_13,vehicle_sightings.csv
+DL01UL2924,Farhan Gulati,"Karol Bagh, Delhi",2026-09-05T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL08WE1778,Rohan Bhasin,"Cyber City, Gurugram",2026-09-01T09:00:00Z,DEL_CAM_13,vehicle_sightings.csv
+DL04SE5431,Nikhil Tiwari,"Karol Bagh, Delhi",2026-09-09T09:00:00Z,DEL_CAM_02,vehicle_sightings.csv
+DL11VM3899,Pranav Chhabra,"Rohini, Delhi",2026-09-03T09:00:00Z,DEL_CAM_01,vehicle_sightings.csv
+DL07RR2461,Dev Malhotra,"Sector 62, Noida",2026-09-05T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+DL07DI4477,Tushar Bansal,"Sector 62, Noida",2026-09-06T09:00:00Z,DEL_CAM_15,vehicle_sightings.csv
+DL06WI1861,Naveen Batra,"Karol Bagh, Delhi",2026-09-07T09:00:00Z,DEL_CAM_11,vehicle_sightings.csv
+DL08GW6127,Siddharth Chhabra,"Hauz Khas, Delhi",2026-09-01T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL05GO7256,Gaurav Grover,"Sector 62, Noida",2026-09-05T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL05QY5745,Harsh Wadhwa,"Vasant Kunj, Delhi",2026-09-09T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL06WI1861,Chaganti Aggarwal,"Connaught Place, Delhi",2026-09-03T09:00:00Z,DEL_CAM_02,vehicle_sightings.csv
+DL04TF8411,Yash Chhabra,"Karol Bagh, Delhi",2026-09-09T09:00:00Z,DEL_CAM_13,vehicle_sightings.csv
+DL05HM7962,Vivek Aggarwal,"Rohini, Delhi",2026-09-09T09:00:00Z,DEL_CAM_10,vehicle_sightings.csv
+DL04SE5431,Farhan Wadhwa,"Connaught Place, Delhi",2026-09-04T09:00:00Z,DEL_CAM_03,vehicle_sightings.csv
+DL11VM3899,Deepankar Khurana,"Karol Bagh, Delhi",2026-09-03T09:00:00Z,DEL_CAM_02,vehicle_sightings.csv
+DL11HE8116,Ishaan Sethi,"Rohini, Delhi",2026-09-01T09:00:00Z,DEL_CAM_12,vehicle_sightings.csv
+DL08GW6127,Mayank Malhotra,"Aerocity, Delhi",2026-09-09T09:00:00Z,DEL_CAM_07,vehicle_sightings.csv
+DL06WI1861,Farhan Aggarwal,"Rohini, Delhi",2026-09-07T09:00:00Z,DEL_CAM_05,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-08-30T02:21:00Z,ANPR_HYD_CAM_02,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Jubilee Hills, Hyderabad",2026-09-10T04:19:00Z,ANPR_HYD_CAM_02,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Madhapur, Hyderabad",2026-09-02T12:47:00Z,ANPR_HYD_CAM_05,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-01T10:14:00Z,ANPR_HYD_CAM_01,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-09-03T00:07:00Z,ANPR_HYD_CAM_12,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-09-09T16:52:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-08-31T23:39:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-09-06T22:25:00Z,ANPR_HYD_CAM_07,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Banjara Hills, Hyderabad",2026-09-05T05:48:00Z,ANPR_HYD_CAM_10,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-05T18:11:00Z,ANPR_HYD_CAM_06,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-31T15:54:00Z,ANPR_HYD_CAM_13,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Banjara Hills, Hyderabad",2026-09-01T00:31:00Z,ANPR_HYD_CAM_14,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Banjara Hills, Hyderabad",2026-08-29T06:40:00Z,ANPR_HYD_CAM_01,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-08-31T21:08:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-02T13:47:00Z,ANPR_HYD_CAM_09,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Banjara Hills, Hyderabad",2026-09-07T19:16:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-30T13:39:00Z,ANPR_HYD_CAM_10,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-09-05T02:00:00Z,ANPR_HYD_CAM_02,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-05T20:24:00Z,ANPR_HYD_CAM_06,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-09-02T12:34:00Z,ANPR_HYD_CAM_14,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-31T11:04:00Z,ANPR_HYD_CAM_07,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-02T16:50:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-02T16:47:00Z,ANPR_HYD_CAM_07,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-06T17:40:00Z,ANPR_HYD_CAM_11,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-01T00:40:00Z,ANPR_HYD_CAM_10,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-09-05T20:05:00Z,ANPR_HYD_CAM_06,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Jubilee Hills, Hyderabad",2026-08-30T04:29:00Z,ANPR_HYD_CAM_12,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-08-30T21:24:00Z,ANPR_HYD_CAM_06,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Jubilee Hills, Hyderabad",2026-09-02T19:10:00Z,ANPR_HYD_CAM_07,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-09-03T02:32:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-03T13:14:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Banjara Hills, Hyderabad",2026-09-05T08:36:00Z,ANPR_HYD_CAM_06,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-08-31T12:55:00Z,ANPR_HYD_CAM_11,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-01T18:47:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-02T07:58:00Z,ANPR_HYD_CAM_01,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-03T13:35:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-08-29T21:39:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-09-04T00:45:00Z,ANPR_HYD_CAM_07,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-01T18:51:00Z,ANPR_HYD_CAM_14,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Jubilee Hills, Hyderabad",2026-08-28T13:19:00Z,ANPR_HYD_CAM_01,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Banjara Hills, Hyderabad",2026-08-28T20:34:00Z,ANPR_HYD_CAM_01,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-08-29T23:24:00Z,ANPR_HYD_CAM_01,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Jubilee Hills, Hyderabad",2026-09-03T15:48:00Z,ANPR_HYD_CAM_08,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Banjara Hills, Hyderabad",2026-09-05T00:05:00Z,ANPR_HYD_CAM_13,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Banjara Hills, Hyderabad",2026-09-09T00:45:00Z,ANPR_HYD_CAM_08,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-08-31T13:53:00Z,ANPR_HYD_CAM_11,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Madhapur, Hyderabad",2026-09-06T01:02:00Z,ANPR_HYD_CAM_10,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Banjara Hills, Hyderabad",2026-08-29T02:31:00Z,ANPR_HYD_CAM_06,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-30T01:41:00Z,ANPR_HYD_CAM_14,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-07T05:55:00Z,ANPR_HYD_CAM_04,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-08T14:39:00Z,ANPR_HYD_CAM_04,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-28T21:57:00Z,ANPR_HYD_CAM_12,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-09-04T01:56:00Z,ANPR_HYD_CAM_14,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-08-31T16:00:00Z,ANPR_HYD_CAM_03,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-09T13:42:00Z,ANPR_HYD_CAM_10,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-09-07T07:39:00Z,ANPR_HYD_CAM_06,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Jubilee Hills, Hyderabad",2026-08-29T04:43:00Z,ANPR_HYD_CAM_15,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-05T01:08:00Z,ANPR_HYD_CAM_06,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-05T17:31:00Z,ANPR_HYD_CAM_10,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-08-28T19:34:00Z,ANPR_HYD_CAM_12,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-07T06:25:00Z,ANPR_HYD_CAM_05,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-09-09T11:25:00Z,ANPR_HYD_CAM_02,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-09T05:57:00Z,ANPR_HYD_CAM_04,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-30T10:07:00Z,ANPR_HYD_CAM_08,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Jubilee Hills, Hyderabad",2026-09-06T20:50:00Z,ANPR_HYD_CAM_12,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Banjara Hills, Hyderabad",2026-09-01T20:57:00Z,ANPR_HYD_CAM_14,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-09-09T00:20:00Z,ANPR_HYD_CAM_13,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Jubilee Hills, Hyderabad",2026-09-02T21:34:00Z,ANPR_HYD_CAM_15,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Jubilee Hills, Hyderabad",2026-08-28T14:13:00Z,ANPR_HYD_CAM_04,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-03T20:22:00Z,ANPR_HYD_CAM_11,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-08-28T17:54:00Z,ANPR_HYD_CAM_12,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Madhapur, Hyderabad",2026-09-07T15:28:00Z,ANPR_HYD_CAM_14,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-08-30T09:44:00Z,ANPR_HYD_CAM_08,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Madhapur, Hyderabad",2026-09-07T18:40:00Z,ANPR_HYD_CAM_12,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-08-28T19:57:00Z,ANPR_HYD_CAM_05,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Jubilee Hills, Hyderabad",2026-09-05T03:51:00Z,ANPR_HYD_CAM_05,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Jubilee Hills, Hyderabad",2026-09-06T15:48:00Z,ANPR_HYD_CAM_12,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-08-30T20:15:00Z,ANPR_HYD_CAM_06,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Jubilee Hills, Hyderabad",2026-08-31T15:36:00Z,ANPR_HYD_CAM_10,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-09-02T21:00:00Z,ANPR_HYD_CAM_09,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-01T21:09:00Z,ANPR_HYD_CAM_14,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Jubilee Hills, Hyderabad",2026-09-03T00:02:00Z,ANPR_HYD_CAM_01,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-08-29T08:19:00Z,ANPR_HYD_CAM_07,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Madhapur, Hyderabad",2026-09-04T05:07:00Z,ANPR_HYD_CAM_09,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-02T13:12:00Z,ANPR_HYD_CAM_02,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-09T18:53:00Z,ANPR_HYD_CAM_11,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-09-08T20:15:00Z,ANPR_HYD_CAM_04,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-03T17:14:00Z,ANPR_HYD_CAM_12,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-01T09:19:00Z,ANPR_HYD_CAM_08,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-06T21:16:00Z,ANPR_HYD_CAM_09,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Electronic City, Bengaluru",2026-09-01T10:46:00Z,ANPR_BLR_CAM_09,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-01T17:11:00Z,ANPR_BLR_CAM_02,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-12T02:36:00Z,ANPR_BLR_CAM_17,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-06T10:10:00Z,ANPR_BLR_CAM_18,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-09T05:06:00Z,ANPR_BLR_CAM_02,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-11T11:35:00Z,ANPR_BLR_CAM_12,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-14T20:33:00Z,ANPR_BLR_CAM_09,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-09T11:33:00Z,ANPR_BLR_CAM_15,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-10T11:42:00Z,ANPR_BLR_CAM_15,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-08T03:55:00Z,ANPR_BLR_CAM_06,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-02T02:05:00Z,ANPR_BLR_CAM_17,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-07T14:58:00Z,ANPR_BLR_CAM_17,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-06T07:25:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-12T15:48:00Z,ANPR_BLR_CAM_07,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Whitefield, Bengaluru",2026-09-14T04:51:00Z,ANPR_BLR_CAM_14,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-12T14:03:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-04T11:22:00Z,ANPR_BLR_CAM_13,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-09T21:08:00Z,ANPR_BLR_CAM_13,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-04T12:59:00Z,ANPR_BLR_CAM_17,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-02T08:48:00Z,ANPR_BLR_CAM_15,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-06T15:53:00Z,ANPR_BLR_CAM_03,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-04T08:18:00Z,ANPR_BLR_CAM_13,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Indiranagar, Bengaluru",2026-09-15T04:25:00Z,ANPR_BLR_CAM_05,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-12T12:57:00Z,ANPR_BLR_CAM_07,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-01T12:02:00Z,ANPR_BLR_CAM_03,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Indiranagar, Bengaluru",2026-09-06T06:32:00Z,ANPR_BLR_CAM_09,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-13T13:23:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-11T18:59:00Z,ANPR_BLR_CAM_12,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Electronic City, Bengaluru",2026-09-05T14:05:00Z,ANPR_BLR_CAM_12,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-06T15:14:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-04T04:06:00Z,ANPR_BLR_CAM_05,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-14T12:02:00Z,ANPR_BLR_CAM_08,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-11T08:02:00Z,ANPR_BLR_CAM_03,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-11T22:27:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-15T01:27:00Z,ANPR_BLR_CAM_18,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-08T10:17:00Z,ANPR_BLR_CAM_17,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-02T07:42:00Z,ANPR_BLR_CAM_03,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Electronic City, Bengaluru",2026-09-09T15:00:00Z,ANPR_BLR_CAM_06,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-14T23:59:00Z,ANPR_BLR_CAM_03,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-09T01:43:00Z,ANPR_BLR_CAM_16,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-12T10:57:00Z,ANPR_BLR_CAM_12,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-07T09:12:00Z,ANPR_BLR_CAM_06,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-12T23:59:00Z,ANPR_BLR_CAM_02,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-10T07:01:00Z,ANPR_BLR_CAM_15,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-13T15:51:00Z,ANPR_BLR_CAM_11,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-15T11:31:00Z,ANPR_BLR_CAM_07,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-02T06:03:00Z,ANPR_BLR_CAM_07,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-03T02:40:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Whitefield, Bengaluru",2026-09-04T12:04:00Z,ANPR_BLR_CAM_06,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Whitefield, Bengaluru",2026-09-14T09:14:00Z,ANPR_BLR_CAM_02,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-08T05:36:00Z,ANPR_BLR_CAM_12,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-10T04:39:00Z,ANPR_BLR_CAM_08,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-05T13:30:00Z,ANPR_BLR_CAM_06,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-01T15:49:00Z,ANPR_BLR_CAM_03,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-14T13:11:00Z,ANPR_BLR_CAM_04,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Electronic City, Bengaluru",2026-09-03T14:33:00Z,ANPR_BLR_CAM_08,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-01T19:00:00Z,ANPR_BLR_CAM_09,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Whitefield, Bengaluru",2026-09-15T21:02:00Z,ANPR_BLR_CAM_02,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-01T18:14:00Z,ANPR_BLR_CAM_07,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-02T21:41:00Z,ANPR_BLR_CAM_08,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Indiranagar, Bengaluru",2026-09-15T18:36:00Z,ANPR_BLR_CAM_03,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-04T18:01:00Z,ANPR_BLR_CAM_04,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Whitefield, Bengaluru",2026-09-06T01:52:00Z,ANPR_BLR_CAM_16,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-12T10:52:00Z,ANPR_BLR_CAM_01,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-11T05:59:00Z,ANPR_BLR_CAM_13,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-04T01:14:00Z,ANPR_BLR_CAM_01,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-11T08:56:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-02T08:29:00Z,ANPR_BLR_CAM_11,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-12T23:32:00Z,ANPR_BLR_CAM_12,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-01T17:42:00Z,ANPR_BLR_CAM_11,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-03T03:20:00Z,ANPR_BLR_CAM_04,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-10T09:12:00Z,ANPR_BLR_CAM_12,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-11T18:22:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-05T20:29:00Z,ANPR_BLR_CAM_15,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-14T14:53:00Z,ANPR_BLR_CAM_08,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Whitefield, Bengaluru",2026-09-16T05:41:00Z,ANPR_BLR_CAM_18,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Whitefield, Bengaluru",2026-09-12T17:41:00Z,ANPR_BLR_CAM_09,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Indiranagar, Bengaluru",2026-09-05T23:59:00Z,ANPR_BLR_CAM_14,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-14T12:18:00Z,ANPR_BLR_CAM_02,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-06T17:31:00Z,ANPR_BLR_CAM_04,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-10T00:20:00Z,ANPR_BLR_CAM_02,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Whitefield, Bengaluru",2026-09-13T04:45:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-06T20:05:00Z,ANPR_BLR_CAM_16,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Electronic City, Bengaluru",2026-09-08T20:32:00Z,ANPR_BLR_CAM_13,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-04T00:26:00Z,ANPR_BLR_CAM_15,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-14T17:03:00Z,ANPR_BLR_CAM_16,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Whitefield, Bengaluru",2026-09-11T16:23:00Z,ANPR_BLR_CAM_17,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Whitefield, Bengaluru",2026-09-15T15:07:00Z,ANPR_BLR_CAM_13,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-04T18:57:00Z,ANPR_BLR_CAM_04,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-11T16:56:00Z,ANPR_BLR_CAM_18,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Indiranagar, Bengaluru",2026-09-08T01:03:00Z,ANPR_BLR_CAM_12,vehicle_sightings.csv
+KA05MN8888,Kavya Nair,"Hitech City, Hyderabad",2026-09-06T16:20:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Electronic City, Bengaluru",2026-09-13T22:42:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-11T03:15:00Z,ANPR_BLR_CAM_10,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-09T02:55:00Z,ANPR_BLR_CAM_07,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Whitefield, Bengaluru",2026-09-09T10:09:00Z,ANPR_BLR_CAM_13,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-14T11:14:00Z,ANPR_BLR_CAM_13,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-09T09:58:00Z,ANPR_BLR_CAM_14,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-06T19:50:00Z,ANPR_BLR_CAM_02,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Electronic City, Bengaluru",2026-09-14T08:52:00Z,ANPR_BLR_CAM_04,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Connaught Place, Delhi",2026-09-14T19:39:00Z,ANPR_DEL_CAM_05,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Vasant Kunj, Delhi",2026-09-14T10:15:00Z,ANPR_DEL_CAM_04,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-10T21:18:00Z,ANPR_DEL_CAM_08,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-12T06:20:00Z,ANPR_DEL_CAM_03,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-10T00:11:00Z,ANPR_DEL_CAM_02,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Aerocity, Delhi",2026-09-17T08:32:00Z,ANPR_DEL_CAM_15,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Vasant Kunj, Delhi",2026-09-11T04:21:00Z,ANPR_DEL_CAM_13,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Vasant Kunj, Delhi",2026-09-19T09:44:00Z,ANPR_DEL_CAM_13,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Koramangala, Bengaluru",2026-09-11T08:49:00Z,ANPR_DEL_CAM_12,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Koramangala, Bengaluru",2026-09-10T11:30:00Z,ANPR_DEL_CAM_14,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-18T06:59:00Z,ANPR_DEL_CAM_02,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Aerocity, Delhi",2026-09-14T23:36:00Z,ANPR_DEL_CAM_10,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-07T06:42:00Z,ANPR_DEL_CAM_16,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Vasant Kunj, Delhi",2026-09-19T21:01:00Z,ANPR_DEL_CAM_02,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Aerocity, Delhi",2026-09-16T21:07:00Z,ANPR_DEL_CAM_19,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-13T09:00:00Z,ANPR_DEL_CAM_19,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-18T21:19:00Z,ANPR_DEL_CAM_09,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-13T20:17:00Z,ANPR_DEL_CAM_16,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Vasant Kunj, Delhi",2026-09-14T20:40:00Z,ANPR_DEL_CAM_12,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Vasant Kunj, Delhi",2026-09-05T13:05:00Z,ANPR_DEL_CAM_12,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-13T16:37:00Z,ANPR_DEL_CAM_02,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Vasant Kunj, Delhi",2026-09-06T00:52:00Z,ANPR_DEL_CAM_16,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Koramangala, Bengaluru",2026-09-14T11:09:00Z,ANPR_DEL_CAM_19,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-19T10:28:00Z,ANPR_DEL_CAM_17,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Vasant Kunj, Delhi",2026-09-11T20:54:00Z,ANPR_DEL_CAM_06,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-05T22:07:00Z,ANPR_DEL_CAM_08,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Koramangala, Bengaluru",2026-09-11T08:48:00Z,ANPR_DEL_CAM_03,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-09T17:58:00Z,ANPR_DEL_CAM_07,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Connaught Place, Delhi",2026-09-15T19:37:00Z,ANPR_DEL_CAM_17,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-12T11:13:00Z,ANPR_DEL_CAM_09,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-19T16:56:00Z,ANPR_DEL_CAM_08,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-16T18:36:00Z,ANPR_DEL_CAM_17,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Vasant Kunj, Delhi",2026-09-20T09:57:00Z,ANPR_DEL_CAM_12,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-17T09:08:00Z,ANPR_DEL_CAM_05,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-11T14:58:00Z,ANPR_DEL_CAM_05,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Connaught Place, Delhi",2026-09-15T21:33:00Z,ANPR_DEL_CAM_11,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-10T01:56:00Z,ANPR_DEL_CAM_16,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-13T12:16:00Z,ANPR_DEL_CAM_04,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-12T21:19:00Z,ANPR_DEL_CAM_17,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-06T19:32:00Z,ANPR_DEL_CAM_15,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-10T22:36:00Z,ANPR_DEL_CAM_10,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-14T10:19:00Z,ANPR_DEL_CAM_15,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Aerocity, Delhi",2026-09-10T07:34:00Z,ANPR_DEL_CAM_15,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-19T06:08:00Z,ANPR_DEL_CAM_07,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Connaught Place, Delhi",2026-09-16T18:34:00Z,ANPR_DEL_CAM_07,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-07T18:42:00Z,ANPR_DEL_CAM_10,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-12T18:07:00Z,ANPR_DEL_CAM_08,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Aerocity, Delhi",2026-09-09T17:24:00Z,ANPR_DEL_CAM_06,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Koramangala, Bengaluru",2026-09-11T00:55:00Z,ANPR_DEL_CAM_06,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-07T15:59:00Z,ANPR_DEL_CAM_13,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-16T12:29:00Z,ANPR_DEL_CAM_04,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-08T17:54:00Z,ANPR_DEL_CAM_13,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Vasant Kunj, Delhi",2026-09-11T02:57:00Z,ANPR_DEL_CAM_09,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Connaught Place, Delhi",2026-09-08T03:29:00Z,ANPR_DEL_CAM_06,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Vasant Kunj, Delhi",2026-09-12T01:06:00Z,ANPR_DEL_CAM_09,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-14T21:18:00Z,ANPR_DEL_CAM_11,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-10T07:22:00Z,ANPR_DEL_CAM_17,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Hitech City, Hyderabad",2026-09-20T07:22:00Z,ANPR_DEL_CAM_06,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Connaught Place, Delhi",2026-09-16T11:11:00Z,ANPR_DEL_CAM_06,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-10T05:33:00Z,ANPR_DEL_CAM_11,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Connaught Place, Delhi",2026-09-07T09:56:00Z,ANPR_DEL_CAM_12,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-07T11:52:00Z,ANPR_DEL_CAM_09,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-17T12:26:00Z,ANPR_DEL_CAM_01,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-08T22:58:00Z,ANPR_DEL_CAM_05,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Connaught Place, Delhi",2026-09-19T03:22:00Z,ANPR_DEL_CAM_06,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Vasant Kunj, Delhi",2026-09-09T13:48:00Z,ANPR_DEL_CAM_13,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-10T21:58:00Z,ANPR_DEL_CAM_17,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Koramangala, Bengaluru",2026-09-17T13:14:00Z,ANPR_DEL_CAM_01,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-10T17:48:00Z,ANPR_DEL_CAM_04,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-09T05:35:00Z,ANPR_DEL_CAM_13,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-14T08:24:00Z,ANPR_DEL_CAM_10,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-10T20:43:00Z,ANPR_DEL_CAM_12,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-07T19:34:00Z,ANPR_DEL_CAM_08,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Connaught Place, Delhi",2026-09-07T22:56:00Z,ANPR_DEL_CAM_06,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Aerocity, Delhi",2026-09-14T21:45:00Z,ANPR_DEL_CAM_09,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-17T11:13:00Z,ANPR_DEL_CAM_01,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Connaught Place, Delhi",2026-09-07T21:18:00Z,ANPR_DEL_CAM_03,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Koramangala, Bengaluru",2026-09-09T18:57:00Z,ANPR_DEL_CAM_05,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Connaught Place, Delhi",2026-09-15T00:11:00Z,ANPR_DEL_CAM_13,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Aerocity, Delhi",2026-09-16T08:20:00Z,ANPR_DEL_CAM_19,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Aerocity, Delhi",2026-09-08T16:10:00Z,ANPR_DEL_CAM_15,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-18T03:46:00Z,ANPR_DEL_CAM_18,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Connaught Place, Delhi",2026-09-09T03:21:00Z,ANPR_DEL_CAM_06,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Hitech City, Hyderabad",2026-09-06T00:52:00Z,ANPR_DEL_CAM_11,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Koramangala, Bengaluru",2026-09-15T21:41:00Z,ANPR_DEL_CAM_06,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Koramangala, Bengaluru",2026-09-09T08:21:00Z,ANPR_DEL_CAM_13,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-14T09:53:00Z,ANPR_DEL_CAM_07,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-13T13:56:00Z,ANPR_DEL_CAM_16,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-14T19:33:00Z,ANPR_DEL_CAM_14,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Hitech City, Hyderabad",2026-09-12T22:40:00Z,ANPR_DEL_CAM_08,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-14T11:27:00Z,ANPR_DEL_CAM_08,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-10T21:08:00Z,ANPR_DEL_CAM_20,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-15T23:08:00Z,ANPR_DEL_CAM_20,vehicle_sightings.csv
+KA01AZ5555,Siddharth Rao,"Hitech City, Hyderabad",2026-09-05T12:01:00Z,ANPR_DEL_CAM_01,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Koramangala, Bengaluru",2026-09-13T04:45:00Z,ANPR_DEL_CAM_04,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-11T14:45:00Z,ANPR_DEL_CAM_04,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Koramangala, Bengaluru",2026-09-14T11:52:00Z,ANPR_DEL_CAM_15,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Connaught Place, Delhi",2026-09-16T09:01:00Z,ANPR_DEL_CAM_17,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Hitech City, Hyderabad",2026-09-16T06:49:00Z,ANPR_DEL_CAM_19,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Connaught Place, Delhi",2026-09-05T18:18:00Z,ANPR_DEL_CAM_14,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-09T03:48:00Z,ANPR_DEL_CAM_07,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-19T11:35:00Z,ANPR_DEL_CAM_13,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-16T16:33:00Z,ANPR_DEL_CAM_18,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Connaught Place, Delhi",2026-09-16T21:01:00Z,ANPR_DEL_CAM_02,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Aerocity, Delhi",2026-09-20T02:56:00Z,ANPR_DEL_CAM_16,vehicle_sightings.csv
+TS09EX1001,Devendra Varma,"Koramangala, Bengaluru",2026-09-15T03:59:00Z,ANPR_DEL_CAM_04,vehicle_sightings.csv
+DL01XY9999,Manish Singhania,"Vasant Kunj, Delhi",2026-09-05T13:09:00Z,ANPR_DEL_CAM_03,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-05T20:30:00Z,ANPR_DEL_CAM_05,vehicle_sightings.csv
+TS10CD3003,Vikram Malhotra,"Connaught Place, Delhi",2026-09-19T08:23:00Z,ANPR_DEL_CAM_09,vehicle_sightings.csv
+TS07AB2002,Rajesh Khurana,"Aerocity, Delhi",2026-09-09T13:30:00Z,ANPR_DEL_CAM_08,vehicle_sightings.csv

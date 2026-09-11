@@ -129,6 +129,35 @@ const createVehicleIcon = (seq, isLatest, isSelected) => {
   });
 };
 
+const COLOR_PALETTE = ["#10b981", "#38bdf8", "#f43f5e", "#fb923c", "#a855f7", "#eab308", "#ec4899", "#06b6d4"];
+
+const createFirVehicleIcon = (seq, isLatest, isSelected, color = '#38bdf8') => {
+  const s = isLatest ? 30 : 22;
+  const bg = isLatest ? color : isSelected ? color : 'rgba(15, 23, 42, 0.94)';
+  const border = isLatest ? '2px solid #ffffff' : `1.5px solid ${color}`;
+  const shadow = `0 0 12px ${color}aa`;
+
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="position:relative; width:${s}px; height:${s}px;">
+        ${isLatest ? `<div class="trail-radar-pulse" style="border-color:${color}; background:${color}33;"></div>` : ''}
+        <div style="
+          width:${s}px;height:${s}px;
+          background:${bg};
+          border:${border};
+          border-radius:50%;
+          box-shadow:${shadow};
+          display:flex;align-items:center;justify-content:center;
+          color:#ffffff;font-weight:800;font-size:${isLatest ? 11 : 9.5}px;font-family:monospace;
+          position:relative;z-index:2;cursor:pointer;
+        ">${seq}</div>
+      </div>`,
+    iconSize: [s, s],
+    iconAnchor: [s / 2, s / 2]
+  });
+};
+
 function MapController({ flyTarget, fitCoords, onZoomChange }) {
   const map = useMap();
   const lastFlyRef = useRef(null);
@@ -264,6 +293,11 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
   const [selectedStopIdx, setSelectedStopIdx] = useState(null);
   const [loadingTrajectory, setLoadingTrajectory] = useState(false);
 
+  const [selectedFir, setSelectedFir] = useState('');
+  const [firData, setFirData] = useState(null);
+  const [loadingFir, setLoadingFir] = useState(false);
+  const [highlightedPlate, setHighlightedPlate] = useState(null);
+
   const [flyTarget, setFlyTarget] = useState(null);
   const [currentZoom, setCurrentZoom] = useState(12);
   const [activeFilter, setActiveFilter] = useState('all');
@@ -347,13 +381,62 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
       .catch(() => setLoading(false));
   }, []);
 
-  // Fetch trajectory for selected plate
+  // Fetch FIR trajectories for selected FIR case
+  const fetchFirTrajectories = useCallback((firNo) => {
+    if (!firNo?.trim()) {
+      setFirData(null);
+      return;
+    }
+    setLoadingFir(true);
+    fetch(`http://localhost:8000/api/v1/geo/fir-trajectories/${encodeURIComponent(firNo.trim())}`)
+      .then(r => r.json())
+      .then(data => {
+        setFirData(data);
+        setLoadingFir(false);
+        setActiveVehicle(null);
+        setTrajectory([]);
+        setSearchPlate('');
+        setHighlightedPlate(null);
+        setSelectedStopIdx(null);
+        const allPts = (data.vehicles || []).flatMap(v => (v.trajectory || []).map(pt => [pt.lat, pt.lng]));
+        if (allPts.length > 0) {
+          const avgLat = allPts.reduce((sum, p) => sum + p[0], 0) / allPts.length;
+          const avgLng = allPts.reduce((sum, p) => sum + p[1], 0) / allPts.length;
+          setFlyTarget({ lat: avgLat, lng: avgLng, zoom: 12 });
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching FIR trajectories:", err);
+        setLoadingFir(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (selectedFir) {
+      fetchFirTrajectories(selectedFir);
+    } else {
+      setFirData(null);
+    }
+  }, [selectedFir, fetchFirTrajectories]);
+
+  // Fetch trajectory for selected single plate or FIR case
   const fetchTrajectory = useCallback((plate) => {
     if (!plate?.trim()) return;
+    const cleanP = plate.trim();
+    // If the input is an FIR case number, route to multi-vehicle FIR trajectory viewer
+    if (cleanP.toUpperCase().includes('FIR') || (cleanP.match(/^\d{1,3}$/) && !cleanP.startsWith('KA') && !cleanP.startsWith('DL'))) {
+      const formattedFir = cleanP.toUpperCase().startsWith('FIR')
+        ? cleanP
+        : `FIR-2026-${cleanP.padStart(3, '0')}`;
+      setSelectedFir(formattedFir);
+      return;
+    }
     setLoadingTrajectory(true);
     setIsDropdownOpen(false);
     setSelectedStopIdx(null);
-    fetch(`http://localhost:8000/api/v1/geo/vehicle-trajectory/${encodeURIComponent(plate.trim())}`)
+    setSelectedFir('');
+    setFirData(null);
+    fetch(`http://localhost:8000/api/v1/geo/vehicle-trajectory/${encodeURIComponent(cleanP)}`)
       .then(r => r.json())
       .then(data => {
         setActiveVehicle(data.vehicle);
@@ -372,33 +455,29 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
     if (initialVehiclePlate) fetchTrajectory(initialVehiclePlate);
   }, [initialVehiclePlate, fetchTrajectory]);
 
-  // Curated list of 5 pre-defined tracked targets
-  const PREDEFINED_TARGETS = [
-    { plate: 'KA05RE5719', owner: 'Varun Pandey', threat: 'CRITICAL', hits: 16, loc: 'MG Road' },
-    { plate: 'KA07UE2225', owner: 'Priya Joshi', threat: 'CRITICAL', hits: 16, loc: 'Whitefield' },
-    { plate: 'KA08NB4073', owner: 'Vikram Joshi', threat: 'HIGH RISK', hits: 12, loc: 'HSR Layout' },
-    { plate: 'KA02HD7818', owner: 'Ravi Pandey', threat: 'SUSPECT', hits: 9, loc: 'Koramangala' },
-    { plate: 'KA04FR2229', owner: 'Deepak Kumar', threat: 'SUSPECT', hits: 9, loc: 'Hebbal' },
-  ];
+  // Dynamic top suspect vehicles from database for quick selection targets
+  const topTargets = suspectVehicles.slice(0, 5).map(v => ({
+    plate: v.plate,
+    owner: v.owner,
+    threat: v.threat_level,
+    hits: v.sighting_count,
+    loc: (v.locations?.[0] || 'Corridor')
+  }));
 
-  // Filtered suspect vehicles for dropdown search (prioritizing predefined tracked targets)
-  const filteredVehicles = suspectVehicles.length > 0
-    ? suspectVehicles.filter(v => {
-        const q = (searchPlate || '').toLowerCase().trim();
-        if (!q) return true;
-        return (
-          (v.plate || '').toLowerCase().includes(q) ||
-          (v.owner || '').toLowerCase().includes(q) ||
-          (v.locations || []).some(l => l.toLowerCase().includes(q))
-        );
-      }).slice(0, 8)
-    : PREDEFINED_TARGETS.map(pt => ({
-        plate: pt.plate,
-        owner: pt.owner,
-        threat_level: pt.threat,
-        sighting_count: pt.hits,
-        locations: [pt.loc]
-      }));
+  // Filtered suspect vehicles for dropdown search (searches plates, owners, FIRs, locations)
+  const filteredVehicles = suspectVehicles.filter(v => {
+    const rawQ = (searchPlate || '').toLowerCase().trim();
+    if (!rawQ) return true;
+    const cleanQ = rawQ.replace(/[^a-z0-9]/g, '');
+    const cleanPlate = (v.plate || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    return (
+      (cleanQ && cleanPlate.includes(cleanQ)) ||
+      (v.plate || '').toLowerCase().includes(rawQ) ||
+      (v.owner || '').toLowerCase().includes(rawQ) ||
+      (v.firs || []).some(f => f.toLowerCase().includes(rawQ) || f.replace(/[^a-z0-9]/g, '').includes(cleanQ)) ||
+      (v.locations || []).some(l => l.toLowerCase().includes(rawQ))
+    );
+  }).slice(0, 30);
 
   const polylineCoords = trajectory.map(pt => [pt.lat, pt.lng]);
   const latestPt = trajectory[trajectory.length - 1];
@@ -514,6 +593,69 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
                 <span style={{ color: '#f87171', fontWeight: 700 }}>{loading ? '—' : convoys.length}</span>
               </span>
             </div>
+          </div>
+        </div>
+
+        {/* FIR Case Selector Dropdown */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            background: selectedFir ? 'rgba(168, 85, 247, 0.18)' : 'rgba(15, 23, 42, 0.85)',
+            border: selectedFir ? '1px solid rgba(168, 85, 247, 0.6)' : '1px solid rgba(56, 189, 248, 0.3)',
+            borderRadius: 10,
+            padding: '4px 10px',
+            boxShadow: selectedFir ? '0 0 16px rgba(168, 85, 247, 0.25)' : 'none',
+            transition: 'all 0.2s'
+          }}>
+            <FileText size={14} color={selectedFir ? '#c084fc' : '#38bdf8'} />
+            <select
+              value={selectedFir}
+              onChange={(e) => setSelectedFir(e.target.value)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: selectedFir ? '#e9d5ff' : '#f8fafc',
+                fontSize: 10.5,
+                fontWeight: 800,
+                fontFamily: 'inherit',
+                letterSpacing: '0.06em',
+                cursor: 'pointer',
+                outline: 'none'
+              }}
+            >
+              <option value="" style={{ background: '#0f172a', color: '#94a3b8' }}>
+                -- SELECT FIR CASE (ALL 25 FIRs) --
+              </option>
+              {Array.from({ length: 25 }, (_, i) => {
+                const num = String(i + 1).padStart(3, '0');
+                const firNo = `FIR-2026-${num}`;
+                return (
+                  <option key={firNo} value={firNo} style={{ background: '#0f172a', color: '#e2e8f0' }}>
+                    {firNo} (All Vehicles Movement)
+                  </option>
+                );
+              })}
+            </select>
+            {selectedFir && (
+              <button
+                type="button"
+                onClick={() => setSelectedFir('')}
+                style={{
+                  background: 'rgba(239, 68, 68, 0.25)',
+                  border: '1px solid rgba(239, 68, 68, 0.5)',
+                  borderRadius: 5,
+                  color: '#fca5a5',
+                  fontSize: 8.5,
+                  fontWeight: 800,
+                  padding: '2px 6px',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit'
+                }}
+                title="Clear FIR Filter"
+              >
+                CLEAR
+              </button>
+            )}
           </div>
         </div>
 
@@ -666,8 +808,14 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
                               {v.threat_level}
                             </span>
                           </div>
-                          <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 2 }}>
-                            {v.owner} {v.locations?.[0] ? `· ${v.locations[0]}` : ''}
+                          <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 2, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                            <span>{v.owner || 'Unknown Suspect'}</span>
+                            {v.firs && v.firs.length > 0 && (
+                              <span style={{ color: '#38bdf8', fontWeight: 600, background: 'rgba(56, 189, 248, 0.1)', padding: '1px 4px', borderRadius: 3 }}>
+                                {v.firs[0]}
+                              </span>
+                            )}
+                            {v.locations?.[0] && <span style={{ color: '#64748b' }}>· {v.locations[0]}</span>}
                           </div>
                         </div>
                       </div>
@@ -690,7 +838,7 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
               </div>
             )}
           </div>
-          {/* Quick Pre-Defined Tracked Vehicle Chips */}
+          {/* Quick Dynamic Tracked Vehicle Chips */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -702,7 +850,7 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
             <span style={{ fontSize: 8, color: '#64748b', fontWeight: 700, letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>
               TARGETS:
             </span>
-            {PREDEFINED_TARGETS.map(t => {
+            {topTargets.map(t => {
               const isSelected = activeVehicle?.registration_number === t.plate;
               return (
                 <button
@@ -828,23 +976,29 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
 
       {/* ── LEAFLET MAP (COMPLETELY OPEN ZOOM & SCROLL ANYWHERE) ── */}
       <div style={{ position: 'absolute', inset: 0 }}>
-        <MapContainer
-          center={[12.9716, 77.5946]}
-          zoom={12}
-          minZoom={3}
-          maxZoom={19}
-          zoomControl={false}
-          scrollWheelZoom={true}
-          dragging={true}
-          doubleClickZoom={true}
-          touchZoom={true}
-          style={{ width: '100%', height: '100%', background: '#020617' }}
-        >
-          <MapController
-            flyTarget={flyTarget}
-            fitCoords={polylineCoords}
-            onZoomChange={setCurrentZoom}
-          />
+        {(() => {
+          const allFirCoords = firData?.vehicles
+            ? firData.vehicles.flatMap(v => (v.trajectory || []).map(pt => [pt.lat, pt.lng]))
+            : [];
+          const fitCoordsToUse = selectedFir && allFirCoords.length >= 2 ? allFirCoords : polylineCoords;
+          return (
+            <MapContainer
+              center={[12.9716, 77.5946]}
+              zoom={12}
+              minZoom={3}
+              maxZoom={19}
+              zoomControl={false}
+              scrollWheelZoom={true}
+              dragging={true}
+              doubleClickZoom={true}
+              touchZoom={true}
+              style={{ width: '100%', height: '100%', background: '#020617' }}
+            >
+              <MapController
+                flyTarget={flyTarget}
+                fitCoords={fitCoordsToUse}
+                onZoomChange={setCurrentZoom}
+              />
           <TacticalMapControls
             activeTargetCoords={latestPt ? [latestPt.lat, latestPt.lng] : null}
           />
@@ -1080,11 +1234,264 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
               </Marker>
             );
           })}
-        </MapContainer>
-      </div>
 
-      {/* ── TACTICAL VEHICLE INFORMATION CARD (WHEN TRACKING ACTIVE) ── */}
-      {activeVehicle && trajectory.length > 0 ? (
+          {/* Multi-Vehicle FIR Case Movement Trajectories */}
+          {selectedFir && firData && firData.vehicles && firData.vehicles.map((v, vIdx) => {
+            const vCoords = (v.trajectory || []).map(pt => [pt.lat, pt.lng]);
+            if (vCoords.length === 0) return null;
+            const isDimmed = highlightedPlate && highlightedPlate !== v.registration_number;
+            const vColor = v.color || COLOR_PALETTE[vIdx % COLOR_PALETTE.length];
+            const opacityMult = isDimmed ? 0.25 : 1.0;
+
+            return (
+              <React.Fragment key={`fir-v-${v.registration_number}`}>
+                {/* Glow Outer Polyline */}
+                {vCoords.length > 1 && (
+                  <>
+                    <Polyline
+                      positions={vCoords}
+                      pathOptions={{
+                        color: vColor,
+                        weight: 8,
+                        opacity: 0.3 * opacityMult,
+                        lineCap: 'round',
+                        lineJoin: 'round'
+                      }}
+                    />
+                    {/* Core Solid Polyline */}
+                    <Polyline
+                      positions={vCoords}
+                      pathOptions={{
+                        color: vColor,
+                        weight: 4,
+                        opacity: 0.85 * opacityMult,
+                        lineCap: 'round',
+                        lineJoin: 'round'
+                      }}
+                    />
+                    {/* Flowing Dashed Polyline */}
+                    <Polyline
+                      positions={vCoords}
+                      pathOptions={{
+                        color: '#ffffff',
+                        weight: 2,
+                        opacity: 0.9 * opacityMult,
+                        className: 'trail-flow-anim',
+                        lineCap: 'round',
+                        lineJoin: 'round'
+                      }}
+                    />
+                  </>
+                )}
+
+                {/* Checkpoint Markers */}
+                {v.trajectory.map((pt, ptIdx) => {
+                  const isLatest = ptIdx === v.trajectory.length - 1;
+                  const isSelected = selectedStopIdx === `fir-${v.registration_number}-${ptIdx}`;
+                  return (
+                    <Marker
+                      key={`fir-pt-${v.registration_number}-${ptIdx}`}
+                      position={[pt.lat, pt.lng]}
+                      icon={createFirVehicleIcon(pt.sequence, isLatest, isSelected, vColor)}
+                      eventHandlers={{
+                        click: () => {
+                          setSelectedStopIdx(`fir-${v.registration_number}-${ptIdx}`);
+                          setHighlightedPlate(v.registration_number);
+                        }
+                      }}
+                    >
+                      <Popup>
+                        <div style={{
+                          background: 'rgba(8, 14, 26, 0.96)', backdropFilter: 'blur(20px)',
+                          border: `1.5px solid ${vColor}`, borderRadius: 10,
+                          padding: 12, minWidth: 230, color: '#e2e8f0',
+                          boxShadow: `0 12px 30px rgba(0, 0, 0, 0.9), 0 0 16px ${vColor}33`
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                            <span style={{
+                              fontSize: 10, fontWeight: 900, color: vColor,
+                              background: `${vColor}20`, padding: '2px 6px', borderRadius: 4,
+                              border: `1px solid ${vColor}50`
+                            }}>
+                              {v.registration_number}
+                            </span>
+                            <span style={{ fontSize: 9, color: '#94a3b8', fontWeight: 700 }}>
+                              {v.registered_owner}
+                            </span>
+                          </div>
+                          <div style={{
+                            display: 'flex', alignItems: 'center', gap: 6,
+                            color: '#f8fafc', fontWeight: 800, fontSize: 10.5, marginBottom: 8
+                          }}>
+                            <MapPin size={12} color={vColor} />
+                            <span>CHECKPOINT #{pt.sequence}: {pt.location}</span>
+                          </div>
+                          <div style={{ fontSize: 9, color: '#94a3b8', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <Clock size={11} color="#10b981" />
+                              <span>TIME: {pt.timestamp}</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <Camera size={11} color="#38bdf8" />
+                              <span>CAMERA ID: {pt.camera_id}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  );
+                })}
+              </React.Fragment>
+            );
+          })}
+        </MapContainer>
+      );
+    })()}
+  </div>
+
+      {/* ── TACTICAL FIR CASE MOVEMENT CARD (WHEN FIR FILTER ACTIVE) ── */}
+      {selectedFir && firData && firData.vehicles && firData.vehicles.length > 0 ? (
+        <div style={{
+          position: 'absolute',
+          bottom: 20,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 'min(94%, 980px)',
+          zIndex: 1000,
+          background: 'rgba(8, 14, 26, 0.95)',
+          backdropFilter: 'blur(24px)',
+          border: '1px solid rgba(168, 85, 247, 0.45)',
+          borderRadius: 16,
+          padding: '14px 20px',
+          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.95), 0 0 30px rgba(168, 85, 247, 0.15)',
+        }}>
+          {/* Header row */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 12,
+            paddingBottom: 10,
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: 'rgba(168, 85, 247, 0.15)',
+                border: '1px solid rgba(168, 85, 247, 0.4)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <FileText size={20} color="#c084fc" />
+              </div>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 15, fontWeight: 900, color: '#f8fafc', letterSpacing: '0.08em' }}>
+                    {firData.fir_no} CASE ANPR MOVEMENT MAP
+                  </span>
+                  <span style={{
+                    fontSize: 8.5, padding: '2px 8px', borderRadius: 4,
+                    background: 'rgba(168, 85, 247, 0.2)', border: '1px solid rgba(168, 85, 247, 0.4)',
+                    color: '#d8b4fe', fontWeight: 800
+                  }}>
+                    {firData.total_vehicles} VEHICLES INVOLVED
+                  </span>
+                </div>
+                <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 2 }}>
+                  Simultaneous multi-vehicle ANPR camera tracking across all suspect routes in this FIR case
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {highlightedPlate && (
+                <button
+                  onClick={() => setHighlightedPlate(null)}
+                  style={{
+                    padding: '4px 10px', borderRadius: 6,
+                    background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)',
+                    color: '#38bdf8', fontSize: 9, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit'
+                  }}
+                >
+                  SHOW ALL VEHICLES
+                </button>
+              )}
+              <button
+                onClick={() => setSelectedFir('')}
+                style={{
+                  padding: '4px 10px', borderRadius: 6,
+                  background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)',
+                  color: '#fca5a5', fontSize: 9, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit'
+                }}
+              >
+                CLEAR FIR FILTER
+              </button>
+            </div>
+          </div>
+
+          {/* Vehicles grid */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+            gap: 10,
+            marginTop: 12
+          }}>
+            {firData.vehicles.map((v, vIdx) => {
+              const isHighlighted = highlightedPlate === v.registration_number;
+              const vColor = v.color || COLOR_PALETTE[vIdx % COLOR_PALETTE.length];
+              return (
+                <div
+                  key={v.registration_number}
+                  onClick={() => {
+                    setHighlightedPlate(isHighlighted ? null : v.registration_number);
+                    if (v.trajectory && v.trajectory.length > 0) {
+                      setFlyTarget({ lat: v.trajectory[0].lat, lng: v.trajectory[0].lng, zoom: 14 });
+                    }
+                  }}
+                  style={{
+                    padding: '10px 12px',
+                    borderRadius: 10,
+                    background: isHighlighted ? `${vColor}25` : 'rgba(15, 23, 42, 0.8)',
+                    border: `1.5px solid ${isHighlighted ? vColor : 'rgba(255, 255, 255, 0.08)'}`,
+                    cursor: 'pointer',
+                    transition: 'all 0.18s'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <div style={{ width: 9, height: 9, borderRadius: '50%', background: vColor, boxShadow: `0 0 8px ${vColor}` }} />
+                      <span style={{ fontSize: 12, fontWeight: 900, color: '#f8fafc', letterSpacing: '0.06em' }}>
+                        {v.registration_number}
+                      </span>
+                    </div>
+                    <span style={{ fontSize: 8.5, color: '#10b981', fontWeight: 800, background: 'rgba(16, 185, 129, 0.12)', padding: '2px 5px', borderRadius: 4 }}>
+                      {v.total_sightings} hits
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 9.5, color: '#cbd5e1', fontWeight: 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>OWNER: <span style={{ color: vColor }}>{v.registered_owner}</span></span>
+                    {onOpenDossier && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenDossier(v.registered_owner);
+                        }}
+                        style={{
+                          background: 'transparent', border: 'none', color: '#38bdf8',
+                          cursor: 'pointer', fontSize: 9, fontWeight: 700, textDecoration: 'underline'
+                        }}
+                      >
+                        Dossier
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : activeVehicle && trajectory.length > 0 ? (
         <div style={{
           position: 'absolute',
           bottom: 20,
@@ -1321,7 +1728,7 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
             NO VEHICLE BEING TRACKED · SELECT A TARGET OR SEARCH A NUMBER PLATE ABOVE TO TRACE ROUTE
           </span>
           <div style={{ display: 'flex', gap: 6, marginLeft: 6 }}>
-            {PREDEFINED_TARGETS.slice(0, 3).map(t => (
+            {topTargets.slice(0, 3).map(t => (
               <button
                 key={t.plate}
                 type="button"

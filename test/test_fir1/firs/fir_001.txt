@@ -1,0 +1,14 @@
+POLICE FIRST INFORMATION REPORT (FIR)
+FIR No: FIR-2026-TEST-001
+Police Station: Cyber Crime Cell PS, Cyberabad
+Date: 10 September 2026
+
+Incident Narrative:
+On 10 September 2026, a major ransomware and illegal hawala fund transfer case was registered at Cyber Crime Cell PS, Cyberabad.
+Primary suspect Devendra Varma (Phone: 9876500111) operating vehicle TS09EX1001 was tracked organizing unauthorized wire transactions from a hub in Hitech City, Hyderabad.
+Digital forensics and phone logs revealed that Devendra Varma coordinated directly with key co-conspirators:
+1. Ananya Reddy (Accountant & Money Mule Handler, Phone: 9876500222), who manages account ACC-HYD-7711.
+2. Rajesh Khurana (Technical Lead / Hacker, Phone: 9876500333), operating vehicle TS07AB2002.
+3. Vikram Malhotra (Field Courier, Phone: 9876500444), operating vehicle TS10CD3003.
+
+Informant reports indicate Ananya Reddy received multiple structured payments under 10000 INR from Rajesh Khurana and transferred large sums to Devendra Varma. Vikram Malhotra was observed meeting Devendra Varma near Jubilee Hills, Hyderabad and Gachibowli, Hyderabad.

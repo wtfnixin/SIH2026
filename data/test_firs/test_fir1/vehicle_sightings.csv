@@ -1,0 +1,91 @@
+vehicle_number,registered_owner,location,timestamp,camera_id
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-08-30 02:21:00,ANPR_HYD_CAM_02
+TS10CD3003,Vikram Malhotra,"Jubilee Hills, Hyderabad",2026-09-10 04:19:00,ANPR_HYD_CAM_02
+TS09EX1001,Devendra Varma,"Madhapur, Hyderabad",2026-09-02 12:47:00,ANPR_HYD_CAM_05
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-01 10:14:00,ANPR_HYD_CAM_01
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-09-03 00:07:00,ANPR_HYD_CAM_12
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-09-09 16:52:00,ANPR_HYD_CAM_03
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-08-31 23:39:00,ANPR_HYD_CAM_03
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-09-06 22:25:00,ANPR_HYD_CAM_07
+TS07AB2002,Rajesh Khurana,"Banjara Hills, Hyderabad",2026-09-05 05:48:00,ANPR_HYD_CAM_10
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-05 18:11:00,ANPR_HYD_CAM_06
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-31 15:54:00,ANPR_HYD_CAM_13
+TS07AB2002,Rajesh Khurana,"Banjara Hills, Hyderabad",2026-09-01 00:31:00,ANPR_HYD_CAM_14
+TS07AB2002,Rajesh Khurana,"Banjara Hills, Hyderabad",2026-08-29 06:40:00,ANPR_HYD_CAM_01
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-08-31 21:08:00,ANPR_HYD_CAM_03
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-02 13:47:00,ANPR_HYD_CAM_09
+TS09EX1001,Devendra Varma,"Banjara Hills, Hyderabad",2026-09-07 19:16:00,ANPR_HYD_CAM_03
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-30 13:39:00,ANPR_HYD_CAM_10
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-09-05 02:00:00,ANPR_HYD_CAM_02
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-05 20:24:00,ANPR_HYD_CAM_06
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-09-02 12:34:00,ANPR_HYD_CAM_14
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-31 11:04:00,ANPR_HYD_CAM_07
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-02 16:50:00,ANPR_HYD_CAM_03
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-02 16:47:00,ANPR_HYD_CAM_07
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-06 17:40:00,ANPR_HYD_CAM_11
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-01 00:40:00,ANPR_HYD_CAM_10
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-09-05 20:05:00,ANPR_HYD_CAM_06
+TS07AB2002,Rajesh Khurana,"Jubilee Hills, Hyderabad",2026-08-30 04:29:00,ANPR_HYD_CAM_12
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-08-30 21:24:00,ANPR_HYD_CAM_06
+TS10CD3003,Vikram Malhotra,"Jubilee Hills, Hyderabad",2026-09-02 19:10:00,ANPR_HYD_CAM_07
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-09-03 02:32:00,ANPR_HYD_CAM_03
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-03 13:14:00,ANPR_HYD_CAM_03
+TS09EX1001,Devendra Varma,"Banjara Hills, Hyderabad",2026-09-05 08:36:00,ANPR_HYD_CAM_06
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-08-31 12:55:00,ANPR_HYD_CAM_11
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-09-01 18:47:00,ANPR_HYD_CAM_03
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-02 07:58:00,ANPR_HYD_CAM_01
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-03 13:35:00,ANPR_HYD_CAM_03
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-08-29 21:39:00,ANPR_HYD_CAM_03
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-09-04 00:45:00,ANPR_HYD_CAM_07
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-01 18:51:00,ANPR_HYD_CAM_14
+TS07AB2002,Rajesh Khurana,"Jubilee Hills, Hyderabad",2026-08-28 13:19:00,ANPR_HYD_CAM_01
+TS09EX1001,Devendra Varma,"Banjara Hills, Hyderabad",2026-08-28 20:34:00,ANPR_HYD_CAM_01
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-08-29 23:24:00,ANPR_HYD_CAM_01
+TS07AB2002,Rajesh Khurana,"Jubilee Hills, Hyderabad",2026-09-03 15:48:00,ANPR_HYD_CAM_08
+TS07AB2002,Rajesh Khurana,"Banjara Hills, Hyderabad",2026-09-05 00:05:00,ANPR_HYD_CAM_13
+TS09EX1001,Devendra Varma,"Banjara Hills, Hyderabad",2026-09-09 00:45:00,ANPR_HYD_CAM_08
+TS09EX1001,Devendra Varma,"Hitech City, Hyderabad",2026-08-31 13:53:00,ANPR_HYD_CAM_11
+TS07AB2002,Rajesh Khurana,"Madhapur, Hyderabad",2026-09-06 01:02:00,ANPR_HYD_CAM_10
+TS09EX1001,Devendra Varma,"Banjara Hills, Hyderabad",2026-08-29 02:31:00,ANPR_HYD_CAM_06
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-30 01:41:00,ANPR_HYD_CAM_14
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-07 05:55:00,ANPR_HYD_CAM_04
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-08 14:39:00,ANPR_HYD_CAM_04
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-28 21:57:00,ANPR_HYD_CAM_12
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-09-04 01:56:00,ANPR_HYD_CAM_14
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-08-31 16:00:00,ANPR_HYD_CAM_03
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-09 13:42:00,ANPR_HYD_CAM_10
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-09-07 07:39:00,ANPR_HYD_CAM_06
+TS09EX1001,Devendra Varma,"Jubilee Hills, Hyderabad",2026-08-29 04:43:00,ANPR_HYD_CAM_15
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-05 01:08:00,ANPR_HYD_CAM_06
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-05 17:31:00,ANPR_HYD_CAM_10
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-08-28 19:34:00,ANPR_HYD_CAM_12
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-07 06:25:00,ANPR_HYD_CAM_05
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-09-09 11:25:00,ANPR_HYD_CAM_02
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-09 05:57:00,ANPR_HYD_CAM_04
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-08-30 10:07:00,ANPR_HYD_CAM_08
+TS10CD3003,Vikram Malhotra,"Jubilee Hills, Hyderabad",2026-09-06 20:50:00,ANPR_HYD_CAM_12
+TS07AB2002,Rajesh Khurana,"Banjara Hills, Hyderabad",2026-09-01 20:57:00,ANPR_HYD_CAM_14
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-09-09 00:20:00,ANPR_HYD_CAM_13
+TS07AB2002,Rajesh Khurana,"Jubilee Hills, Hyderabad",2026-09-02 21:34:00,ANPR_HYD_CAM_15
+TS07AB2002,Rajesh Khurana,"Jubilee Hills, Hyderabad",2026-08-28 14:13:00,ANPR_HYD_CAM_04
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-09-03 20:22:00,ANPR_HYD_CAM_11
+TS10CD3003,Vikram Malhotra,"Madhapur, Hyderabad",2026-08-28 17:54:00,ANPR_HYD_CAM_12
+TS09EX1001,Devendra Varma,"Madhapur, Hyderabad",2026-09-07 15:28:00,ANPR_HYD_CAM_14
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-08-30 09:44:00,ANPR_HYD_CAM_08
+TS07AB2002,Rajesh Khurana,"Madhapur, Hyderabad",2026-09-07 18:40:00,ANPR_HYD_CAM_12
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-08-28 19:57:00,ANPR_HYD_CAM_05
+TS09EX1001,Devendra Varma,"Jubilee Hills, Hyderabad",2026-09-05 03:51:00,ANPR_HYD_CAM_05
+TS10CD3003,Vikram Malhotra,"Jubilee Hills, Hyderabad",2026-09-06 15:48:00,ANPR_HYD_CAM_12
+TS09EX1001,Devendra Varma,"Gachibowli, Hyderabad",2026-08-30 20:15:00,ANPR_HYD_CAM_06
+TS09EX1001,Devendra Varma,"Jubilee Hills, Hyderabad",2026-08-31 15:36:00,ANPR_HYD_CAM_10
+TS10CD3003,Vikram Malhotra,"Banjara Hills, Hyderabad",2026-09-02 21:00:00,ANPR_HYD_CAM_09
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-01 21:09:00,ANPR_HYD_CAM_14
+TS09EX1001,Devendra Varma,"Jubilee Hills, Hyderabad",2026-09-03 00:02:00,ANPR_HYD_CAM_01
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-08-29 08:19:00,ANPR_HYD_CAM_07
+TS09EX1001,Devendra Varma,"Madhapur, Hyderabad",2026-09-04 05:07:00,ANPR_HYD_CAM_09
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-02 13:12:00,ANPR_HYD_CAM_02
+TS07AB2002,Rajesh Khurana,"Hitech City, Hyderabad",2026-09-09 18:53:00,ANPR_HYD_CAM_11
+TS07AB2002,Rajesh Khurana,"Gachibowli, Hyderabad",2026-09-08 20:15:00,ANPR_HYD_CAM_04
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-03 17:14:00,ANPR_HYD_CAM_12
+TS10CD3003,Vikram Malhotra,"Hitech City, Hyderabad",2026-09-01 09:19:00,ANPR_HYD_CAM_08
+TS10CD3003,Vikram Malhotra,"Gachibowli, Hyderabad",2026-09-06 21:16:00,ANPR_HYD_CAM_09
