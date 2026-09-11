@@ -154,6 +154,7 @@ class LocalStore:
                         "incident_date": date,
                         "narrative": text,
                         "persons": list(persons),
+                        "suspects": list(persons),
                         "vehicles": list(vehicles),
                         "locations": list(locations),
                         "crime_category": crime_cat,
@@ -163,6 +164,31 @@ class LocalStore:
                     })
                 except Exception as e:
                     print(f"Error parsing FIR {fpath}:", e)
+
+        # Load FIRs from firs_cleaned.json if present
+        firs_json_candidates = [
+            DATA_DIR / "firs_cleaned.json",
+            DATA_DIR.parent / "cleaned_datasets" / "firs_cleaned.json",
+            Path("data/cleaned_datasets/firs_cleaned.json"),
+            Path("/app/data/cleaned_datasets/firs_cleaned.json")
+        ]
+        for fjson in firs_json_candidates:
+            if fjson.exists():
+                try:
+                    with open(fjson, "r", encoding="utf-8") as f:
+                        j_records = json.load(f)
+                        if isinstance(j_records, list):
+                            for r in j_records:
+                                if not any(existing["fir_no"] == r.get("fir_no") for existing in self.firs):
+                                    if "persons" not in r and "suspects" in r:
+                                        r["persons"] = r["suspects"]
+                                    if "suspects" not in r and "persons" in r:
+                                        r["suspects"] = r["persons"]
+                                    self.firs.append(r)
+                            print(f"Loaded {len(j_records)} FIRs from {fjson}")
+                            break
+                except Exception as e:
+                    print(f"Error reading {fjson}:", e)
 
         self._build_criminals_map()
 
@@ -191,15 +217,16 @@ class LocalStore:
 
         # 1. From FIRs
         for f in self.firs:
-            for p in f["persons"]:
+            f_persons = f.get("persons") or f.get("suspects") or []
+            for p in f_persons:
                 p_obj = ensure_person(p)
                 if p_obj:
-                    p_obj["firs"].add(f["fir_no"])
-                    for v in f["vehicles"]:
+                    p_obj["firs"].add(f.get("fir_no", ""))
+                    for v in f.get("vehicles", []):
                         p_obj["vehicles"].add(v)
-                    for l in f["locations"]:
+                    for l in f.get("locations", []):
                         p_obj["locations"].add(l)
-                    for other in f["persons"]:
+                    for other in f_persons:
                         if other != p:
                             p_obj["associates"].add(other)
 

@@ -383,15 +383,18 @@ def get_all_firs_directory(
     try:
         cypher = """
         MATCH (f:FIR)
+        WHERE f.fir_no IS NOT NULL OR f.fir_number IS NOT NULL
         OPTIONAL MATCH (f)-[r]-(p:Person)
         OPTIONAL MATCH (f)-[rv]-(v:Vehicle)
         OPTIONAL MATCH (f)-[rl]-(l:Location)
-        RETURN f.fir_no AS fir_no,
+        OPTIONAL MATCH (f)-[ro]-(o:Organization)
+        RETURN coalesce(f.fir_no, f.fir_number) AS fir_no,
                properties(f) AS properties,
                collect(DISTINCT p.name) AS suspects,
                collect(DISTINCT v.registration_number) AS vehicles,
-               collect(DISTINCT l.name) AS locations
-        ORDER BY f.fir_no DESC
+               collect(DISTINCT l.name) AS locations,
+               collect(DISTINCT o.name) AS organizations
+        ORDER BY fir_no ASC
         """
         with get_neo4j_session() as session:
             records = session.run(cypher).data()
@@ -404,16 +407,23 @@ def get_all_firs_directory(
                 raw_suspects = [s for s in r["suspects"] if s and s.lower() not in NOISE_WORDS]
                 vehicles = [v for v in r["vehicles"] if v]
                 locations = [l for l in r["locations"] if l]
-                ps = props.get("police_station", "Central Jurisdiction PS")
+                organizations = [o for o in r.get("organizations", []) if o]
+                ps = props.get("police_station") or props.get("investigating_officer") or "Central Jurisdiction PS"
                 inc_date = props.get("incident_date", "Recorded")
                 source_file = props.get("source_file", "")
+                evidence = props.get("evidence", "")
+                money_values = props.get("money_values", 0)
+                statement = props.get("statement", "")
+                reason = props.get("reason", "")
+                report_id = props.get("report_id", "")
+                is_structured = props.get("is_structured", True)
 
                 # Enrich with local_store narrative if available
-                local_fir = next((lf for lf in (local_store.firs if local_store else []) if lf["fir_no"] == fir_no), None)
-                narrative = local_fir.get("narrative") if local_fir else f"Official State Police First Information Report filed at {ps} regarding criminal activities."
-                crime_cat = local_fir.get("crime_category") if local_fir else "GENERAL CRIME INVESTIGATION"
-                sections = local_fir.get("sections") if local_fir else ["IPC 120B", "IPC 34"]
-                fir_status = local_fir.get("status") if local_fir else "ACTIVE INVESTIGATION"
+                local_fir = next((lf for lf in (local_store.firs if local_store else []) if lf.get("fir_no") == fir_no), None)
+                narrative = props.get("narrative") or statement or (local_fir.get("narrative") if local_fir else f"Official State Police First Information Report filed at {ps} regarding criminal activities.")
+                crime_cat = props.get("crime_category") or (local_fir.get("crime_category") if local_fir else "GENERAL CRIME INVESTIGATION")
+                sections = props.get("sections") or (local_fir.get("sections") if local_fir else ["IPC 120B", "IPC 34"])
+                fir_status = props.get("status") or (local_fir.get("status") if local_fir else "ACTIVE INVESTIGATION")
 
                 item = {
                     "fir_no": fir_no,
@@ -423,9 +433,16 @@ def get_all_firs_directory(
                     "crime_category": crime_cat,
                     "sections": sections,
                     "narrative": narrative,
+                    "statement": statement or narrative,
+                    "reason": reason,
+                    "evidence": evidence,
+                    "money_values": money_values,
+                    "report_id": report_id,
+                    "is_structured": is_structured,
                     "suspects": raw_suspects,
                     "vehicles": vehicles,
                     "locations": locations,
+                    "organizations": organizations,
                     "source_file": source_file
                 }
 
@@ -443,8 +460,12 @@ def get_all_firs_directory(
                         ql in ps.lower() or
                         ql in crime_cat.lower() or
                         ql in narrative.lower() or
+                        ql in str(reason).lower() or
+                        ql in str(evidence).lower() or
                         any(ql in s.lower() for s in raw_suspects) or
                         any(ql in v.lower() for v in vehicles) or
+                        any(ql in loc.lower() for loc in locations) or
+                        any(ql in org.lower() for org in organizations) or
                         any(ql in sec.lower() for sec in sections)
                     )
                     if not matches:

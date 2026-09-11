@@ -465,6 +465,44 @@ export default function FirDirectory({
                           <span>{loc}</span>
                         </span>
                       ))}
+
+                      {fir.vehicles?.map((veh, vIdx) => (
+                        <span
+                          key={vIdx}
+                          style={{
+                            fontSize: '9.5px',
+                            fontFamily: "'JetBrains Mono', monospace",
+                            fontWeight: 600,
+                            padding: '1px 5px',
+                            borderRadius: '4px',
+                            background: isLight ? '#f1f5f9' : 'rgba(255,255,255,0.06)',
+                            color: isLight ? '#2563eb' : '#60a5fa',
+                            border: `1px solid ${isLight ? '#bfdbfe' : 'rgba(96,165,250,0.25)'}`,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '3px'
+                          }}
+                        >
+                          <span>🚗 {veh}</span>
+                        </span>
+                      ))}
+
+                      {fir.money_values > 0 && (
+                        <span
+                          style={{
+                            fontSize: '9.5px',
+                            fontWeight: 700,
+                            fontFamily: "'JetBrains Mono', monospace",
+                            padding: '1px 6px',
+                            borderRadius: '4px',
+                            background: isLight ? '#fef3c7' : 'rgba(245, 158, 11, 0.12)',
+                            color: isLight ? '#b45309' : '#fbbf24',
+                            border: `1px solid ${isLight ? '#fde68a' : 'rgba(245, 158, 11, 0.3)'}`
+                          }}
+                        >
+                          ₹{Number(fir.money_values).toLocaleString('en-IN')}
+                        </span>
+                      )}
                     </div>
 
                     {/* Narrative Text */}
@@ -678,7 +716,45 @@ export default function FirDirectory({
                     <span style={{ color: isLight ? '#64748b' : '#71717a' }}>STATUS: </span>
                     <strong style={{ color: '#10b981' }}>{selectedModalFir.status}</strong>
                   </div>
+                  {selectedModalFir.money_values > 0 && (
+                    <div>
+                      <span style={{ color: isLight ? '#64748b' : '#71717a' }}>FINANCIAL VALUE: </span>
+                      <strong style={{ color: '#f59e0b' }}>₹{Number(selectedModalFir.money_values).toLocaleString('en-IN')}</strong>
+                    </div>
+                  )}
+                  {selectedModalFir.source_file && (
+                    <div>
+                      <span style={{ color: isLight ? '#64748b' : '#71717a' }}>SOURCE FILE: </span>
+                      <strong>{selectedModalFir.source_file}</strong>
+                    </div>
+                  )}
+                  {selectedModalFir.vehicles?.length > 0 && (
+                    <div>
+                      <span style={{ color: isLight ? '#64748b' : '#71717a' }}>VEHICLE: </span>
+                      <strong style={{ color: isLight ? '#2563eb' : '#60a5fa' }}>{selectedModalFir.vehicles.join(', ')}</strong>
+                    </div>
+                  )}
+                  {(selectedModalFir.organization || selectedModalFir.organizations?.length > 0) && (
+                    <div>
+                      <span style={{ color: isLight ? '#64748b' : '#71717a' }}>ORGANIZATION: </span>
+                      <strong>{selectedModalFir.organization || selectedModalFir.organizations.join(', ')}</strong>
+                    </div>
+                  )}
                 </div>
+
+                {selectedModalFir.evidence && (
+                  <div style={{ fontSize: '11px', marginBottom: '10px' }}>
+                    <span style={{ color: isLight ? '#64748b' : '#71717a', fontWeight: 600 }}>RECOVERED EVIDENCE: </span>
+                    <span style={{ color: isLight ? '#0f172a' : '#fafafa', fontWeight: 600 }}>{selectedModalFir.evidence}</span>
+                  </div>
+                )}
+
+                {selectedModalFir.reason && (
+                  <div style={{ fontSize: '11px', marginBottom: '10px' }}>
+                    <span style={{ color: isLight ? '#64748b' : '#71717a', fontWeight: 600 }}>CAUSE / MOTIVE: </span>
+                    <span style={{ color: isLight ? '#334155' : '#cbd5e1' }}>{selectedModalFir.reason}</span>
+                  </div>
+                )}
 
                 <div style={{ fontSize: '11px', marginBottom: '14px' }}>
                   <div style={{ color: isLight ? '#64748b' : '#71717a', marginBottom: '4px' }}>APPLICABLE LAW SECTIONS:</div>
