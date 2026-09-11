@@ -58,6 +58,8 @@ def parse_and_link_evidence_file(file_path: Path, fir_ref: str, session):
                     cypher_call = """
                     UNWIND $batch AS row
                     MERGE (f:FIR {fir_number: $fir_ref})
+                    ON CREATE SET f.fir_no = $fir_ref, f.status = 'ACTIVE INVESTIGATION'
+                    SET f.fir_no = coalesce(f.fir_no, $fir_ref)
                     MERGE (p1:Person {name: row.caller})
                     MERGE (ph1:Phone {phone_number: row.caller})
                     MERGE (p1)-[:USES_PHONE]->(ph1)
@@ -276,9 +278,6 @@ async def upload_evidence_file(
             for sp in saved_paths:
                 parse_and_link_evidence_file(sp, fir_ref, session)
 
-        # Run pipeline refresh over uploads directory
-        stats = run_full_ingestion_pipeline(str(UPLOAD_DIR))
-
         filenames_str = ", ".join([f.filename for f in file_list])
         return {
             "status": "success",
@@ -289,7 +288,7 @@ async def upload_evidence_file(
             "person_name": person_name,
             "linked_details": linked_details,
             "evidence_vault_records": evidence_records,
-            "ingestion_stats": stats
+            "fir_number": fir_ref
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
