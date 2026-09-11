@@ -8,6 +8,7 @@ from app.models.evidence import (
     SurveillanceRecord,
     FirRecord
 )
+from app.models.timeline import InvestigationEvent, EventParticipant
 
 __all__ = [
     "User",
@@ -21,5 +22,8 @@ __all__ = [
     "TransactionRecord",
     "VehicleSightingRecord",
     "SurveillanceRecord",
-    "FirRecord"
+    "FirRecord",
+    "InvestigationEvent",
+    "EventParticipant"
 ]
+

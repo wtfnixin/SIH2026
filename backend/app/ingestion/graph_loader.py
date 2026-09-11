@@ -162,6 +162,21 @@ def load_all_to_postgres(
             db.commit()
             counts["firs"] = len(f_objs)
 
+        # 6. Extract Timeline Events & Sync to Neo4j
+        try:
+            from app.services.timeline_service import (
+                extract_events_from_fir,
+                extract_events_from_cdr,
+                extract_events_from_transactions
+            )
+            for f in firs:
+                extract_events_from_fir(db, f)
+            extract_events_from_cdr(db, calls)
+            extract_events_from_transactions(db, txs)
+            logger.info("Timeline events successfully extracted and synced.")
+        except Exception as te:
+            logger.warning(f"Timeline event extraction note: {te}")
+
     except Exception as e:
         db.rollback()
         logger.error(f"Error bulk-loading to PostgreSQL: {e}")
@@ -171,6 +186,7 @@ def load_all_to_postgres(
 
     logger.info(f"PostgreSQL Ingestion Complete: {counts}")
     return counts
+
 
 
 # ─────────────────────────────────────────────────────────────

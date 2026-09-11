@@ -44,8 +44,18 @@ def process_copilot_chat(user_message: str, selected_target_id: str = None) -> D
     if selected_target_id:
         return generate_single_entity_response(selected_target_id, user_message, groq_key)
 
-    # Case 1: Check for Map / Trajectory Intent
+    # Case 1: Check for Map / Trajectory / Timeline Intent
     msg_lower = user_message.lower()
+    if any(k in msg_lower for k in ["timeline", "chronology", "sequence of events", "event history", "time line"]):
+        return {
+            "response": "Opening the Interactive Investigation Reconstruction Timeline. You can reconstruct chronological events, analyze multi-entity temporal convergence, detect activity bursts, and generate evidence-backed briefs.",
+            "multiple_matches": [],
+            "ui_action": {
+                "type": "NAVIGATE_TIMELINE",
+                "open_timeline": True
+            }
+        }
+
     if any(k in msg_lower for k in ["map", "location map", "anpr map", "trajectory", "route", "gantry"]):
         return {
             "response": "Opening the Interactive ANPR Spatial Surveillance Map canvas. You can trace vehicle movement trajectories, analyze toll gantry camera hits, and monitor convoy co-location alerts.",
@@ -55,6 +65,7 @@ def process_copilot_chat(user_message: str, selected_target_id: str = None) -> D
                 "open_map": True
             }
         }
+
 
     # Case 2: Check if prompt is a general conversational query (e.g. greeting, system question)
     if is_general_conversation(user_message):

@@ -54,8 +54,10 @@ import TargetedGraphCanvas from './components/TargetedGraphCanvas';
 import GeospatialMapCanvas from './components/GeospatialMapCanvas';
 import SathiAIWorkspace from './components/SathiAIWorkspace';
 import FirDirectory from './components/FirDirectory';
+import InvestigationTimeline from './components/InvestigationTimeline';
 import { useAuth } from './context/AuthContext';
 import LoginModal from './components/LoginModal';
+
 
 export default function App() {
   const { user, isAuthenticated, isLoading: authLoading, logout, authFetch } = useAuth();
@@ -572,12 +574,23 @@ export default function App() {
                 </div>
               </div>
 
-              {/* SECTION: GEOSPATIAL ANPR SURVEILLANCE */}
+              {/* SECTION: GEOSPATIAL ANPR SURVEILLANCE & TIMELINE */}
               <div className="sidebar-group">
                 <div className="sidebar-group-title">
-                  <span>SPATIAL SURVEILLANCE</span>
+                  <span>CHRONOLOGY & SURVEILLANCE</span>
                 </div>
                 <div className="sidebar-nav-list">
+                  <div
+                    className={`sidebar-nav-item ${activeView === 'timeline' ? 'active' : ''}`}
+                    onClick={() => setActiveView('timeline')}
+                    title="View Time-Aware Event Chronology & Investigation Timeline"
+                  >
+                    <div className="sidebar-item-left">
+                      <Clock size={15} color="#38bdf8" />
+                      <span>Investigation Timeline</span>
+                    </div>
+                  </div>
+
                   <div
                     className={`sidebar-nav-item ${activeView === 'geo_map' ? 'active' : ''}`}
                     onClick={() => setActiveView('geo_map')}
@@ -590,6 +603,7 @@ export default function App() {
                   </div>
                 </div>
               </div>
+
 
               {/* SECTION: SUSPECT DOSSIERS */}
               <div className="sidebar-group">
@@ -737,6 +751,17 @@ export default function App() {
               />
             </div>
           )}
+
+          {/* VIEW: INVESTIGATION RECONSTRUCTION TIMELINE */}
+          {activeView === 'timeline' && (
+            <div style={{ flex: 1, height: '100%', overflowY: 'auto' }}>
+              <InvestigationTimeline
+                onNavigateGraph={(id) => openTargetedGraph(id)}
+                initialEntity={focusedEntityId || selectedEntityId}
+              />
+            </div>
+          )}
+
 
           {/* VIEW: CRIMINAL DATABASE (100% DYNAMIC FROM NEO4J) */}
           {activeView === 'criminals' && (
@@ -1610,11 +1635,14 @@ export default function App() {
               openTargetedGraph(action.target_id);
             } else if (action.type === 'NAVIGATE_MAP') {
               setActiveView('geo_map');
+            } else if (action.type === 'NAVIGATE_TIMELINE') {
+              setActiveView('timeline');
             }
           }}
           onOpenFullScreen={() => setActiveView('sathi')}
         />
       )}
+
 
       {/* Mandatory Officer Authentication Gateway Modal */}
       {!isAuthenticated && !authLoading && <LoginModal />}
