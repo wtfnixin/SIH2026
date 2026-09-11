@@ -56,6 +56,7 @@ import SathiAIWorkspace from './components/SathiAIWorkspace';
 import FirDirectory from './components/FirDirectory';
 import { useAuth } from './context/AuthContext';
 import LoginModal from './components/LoginModal';
+import Dashboard from './components/Dashboard';
 
 export default function App() {
   const { user, isAuthenticated, isLoading: authLoading, logout, authFetch } = useAuth();
@@ -99,7 +100,7 @@ export default function App() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [activeView, setActiveView] = useState('threats');
+  const [activeView, setActiveView] = useState('dashboard');
   const [previousView, setPreviousView] = useState('threats');
   const [threatCategory, setThreatCategory] = useState('all');
   const [isThreatDropdownOpen, setIsThreatDropdownOpen] = useState(true);
@@ -485,6 +486,22 @@ export default function App() {
           <aside className="standard-sidebar">
             <div className="sidebar-scrollable-content">
               
+              {/* SECTION: HOME */}
+              <div className="sidebar-group">
+                <div className="sidebar-nav-list">
+                  <div
+                    className={`sidebar-nav-item ${activeView === 'dashboard' ? 'active' : ''}`}
+                    onClick={() => setActiveView('dashboard')}
+                    title="Executive Command Dashboard"
+                  >
+                    <div className="sidebar-item-left">
+                      <Landmark size={15} color="#38bdf8" />
+                      <span>Dashboard</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* SECTION: THREAT INTELLIGENCE */}
               <div className="sidebar-group">
                 <div className="sidebar-group-title">
@@ -675,6 +692,20 @@ export default function App() {
         {/* Main Stage: Dynamic View Switcher */}
         <div className="main-threat-stage">
           
+          {/* VIEW: HOME DASHBOARD */}
+          {activeView === 'dashboard' && (
+            <Dashboard
+              criminals={criminals}
+              kingpins={kingpins}
+              alertsData={alertsData}
+              loading={loading}
+              onNavigate={(view) => {
+                setPreviousView('dashboard');
+                setActiveView(view);
+              }}
+            />
+          )}
+
           {/* VIEW: EXECUTIVE COMMAND CENTER (DEFAULT LANDING VIEW) */}
           {activeView === 'threats' && (
             <div className="executive-dashboard-wrapper">
