@@ -108,6 +108,16 @@ export default function App() {
   const [floatingMapEntity, setFloatingMapEntity] = useState(null);
   const [isFloatingMapMinimized, setIsFloatingMapMinimized] = useState(false);
 
+  // Shared Sathi AI Copilot Chat History (preserved across drawer and full-screen workspace)
+  const [chatHistory, setChatHistory] = useState([
+    {
+      sender: 'ai',
+      text: "Namaste Officer. Sathi is online and synchronized with the investigation graph and ANPR feeds. How can I assist your case today?",
+      multipleMatches: [],
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+  ]);
+
   const fetchAllData = () => {
     if (!isAuthenticated) return;
     setLoading(true);
@@ -694,6 +704,8 @@ export default function App() {
               onOpenDossier={(id) => openDossier(id)}
               onOpenGeoMap={() => setActiveView('geo_map')}
               onBackToDashboard={() => setActiveView(previousView || 'threats')}
+              chatHistory={chatHistory}
+              setChatHistory={setChatHistory}
             />
           )}
 
@@ -1613,6 +1625,8 @@ export default function App() {
             }
           }}
           onOpenFullScreen={() => setActiveView('sathi')}
+          chatHistory={chatHistory}
+          setChatHistory={setChatHistory}
         />
       )}
 
