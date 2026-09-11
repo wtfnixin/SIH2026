@@ -40,7 +40,8 @@ import {
   DollarSign,
   Filter,
   ChevronDown,
-  Bot
+  Bot,
+  Scale
 } from 'lucide-react';
 import ThreatAlertsFeed from './components/ThreatAlertsFeed';
 import FileUploadModal from './components/FileUploadModal';
@@ -51,6 +52,7 @@ import AICopilotDrawer from './components/AICopilotDrawer';
 import TargetedGraphCanvas from './components/TargetedGraphCanvas';
 import GeospatialMapCanvas from './components/GeospatialMapCanvas';
 import SathiAIWorkspace from './components/SathiAIWorkspace';
+import FirDirectory from './components/FirDirectory';
 
 export default function App() {
   // Theme state: 'dark' or 'light'
@@ -563,6 +565,25 @@ export default function App() {
                 </div>
               </div>
 
+              {/* SECTION: LEGAL & INCIDENT REGISTRY */}
+              <div className="sidebar-group">
+                <div className="sidebar-group-title">
+                  <span>INCIDENT REGISTRY</span>
+                </div>
+                <div className="sidebar-nav-list">
+                  <div
+                    className={`sidebar-nav-item ${activeView === 'firs' ? 'active' : ''}`}
+                    onClick={() => setActiveView('firs')}
+                    title="View State Police FIR Directory & Incident Archive"
+                  >
+                    <div className="sidebar-item-left">
+                      <Scale size={15} color="#8b5cf6" />
+                      <span>FIR Directory</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* SECTION: AI INTELLIGENCE */}
               <div className="sidebar-group">
                 <div className="sidebar-group-title">
@@ -626,6 +647,15 @@ export default function App() {
               onOpenDossier={(id) => openDossier(id)}
               onOpenGeoMap={() => setActiveView('geo_map')}
               onBackToDashboard={() => setActiveView(previousView || 'threats')}
+            />
+          )}
+
+          {/* VIEW: STATE POLICE FIR DIRECTORY */}
+          {activeView === 'firs' && (
+            <FirDirectory
+              theme={theme}
+              onOpenDossier={(id) => openDossier(id)}
+              onInvestigateGraph={(id) => openTargetedGraph(id)}
             />
           )}
 

@@ -79,39 +79,18 @@ def extract_entities_from_text(text: str, fir_id: str = "FIR-UNKNOWN") -> Dict[s
     # 4. spaCy Named Entity Recognition (NER) for Persons and Locations
     if nlp:
         doc = nlp(text)
-        
-        # Relation and Event Extraction (Dependency Parsing)
-        for sent in doc.sents:
-            for token in sent:
-                if token.pos_ == "VERB":
-                    entities["events"].append(token.lemma_)
-                    
-                    subjects = [child.text for child in token.children if child.dep_ in ("nsubj", "nsubjpass")]
-                    objects = [child.text for child in token.children if child.dep_ in ("dobj", "pobj", "attr")]
-                    
-                    if subjects and objects:
-                        for sub in subjects:
-                            for obj in objects:
-                                entities["relations"].append({
-                                    "subject": clean_name(sub) or sub,
-                                    "action": token.lemma_,
-                                    "object": clean_name(obj) or obj,
-                                    "evidence": sent.text.strip(),
-                                    "confidence": 0.85
-                                })
-                    else:
-                        entities["relations"].append({
-                            "relation": None,
-                            "confidence": 0.0
-                        })
-        
-        # Deduplicate events
-        entities["events"] = list(set(entities["events"]))
 
+        # 1. spaCy Named Entity Recognition (NER)
         for ent in doc.ents:
+            # Check if text is actually a vehicle registration plate
+            plate = clean_vehicle_plate(ent.text)
+            if plate:
+                if plate not in entities["vehicles"]:
+                    entities["vehicles"].append(plate)
+                continue
+
             if ent.label_ == "PERSON":
                 c_name = clean_name(ent.text)
-                # Ignore header noise words
                 if c_name and len(c_name.split()) >= 2 and c_name not in entities["persons"]:
                     if not any(k in c_name.upper() for k in ["POLICE", "REPORT", "INFORMATION", "STATION"]):
                         entities["persons"].append(c_name)
@@ -137,6 +116,33 @@ def extract_entities_from_text(text: str, fir_id: str = "FIR-UNKNOWN") -> Dict[s
                 date_val = ent.text.strip()
                 if date_val and date_val not in entities["dates"]:
                     entities["dates"].append(date_val)
+
+        # 2. Relation and Event Extraction (Dependency Parsing)
+        for sent in doc.sents:
+            for token in sent:
+                if token.pos_ == "VERB":
+                    entities["events"].append(token.lemma_)
+
+                    subjects = [child.text for child in token.children if child.dep_ in ("nsubj", "nsubjpass")]
+                    objects = [child.text for child in token.children if child.dep_ in ("dobj", "pobj", "attr")]
+
+                    if subjects and objects:
+                        for sub in subjects:
+                            c_sub = clean_name(sub)
+                            for obj in objects:
+                                c_obj = clean_name(obj)
+                                # Only record relation if both endpoints are valid cleaned person names
+                                if c_sub and c_obj and (c_sub in entities["persons"] or c_obj in entities["persons"]):
+                                    entities["relations"].append({
+                                        "subject": c_sub,
+                                        "action": token.lemma_,
+                                        "object": c_obj,
+                                        "evidence": sent.text.strip(),
+                                        "confidence": 0.85
+                                    })
+
+        # Deduplicate events
+        entities["events"] = list(set(entities["events"]))
 
     return entities
 

@@ -60,3 +60,21 @@ def get_pipeline_status() -> Dict[str, Any]:
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/clean-and-reload")
+def trigger_clean_and_reload() -> Dict[str, Any]:
+    """
+    Executes end-to-end data cleaning, deduplication, canonical dataset generation,
+    and bulk ingestion into both PostgreSQL and Neo4j databases.
+    """
+    try:
+        results = run_full_ingestion_pipeline(
+            data_dir="/app/data/synthetic_data",
+            cleaned_dir="/app/data/cleaned_datasets"
+        )
+        return results
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
