@@ -41,7 +41,8 @@ import {
   Filter,
   ChevronDown,
   Bot,
-  Scale
+  Scale,
+  LogOut
 } from 'lucide-react';
 import ThreatAlertsFeed from './components/ThreatAlertsFeed';
 import FileUploadModal from './components/FileUploadModal';
@@ -53,8 +54,12 @@ import TargetedGraphCanvas from './components/TargetedGraphCanvas';
 import GeospatialMapCanvas from './components/GeospatialMapCanvas';
 import SathiAIWorkspace from './components/SathiAIWorkspace';
 import FirDirectory from './components/FirDirectory';
+import { useAuth } from './context/AuthContext';
+import LoginModal from './components/LoginModal';
 
 export default function App() {
+  const { user, isAuthenticated, isLoading: authLoading, logout, authFetch } = useAuth();
+
   // Theme state: 'dark' or 'light'
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('sih_theme');
@@ -104,12 +109,13 @@ export default function App() {
   const [isFloatingMapMinimized, setIsFloatingMapMinimized] = useState(false);
 
   const fetchAllData = () => {
+    if (!isAuthenticated) return;
     setLoading(true);
     Promise.all([
-      fetch('http://localhost:8000/api/v1/graph/network?limit=150').then(res => res.json()),
-      fetch('http://localhost:8000/api/v1/analytics/alerts').then(res => res.json()),
-      fetch('http://localhost:8000/api/v1/graph/kingpins?top_n=10').then(res => res.json()),
-      fetch('http://localhost:8000/api/v1/entities/criminals?limit=250').then(res => res.json())
+      authFetch('/api/v1/graph/network?limit=150').then(res => res.json()),
+      authFetch('/api/v1/analytics/alerts').then(res => res.json()),
+      authFetch('/api/v1/graph/kingpins?top_n=10').then(res => res.json()),
+      authFetch('/api/v1/entities/criminals?limit=250').then(res => res.json())
     ])
       .then(([net, al, kp, crim]) => {
         setNetworkData(net);
@@ -127,15 +133,17 @@ export default function App() {
   };
 
   useEffect(() => {
-    fetchAllData();
-  }, []);
+    if (isAuthenticated) {
+      fetchAllData();
+    }
+  }, [isAuthenticated]);
 
   // Fetch single dossier when selectedDossierEntity changes
   useEffect(() => {
-    if (!selectedDossierEntity) return;
+    if (!selectedDossierEntity || !isAuthenticated) return;
     setDossierActiveTab('overview');
     setLoadingDossier(true);
-    fetch(`http://localhost:8000/api/v1/entities/dossier/${encodeURIComponent(selectedDossierEntity)}`)
+    authFetch(`/api/v1/entities/dossier/${encodeURIComponent(selectedDossierEntity)}`)
       .then(res => res.json())
       .then(data => {
         setDossierData(data);
@@ -145,13 +153,13 @@ export default function App() {
         console.error("Dossier fetch error:", err);
         setLoadingDossier(false);
       });
-  }, [selectedDossierEntity]);
+  }, [selectedDossierEntity, isAuthenticated]);
 
   const handleSearch = (e) => {
     const q = e.target.value;
     setSearchQuery(q);
-    if (q.length >= 2) {
-      fetch(`http://localhost:8000/api/v1/entities/search?q=${encodeURIComponent(q)}`)
+    if (q.length >= 2 && isAuthenticated) {
+      authFetch(`/api/v1/entities/search?q=${encodeURIComponent(q)}`)
         .then(res => res.json())
         .then(data => setSearchResults(data))
         .catch(err => console.error(err));
@@ -212,7 +220,7 @@ export default function App() {
     setSearchResults([]);
     setSearchQuery('');
     setLoadingDossier(true);
-    fetch(`http://localhost:8000/api/v1/entities/dossier/${encodeURIComponent(entityId)}`)
+    authFetch(`/api/v1/entities/dossier/${encodeURIComponent(entityId)}`)
       .then(res => res.json())
       .then(data => {
         setDossierData(data);
@@ -286,6 +294,23 @@ export default function App() {
       fir_count: dossierData?.summary?.fir_count || 0,
       threat_level: dossierData?.threat_level || 'MONITORED'
     });
+  }
+
+  if (authLoading) {
+    return (
+      <div className="login-modal-overlay">
+        <div style={{ color: '#38bdf8', fontFamily: "'JetBrains Mono', monospace", display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Shield size={26} className="spin-anim" />
+          <span style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.8px' }}>
+            VERIFYING POLICE CREDENTIALS & SESSION INTEGRITY...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <LoginModal />;
   }
 
   return (
@@ -398,8 +423,29 @@ export default function App() {
           )}
         </div>
 
-        {/* Action Controls */}
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        {/* Action Controls & Officer Session */}
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          {/* Authenticated Officer Badge */}
+          {user && (
+            <div className="header-officer-pill">
+              <div className="header-officer-info">
+                <Shield size={12} color="#38bdf8" />
+                <span className="header-officer-name">{user.username}</span>
+                <span className={`header-officer-role header-role-${(user.role || 'viewer').toLowerCase()}`}>
+                  {user.role}
+                </span>
+              </div>
+              <button
+                className="header-logout-btn"
+                onClick={logout}
+                title="Log out and revoke session"
+              >
+                <LogOut size={11} />
+                <span>Logout</span>
+              </button>
+            </div>
+          )}
+
           <button 
             id="theme-toggle-btn"
             className="theme-toggle-btn" 
@@ -1569,6 +1615,9 @@ export default function App() {
           onOpenFullScreen={() => setActiveView('sathi')}
         />
       )}
+
+      {/* Mandatory Officer Authentication Gateway Modal */}
+      {!isAuthenticated && !authLoading && <LoginModal />}
     </div>
   );
 }

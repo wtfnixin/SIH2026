@@ -2,20 +2,26 @@
 FastAPI Ingestion Router
 Provides endpoints for evidence file uploads and pipeline status.
 """
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
 import shutil
 from pathlib import Path
 from typing import Dict, Any, Optional
 from app.ingestion.graph_loader import run_full_ingestion_pipeline
 from app.db.neo4j_driver import get_neo4j_session
+from app.auth.dependencies import require_permission
 
 router = APIRouter(prefix="/ingest", tags=["Data Ingestion"])
 
-UPLOAD_DIR = Path("/app/data/uploads")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+import os
+
+UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "/app/data/uploads" if os.path.exists("/app") else str(Path(__file__).resolve().parent.parent.parent.parent / "data" / "uploads")))
+try:
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+except Exception:
+    pass
 
 
-@router.post("/upload")
+@router.post("/upload", dependencies=[Depends(require_permission("investigation:write"))])
 async def upload_evidence_file(
     file: UploadFile = File(...),
     mode: Optional[str] = Form("new_case"),
@@ -86,7 +92,7 @@ async def upload_evidence_file(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/status")
+@router.get("/status", dependencies=[Depends(require_permission("investigation:read"))])
 def get_pipeline_status() -> Dict[str, Any]:
     """
     Returns current node and relationship counts in the Neo4j database.
@@ -110,11 +116,12 @@ def get_pipeline_status() -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/clean-and-reload")
+@router.post("/clean-and-reload", dependencies=[Depends(require_permission("system:admin"))])
 def trigger_clean_and_reload() -> Dict[str, Any]:
     """
     Executes end-to-end data cleaning, deduplication, canonical dataset generation,
     and bulk ingestion into both PostgreSQL and Neo4j databases.
+    Requires ADMIN privileges.
     """
     try:
         results = run_full_ingestion_pipeline(

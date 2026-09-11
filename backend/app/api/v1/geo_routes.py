@@ -3,11 +3,12 @@ Geospatial ANPR Movement & Spatial Analytics Routes
 Provides endpoints for ANPR toll gantries, camera sightings, vehicle movement trajectories,
 and convoy co-location GIS mapping data.
 """
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
 from typing import List, Dict, Any, Optional
 from app.db.neo4j_driver import get_neo4j_session
+from app.auth.dependencies import require_permission
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_permission("geo:read"))])
 
 # Coordinates mapping for location nodes in sample dataset (Delhi-NCR & Western Corridor)
 LOCATION_COORDINATES = {

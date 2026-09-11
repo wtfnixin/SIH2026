@@ -2,14 +2,19 @@
 FastAPI Graph Analytics Router
 Provides endpoints for Cytoscape.js visual graph canvas, Kingpins, Brokers, Communities, and Pathfinder.
 """
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Query, HTTPException, Depends
 from typing import Dict, Any, List
 from app.db.neo4j_driver import get_neo4j_session
 from app.graph_engine.centrality import calculate_pagerank, calculate_betweenness_centrality
 from app.graph_engine.communities import detect_louvain_communities
 from app.graph_engine.pathfinder import find_shortest_path
+from app.auth.dependencies import require_permission
 
-router = APIRouter(prefix="/graph", tags=["Graph Analytics"])
+router = APIRouter(
+    prefix="/graph",
+    tags=["Graph Analytics"],
+    dependencies=[Depends(require_permission("investigation:read"))]
+)
 
 
 @router.get("/network")

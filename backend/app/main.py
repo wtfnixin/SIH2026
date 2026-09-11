@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
+from app.core.middleware import SecurityHeadersMiddleware
+from app.auth.router import router as auth_router
+from app.api.v1.admin_routes import router as admin_router
 from app.api.v1.ingest_routes import router as ingest_router
 from app.api.v1.graph_routes import router as graph_router
 from app.api.v1.entity_routes import router as entity_router
@@ -14,16 +17,24 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
-# Enable CORS for React frontend
+# Hardened CORS for React frontend (allows credentials with specific origins/regex)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.cors_origins_list,
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Mount API v1 Routers
+# Attach OWASP Security Headers (nosniff, DENY, etc.)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# Mount Authentication & Administration Routers
+app.include_router(auth_router, prefix=settings.API_V1_STR)
+app.include_router(admin_router, prefix=settings.API_V1_STR)
+
+# Mount Existing Investigation API Routers
 app.include_router(ingest_router, prefix=settings.API_V1_STR)
 app.include_router(graph_router, prefix=settings.API_V1_STR)
 app.include_router(entity_router, prefix=settings.API_V1_STR)

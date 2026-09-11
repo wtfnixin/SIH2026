@@ -21,6 +21,25 @@ class Settings(BaseSettings):
         "postgresql://sih_admin:sih_secure_password@localhost:5432/sih_investigation"
     )
 
+    # JWT & Authentication settings
+    JWT_SECRET: str = os.getenv("JWT_SECRET", "sih_2026_super_secret_key_change_in_production")
+    JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "15"))
+    REFRESH_TOKEN_EXPIRE_DAYS: int = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))
+
+    # Brute-force & Account lockout policy
+    MAX_LOGIN_ATTEMPTS: int = int(os.getenv("MAX_LOGIN_ATTEMPTS", "5"))
+    LOCKOUT_DURATION_MINUTES: int = int(os.getenv("LOCKOUT_DURATION_MINUTES", "15"))
+
+    # Cookie & CORS settings
+    COOKIE_SECURE: bool = os.getenv("COOKIE_SECURE", "False").lower() in ("true", "1")
+    COOKIE_SAMESITE: str = os.getenv("COOKIE_SAMESITE", "lax")
+    CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173")
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+
     class Config:
         case_sensitive = True
 

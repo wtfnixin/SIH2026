@@ -3,12 +3,17 @@ FastAPI Entity Resolution & Dossier Router
 Provides endpoints for suspect search, detailed criminal profiles, criminal database listing,
 and candidate alias pairs.
 """
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Query, HTTPException, Depends
 from typing import Dict, Any, List, Optional
 from app.db.neo4j_driver import get_neo4j_session
 from app.entity_res.graph_merger import resolve_person_nodes_in_neo4j
+from app.auth.dependencies import require_permission
 
-router = APIRouter(prefix="/entities", tags=["Entities & Dossiers"])
+router = APIRouter(
+    prefix="/entities",
+    tags=["Entities & Dossiers"],
+    dependencies=[Depends(require_permission("investigation:read"))]
+)
 
 # Common noise tokens from NLP extraction to exclude from criminal listings
 NOISE_WORDS = {
