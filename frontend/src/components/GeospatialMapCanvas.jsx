@@ -181,11 +181,12 @@ const sizeAnchor = (s) => s / 2;
 /* ──────────────────────────────────────────
    MAP SUB-COMPONENTS & CONTROLLERS
 ────────────────────────────────────────── */
-function MapController({ center, zoom, bounds }) {
+function MapController({ flyTarget }) {
   const map = useMap();
+  const lastTargetIdRef = useRef(null);
 
   useEffect(() => {
-    // Invalidate size immediately so Leaflet calculates full container dimensions
+    // Invalidate size on mount & window resize
     const timer = setTimeout(() => {
       map.invalidateSize();
     }, 150);
@@ -193,33 +194,43 @@ function MapController({ center, zoom, bounds }) {
   }, [map]);
 
   useEffect(() => {
-    if (bounds && bounds.length > 0) {
+    if (!flyTarget || flyTarget.id === lastTargetIdRef.current) return;
+    lastTargetIdRef.current = flyTarget.id;
+
+    if (flyTarget.bounds && flyTarget.bounds.length > 0) {
       try {
-        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14, duration: 1.2 });
+        map.fitBounds(flyTarget.bounds, { padding: [50, 50], maxZoom: 15, duration: 1.2 });
       } catch (e) {
-        if (center) map.flyTo(center, zoom || 11, { duration: 1.2, easeLinearity: 0.25 });
+        if (flyTarget.center) {
+          map.flyTo(flyTarget.center, flyTarget.zoom || 12, { duration: 1.2, easeLinearity: 0.25 });
+        }
       }
-    } else if (center && center.length === 2 && !isNaN(center[0]) && !isNaN(center[1])) {
-      map.flyTo(center, zoom || 11, { duration: 1.2, easeLinearity: 0.25 });
+    } else if (flyTarget.center && flyTarget.center.length === 2 && !isNaN(flyTarget.center[0]) && !isNaN(flyTarget.center[1])) {
+      map.flyTo(flyTarget.center, flyTarget.zoom || 12, { duration: 1.2, easeLinearity: 0.25 });
     }
-  }, [center?.[0], center?.[1], zoom, bounds, map]);
+  }, [flyTarget, map]);
 
   return null;
 }
 
-function ZoomWatcher({ onZoomChange, onCenterChange }) {
+function ZoomWatcher({ onTelemetryChange }) {
   useMapEvents({
-    zoomend: (e) => onZoomChange?.(e.target.getZoom()),
-    moveend: (e) => {
+    zoomend: (e) => {
+      const z = e.target.getZoom();
       const c = e.target.getCenter();
-      if (c) onCenterChange?.([c.lat, c.lng]);
+      if (c) onTelemetryChange?.(z, [c.lat, c.lng]);
+    },
+    moveend: (e) => {
+      const z = e.target.getZoom();
+      const c = e.target.getCenter();
+      if (c) onTelemetryChange?.(z, [c.lat, c.lng]);
     }
   });
   return null;
 }
 
 /* Tactical Map Navigation Controls */
-function TacticalMapControls({ activeTargetCoords, defaultCenter, defaultZoom }) {
+function TacticalMapControls({ onRecenter }) {
   const map = useMap();
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -260,19 +271,15 @@ function TacticalMapControls({ activeTargetCoords, defaultCenter, defaultZoom })
       flexDirection: 'column',
       gap: 6
     }}>
-      <button style={btnStyle} onClick={() => map.zoomIn()} title="Zoom In">
+      <button style={btnStyle} onClick={() => map.zoomIn(1)} title="Zoom In">
         <Plus size={15} />
       </button>
-      <button style={btnStyle} onClick={() => map.zoomOut()} title="Zoom Out">
+      <button style={btnStyle} onClick={() => map.zoomOut(1)} title="Zoom Out">
         <Minus size={15} />
       </button>
       <button
         style={btnStyle}
-        onClick={() => {
-          if (activeTargetCoords) map.flyTo(activeTargetCoords, 14, { duration: 1.2 });
-          else if (defaultCenter) map.flyTo(defaultCenter, defaultZoom || 11, { duration: 1.2 });
-          else map.flyTo([22.5937, 78.9629], 5, { duration: 1.2 });
-        }}
+        onClick={() => onRecenter?.()}
         title="Recenter Target or Region"
       >
         <Crosshair size={15} />
@@ -321,12 +328,12 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
   const [playbackIndex, setPlaybackIndex] = useState(0);
   const playbackRef = useRef(null);
 
-  const [mapCenter, setMapCenter] = useState([22.5937, 78.9629]);
-  const [mapZoom, setMapZoom] = useState(5);
-  const [currentZoom, setCurrentZoom] = useState(5);
+  // Decoupled map camera states (flyTarget for explicit navigation, telemetry for readout)
+  const [flyTarget, setFlyTarget] = useState({ center: [22.5937, 78.9629], zoom: 5, id: 1 });
+  const [telemetry, setTelemetry] = useState({ zoom: 5, lat: 22.59, lng: 78.96 });
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedGantry, setSelectedGantry] = useState(null);
-  const [mapKey] = useState('tactical-map-v4');
+  const [mapKey] = useState('tactical-map-v5');
 
   // CSS injection for clean overrides
   useEffect(() => {
@@ -409,14 +416,12 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
     setSelectedRegion(regionId);
     setSelectedPincode('');
     if (regionId === 'all') {
-      setMapCenter([22.5937, 78.9629]);
-      setMapZoom(5);
+      setFlyTarget({ center: [22.5937, 78.9629], zoom: 5, id: Date.now() });
       setSearchFeedback('🌐 NATIONAL GRID: ALL INDIA SURVEILLANCE');
     } else {
       const reg = regions.find(r => r.id === regionId);
       if (reg && reg.center) {
-        setMapCenter(reg.center);
-        setMapZoom(reg.zoom || 11);
+        setFlyTarget({ center: reg.center, zoom: reg.zoom || 11, id: Date.now() });
         setSearchFeedback(`📍 CORRIDOR: ${reg.name.toUpperCase()} (${reg.state})`);
       }
     }
@@ -457,15 +462,13 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
     } else if (match.type === 'PINCODE') {
       setSelectedRegion(match.region);
       setSelectedPincode(match.pincode);
-      setMapCenter(match.center);
-      setMapZoom(14);
+      setFlyTarget({ center: match.center, zoom: 14, id: Date.now() });
       setSearchPlate(match.pincode);
       setSearchFeedback(`📮 PINCODE ${match.pincode}: ${match.city}`);
     } else if (match.type === 'GANTRY' || match.type === 'CELL_TOWER' || match.type === 'FINANCIAL' || match.type === 'CONVOY') {
       if (match.region) setSelectedRegion(match.region);
       if (match.pincode) setSelectedPincode(match.pincode);
-      setMapCenter(match.center);
-      setMapZoom(15);
+      setFlyTarget({ center: match.center, zoom: 15, id: Date.now() });
       setSearchPlate(match.name);
       setSearchFeedback(`🎯 TARGET: ${match.name} (${match.city || ''})`);
     }
@@ -501,17 +504,26 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
         const pts = data.trajectory || [];
         setTrajectory(pts);
         setSourceCounts(data.source_counts || { anpr: 0, cdr: 0, financial: 0 });
-        setPlaybackIndex(pts.length ? pts.length - 1 : 0);
+        setPlaybackIndex(0); // Start at Stop 1 by default
         setLoadingTrajectory(false);
         if (pts.length > 0) {
-          setMapCenter([pts[0].lat, pts[0].lng]);
-          setMapZoom(13);
+          setFlyTarget({ center: [pts[0].lat, pts[0].lng], zoom: 13, id: Date.now() });
           setSearchFeedback(`🛰️ CORRELATED ${pts.length} CROSS-MODAL STOPS FOR ${query.trim().toUpperCase()}`);
           setTimeout(() => setSearchFeedback(''), 4500);
         }
       })
       .catch(() => setLoadingTrajectory(false));
   }, []);
+
+  const handleRecenter = () => {
+    if (currentPt) {
+      setFlyTarget({ center: [currentPt.lat, currentPt.lng], zoom: 14, id: Date.now() });
+    } else if (currentRegionObj && currentRegionObj.center) {
+      setFlyTarget({ center: currentRegionObj.center, zoom: currentRegionObj.zoom || 11, id: Date.now() });
+    } else {
+      setFlyTarget({ center: [22.5937, 78.9629], zoom: 5, id: Date.now() });
+    }
+  };
 
   useEffect(() => {
     if (initialVehiclePlate) fetchTrajectory(initialVehiclePlate);
@@ -864,7 +876,7 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
             whiteSpace: 'nowrap'
           }}>
             <Compass size={12} color="#38bdf8" />
-            <span>Z:{currentZoom} · {mapCenter[0]?.toFixed(2)}°N {mapCenter[1]?.toFixed(2)}°E</span>
+            <span>Z:{telemetry.zoom} · {telemetry.lat?.toFixed(2)}°N {telemetry.lng?.toFixed(2)}°E</span>
           </div>
         </div>
       </div>
@@ -896,18 +908,17 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
       <div style={{ position: 'absolute', inset: 0 }}>
         <MapContainer
           key={mapKey}
-          center={mapCenter}
-          zoom={mapZoom}
+          center={[22.5937, 78.9629]}
+          zoom={5}
           zoomControl={false}
+          scrollWheelZoom={true}
+          doubleClickZoom={true}
+          touchZoom={true}
           style={{ width: '100%', height: '100%', background: '#020617' }}
         >
-          <MapController center={mapCenter} zoom={mapZoom} />
-          <ZoomWatcher onZoomChange={setCurrentZoom} onCenterChange={setMapCenter} />
-          <TacticalMapControls
-            activeTargetCoords={currentPt ? [currentPt.lat, currentPt.lng] : null}
-            defaultCenter={mapCenter}
-            defaultZoom={mapZoom}
-          />
+          <MapController flyTarget={flyTarget} />
+          <ZoomWatcher onTelemetryChange={(z, c) => setTelemetry({ zoom: z, lat: c[0], lng: c[1] })} />
+          <TacticalMapControls onRecenter={handleRecenter} />
 
           {/* Stadia Alidade Smooth Dark */}
           <TileLayer
@@ -1321,7 +1332,16 @@ export default function GeospatialMapCanvas({ onSelectEntity, onOpenDossier, ini
                 <ChevronLeft size={14} />
               </button>
               <button
-                onClick={() => setIsPlaying(!isPlaying)}
+                onClick={() => {
+                  if (!isPlaying) {
+                    if (playbackIndex >= trajectory.length - 1) {
+                      setPlaybackIndex(0);
+                    }
+                    setIsPlaying(true);
+                  } else {
+                    setIsPlaying(false);
+                  }
+                }}
                 style={{
                   background: isPlaying
                     ? 'rgba(239, 68, 68, 0.2)'
