@@ -292,7 +292,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
               <div style={{ display: 'flex', gap: '10px', width: '100%', marginTop: '8px' }}>
                 <button
                   onClick={handleReset}
-                  className="btn-secondary"
+                  className="btn-secondary modal-cancel-btn"
                   style={{ flex: 1, padding: '10px', fontSize: '12px' }}
                 >
                   <RefreshCw size={13} style={{ marginRight: '6px' }} />
@@ -300,7 +300,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
                 </button>
                 <button
                   onClick={onClose}
-                  className="btn-primary"
+                  className="btn-primary modal-ingest-btn"
                   style={{ flex: 1, padding: '10px', fontSize: '12px' }}
                 >
                   Done
@@ -494,7 +494,7 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="btn-secondary"
+                  className="btn-secondary modal-cancel-btn"
                   style={{ padding: '10px 18px', fontSize: '12px' }}
                 >
                   Cancel
@@ -503,13 +503,11 @@ export default function FileUploadModal({ isOpen, onClose, onUploadSuccess }) {
                   type="button"
                   onClick={handleUpload}
                   disabled={!file || uploading}
-                  className="btn-primary"
+                  className="btn-primary modal-ingest-btn"
                   style={{
                     flex: 1,
                     padding: '10px 18px',
                     fontSize: '12px',
-                    opacity: !file || uploading ? 0.45 : 1,
-                    cursor: !file || uploading ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
