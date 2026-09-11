@@ -133,14 +133,15 @@ def get_suspect_dossier_network(entity_id: str) -> Dict[str, Any]:
 
     cypher = """
     MATCH (n)
-    WHERE toUpper(n.name) IN $candidates_upper
-       OR toUpper(n.phone_number) IN $candidates_upper
-       OR toUpper(replace(coalesce(n.phone_number, ''), '-', '')) IN $candidates_upper
-       OR toUpper(n.registration_number) IN $candidates_upper
-       OR toUpper(replace(coalesce(n.registration_number, ''), '-', '')) IN $candidates_upper
-       OR toUpper(n.fir_no) IN $candidates_upper
-       OR toUpper(replace(coalesce(n.fir_no, ''), '-', '')) IN $candidates_upper
-       OR (n:FIR AND any(cand IN $candidates_upper WHERE toUpper(n.fir_no) ENDS WITH cand OR replace(toUpper(n.fir_no), 'FIR-2026-', '') = cand))
+    WHERE toUpper(coalesce(toString(n.name), '')) IN $candidates_upper
+       OR toUpper(coalesce(toString(n.phone_number), '')) IN $candidates_upper
+       OR toUpper(replace(coalesce(toString(n.phone_number), ''), '-', '')) IN $candidates_upper
+       OR toUpper(coalesce(toString(n.registration_number), '')) IN $candidates_upper
+       OR toUpper(replace(coalesce(toString(n.registration_number), ''), '-', '')) IN $candidates_upper
+       OR toUpper(coalesce(toString(n.fir_no), '')) IN $candidates_upper
+       OR toUpper(coalesce(toString(n.fir_number), '')) IN $candidates_upper
+       OR toUpper(replace(coalesce(toString(n.fir_no), ''), '-', '')) IN $candidates_upper
+       OR (n:FIR AND any(cand IN $candidates_upper WHERE toUpper(coalesce(toString(n.fir_no), '')) ENDS WITH cand OR toUpper(coalesce(toString(n.fir_number), '')) ENDS WITH cand OR replace(toUpper(coalesce(toString(n.fir_no), '')), 'FIR-2026-', '') = cand))
     WITH n LIMIT 1
     OPTIONAL MATCH (n)-[r1]-(m1)
     OPTIONAL MATCH (m1)-[r2]-(m2)
@@ -162,7 +163,8 @@ def get_suspect_dossier_network(entity_id: str) -> Dict[str, Any]:
 
         n = records[0]["n"]
         n_label = records[0]["n_label"]
-        center_id = n.get("name") or n.get("phone_number") or n.get("registration_number") or n.get("fir_no") or entity_id
+        raw_center = n.get("name") or n.get("phone_number") or n.get("registration_number") or n.get("fir_no") or n.get("fir_number") or entity_id
+        center_id = str(raw_center)
         added_nodes.add(center_id)
 
         elements.append({
@@ -186,9 +188,10 @@ def get_suspect_dossier_network(entity_id: str) -> Dict[str, Any]:
         }
 
         def process_node(node_obj, node_label):
-            node_id = node_obj.get("name") or node_obj.get("phone_number") or node_obj.get("registration_number") or node_obj.get("fir_no")
-            if not node_id:
+            raw_id = node_obj.get("name") or node_obj.get("phone_number") or node_obj.get("registration_number") or node_obj.get("fir_no") or node_obj.get("fir_number")
+            if not raw_id:
                 return None
+            node_id = str(raw_id)
             if node_id not in added_nodes:
                 added_nodes.add(node_id)
                 cat = "other"
