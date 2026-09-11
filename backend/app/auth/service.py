@@ -29,11 +29,15 @@ def log_security_event(
     ip_address: Optional[str] = None,
     user_agent: Optional[str] = None,
     status_str: str = "SUCCESS",
-    target_entity: Optional[str] = None
+    target_entity: Optional[str] = None,
+    case_id: Optional[str] = None
 ) -> AuditLog:
     """
-    Records an immutable security/audit log directly into PostgreSQL.
+    Records an immutable security/audit log in PostgreSQL and commits a cryptographically
+    signed, hash-chained block to the tamper-evident audit ledger.
     """
+    from app.services.ledger_service import append_ledger_event
+
     log_entry = AuditLog(
         user_id=user_id,
         officer_username=officer_username,
@@ -47,6 +51,23 @@ def log_security_event(
         timestamp=datetime.utcnow()
     )
     db.add(log_entry)
+
+    # Append to cryptographic tamper-evident hash-chain ledger
+    try:
+        append_ledger_event(
+            db=db,
+            actor_username=officer_username,
+            action=action,
+            target_entity=target_entity,
+            case_id=case_id,
+            details=f"[{status_str}] {details or ''}",
+            session_id=session_id,
+            ip_address=ip_address,
+            user_agent=user_agent
+        )
+    except Exception as e:
+        print(f"Warning: Ledger append error: {e}")
+
     return log_entry
 
 

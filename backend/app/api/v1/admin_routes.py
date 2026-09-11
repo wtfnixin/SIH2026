@@ -20,6 +20,8 @@ from app.auth.password import hash_password, validate_password_policy
 from app.auth.service import log_security_event, get_user_permissions
 from app.auth.dependencies import require_permission, get_current_user
 
+from app.auth.router import build_user_profile
+
 router = APIRouter(prefix="/admin", tags=["Admin Management"])
 
 
@@ -58,6 +60,10 @@ def create_user(
         full_name=data.full_name,
         password_hash=hash_password(data.password),
         role=data.role.upper(),
+        department=data.department,
+        jurisdiction=data.jurisdiction,
+        clearance_level=data.clearance_level.upper(),
+        assigned_cases=data.assigned_cases or [],
         is_active=True,
         is_locked=False,
         failed_login_attempts=0,
@@ -74,24 +80,13 @@ def create_user(
         user_id=admin_user.id,
         action="USER_CREATED",
         target_entity=new_user.username,
-        details=f"Admin created officer account (Role: {new_user.role})",
+        details=f"Admin created officer account (Role: {new_user.role}, Clearance: {new_user.clearance_level})",
         status_str="SUCCESS"
     )
     db.commit()
     db.refresh(new_user)
 
-    return UserProfileResponse(
-        id=new_user.id,
-        username=new_user.username,
-        email=new_user.email,
-        full_name=new_user.full_name,
-        role=new_user.role,
-        permissions=get_user_permissions(new_user),
-        is_active=new_user.is_active,
-        is_locked=new_user.is_locked,
-        last_login_at=new_user.last_login_at,
-        created_at=new_user.created_at
-    )
+    return build_user_profile(new_user)
 
 
 @router.get("/users", response_model=List[UserProfileResponse])
@@ -103,21 +98,7 @@ def list_users(
     Lists all provisioned system users.
     """
     users = db.query(User).order_by(User.id.asc()).all()
-    return [
-        UserProfileResponse(
-            id=u.id,
-            username=u.username,
-            email=u.email,
-            full_name=u.full_name,
-            role=u.role,
-            permissions=get_user_permissions(u),
-            is_active=u.is_active,
-            is_locked=u.is_locked,
-            last_login_at=u.last_login_at,
-            created_at=u.created_at
-        )
-        for u in users
-    ]
+    return [build_user_profile(u) for u in users]
 
 
 @router.patch("/users/{user_id}", response_model=UserProfileResponse)
@@ -140,6 +121,14 @@ def update_user(
         user.full_name = data.full_name
     if data.role:
         user.role = data.role.upper()
+    if data.department:
+        user.department = data.department
+    if data.jurisdiction:
+        user.jurisdiction = data.jurisdiction
+    if data.clearance_level:
+        user.clearance_level = data.clearance_level.upper()
+    if data.assigned_cases is not None:
+        user.assigned_cases = data.assigned_cases
     if data.is_active is not None:
         user.is_active = data.is_active
     if data.is_locked is not None:
@@ -162,18 +151,7 @@ def update_user(
     db.commit()
     db.refresh(user)
 
-    return UserProfileResponse(
-        id=user.id,
-        username=user.username,
-        email=user.email,
-        full_name=user.full_name,
-        role=user.role,
-        permissions=get_user_permissions(user),
-        is_active=user.is_active,
-        is_locked=user.is_locked,
-        last_login_at=user.last_login_at,
-        created_at=user.created_at
-    )
+    return build_user_profile(user)
 
 
 @router.post("/users/{user_id}/revoke-sessions", response_model=MessageResponse)

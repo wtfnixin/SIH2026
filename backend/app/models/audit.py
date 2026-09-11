@@ -2,7 +2,7 @@
 SQLAlchemy Audit & User Models
 Stores police officer accounts and tamper-proof search audit trails.
 """
-from sqlalchemy import Column, Integer, String, DateTime, Text, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Text, Boolean, JSON
 from datetime import datetime
 from app.db.postgres_driver import Base
 
@@ -15,7 +15,7 @@ class User(Base):
     email = Column(String(100), unique=True, index=True, nullable=False)
     full_name = Column(String(100), nullable=True)
     password_hash = Column(String(255), nullable=True)
-    role = Column(String(20), default="INVESTIGATOR", nullable=False)
+    role = Column(String(50), default="INVESTIGATION_OFFICER", nullable=False)
     
     # Account status & lockout controls
     is_active = Column(Boolean, default=True, nullable=False)
@@ -23,6 +23,12 @@ class User(Base):
     failed_login_attempts = Column(Integer, default=0, nullable=False)
     last_failed_login = Column(DateTime, nullable=True)
     locked_until = Column(DateTime, nullable=True)
+
+    # ABAC Attributes (Department, Jurisdiction, Clearance & Case Assignments)
+    department = Column(String(100), default="Cyber Crime Division", nullable=False)
+    jurisdiction = Column(String(100), default="Bengaluru City", nullable=False)
+    clearance_level = Column(String(30), default="CONFIDENTIAL", nullable=False)  # INTERNAL, CONFIDENTIAL, RESTRICTED, HIGHLY_RESTRICTED
+    assigned_cases = Column(JSON, default=list)  # e.g. ["FIR-2026-0891", "FIR-2026-0412"]
     
     # Timestamps & lifecycle
     last_login_at = Column(DateTime, nullable=True)

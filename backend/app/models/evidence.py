@@ -78,3 +78,21 @@ class FirRecord(Base):
     narrative = Column(Text, nullable=True)
     source_file = Column(String(100), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class EvidenceVaultRecord(Base):
+    __tablename__ = "evidence_vault"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    evidence_id = Column(String(50), unique=True, index=True, nullable=False)  # e.g., EVD-2026-001842
+    case_id = Column(String(50), index=True, nullable=False)                  # e.g., FIR-2026-0891
+    evidence_type = Column(String(50), index=True, nullable=False)            # CDR, BANK, ANPR, SURVEILLANCE, FIR_DOCUMENT
+    file_name = Column(String(255), nullable=False)
+    file_path = Column(String(500), nullable=False)
+    sha256_hash = Column(String(64), nullable=False, index=True)              # Immutable cryptographic signature
+    file_size_bytes = Column(Integer, default=0, nullable=False)
+    classification = Column(String(30), default="CONFIDENTIAL", nullable=False)
+    ingested_by = Column(String(50), nullable=False)                          # Officer username
+    ingested_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    last_verified_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    integrity_status = Column(String(20), default="VERIFIED", nullable=False)  # VERIFIED, FAILED, MISSING

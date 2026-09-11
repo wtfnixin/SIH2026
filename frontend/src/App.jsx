@@ -54,6 +54,7 @@ import TargetedGraphCanvas from './components/TargetedGraphCanvas';
 import GeospatialMapCanvas from './components/GeospatialMapCanvas';
 import SathiAIWorkspace from './components/SathiAIWorkspace';
 import FirDirectory from './components/FirDirectory';
+import SecurityCenter from './components/SecurityCenter';
 import { useAuth } from './context/AuthContext';
 import LoginModal from './components/LoginModal';
 
@@ -660,6 +661,25 @@ export default function App() {
                 </div>
               </div>
 
+              {/* SECTION: SECURITY & AUDIT */}
+              <div className="sidebar-group">
+                <div className="sidebar-group-title">
+                  <span>SECURITY & OVERSIGHT</span>
+                </div>
+                <div className="sidebar-nav-list">
+                  <div
+                    className={`sidebar-nav-item ${activeView === 'security_center' ? 'active' : ''}`}
+                    onClick={() => setActiveView('security_center')}
+                    title="Security Operations Center, Tamper-Evident Ledger, Evidence Vault"
+                  >
+                    <div className="sidebar-item-left">
+                      <Shield size={15} color="#10b981" />
+                      <span>Security Center</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
             {/* Sidebar Footer: System Status */}
@@ -716,6 +736,11 @@ export default function App() {
               onOpenDossier={(id) => openDossier(id)}
               onInvestigateGraph={(id) => openTargetedGraph(id)}
             />
+          )}
+
+          {/* VIEW: SECURITY OPERATIONS CENTER (SOC) & AUDIT LEDGER */}
+          {activeView === 'security_center' && (
+            <SecurityCenter theme={theme} />
           )}
 
           {/* VIEW: TOP SYNDICATE BOSSES & CENTRALITY HIERARCHY */}

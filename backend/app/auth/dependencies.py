@@ -116,13 +116,59 @@ def require_role(allowed_roles: List[str]) -> Callable:
     allowed_roles_norm = [r.upper() for r in allowed_roles]
 
     def role_checker(current_user: User = Depends(get_current_user)) -> User:
-        if current_user.role.upper() not in allowed_roles_norm and "ADMIN" not in allowed_roles_norm:
+        if current_user.role.upper() not in allowed_roles_norm and "ADMIN" not in allowed_roles_norm and "SYSTEM_ADMINISTRATOR" not in allowed_roles_norm:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Access denied: Role '{current_user.role}' is not authorized for this operation."
             )
         return current_user
     return role_checker
+
+
+def require_clearance(min_classification: str = "CONFIDENTIAL") -> Callable:
+    """
+    ABAC Dependency: Verifies officer's clearance meets or exceeds required data classification.
+    """
+    from app.auth.abac import evaluate_clearance
+
+    def clearance_checker(current_user: User = Depends(get_current_user)) -> User:
+        user_clearance = getattr(current_user, "clearance_level", "CONFIDENTIAL")
+        if not evaluate_clearance(user_clearance, min_classification):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Access denied: Data classification '{min_classification}' exceeds officer clearance '{user_clearance}'."
+            )
+        return current_user
+    return clearance_checker
+
+
+def require_case_access() -> Callable:
+    """
+    ABAC Dependency: Evaluates case-level isolation and IDOR protection from request path/query params.
+    """
+    from app.auth.abac import evaluate_case_access
+
+    def case_checker(
+        request: Request,
+        current_user: User = Depends(get_current_user)
+    ) -> User:
+        # Extract case identifier from path params or query params (e.g. fir_no, case_id)
+        case_id = (
+            request.path_params.get("fir_no") or
+            request.path_params.get("case_id") or
+            request.path_params.get("fir_number") or
+            request.query_params.get("fir_no") or
+            request.query_params.get("case_id")
+        )
+        if case_id:
+            allowed, reason = evaluate_case_access(current_user, case_id)
+            if not allowed:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail=f"Case Isolation Violation: {reason}"
+                )
+        return current_user
+    return case_checker
 
 
 async def authenticate_websocket(

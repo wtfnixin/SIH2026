@@ -44,6 +44,18 @@ class RolePermission(Base):
 
 # System Default Permissions Matrix
 ROLE_PERMISSIONS_MAP = {
+    "SYSTEM_ADMINISTRATOR": [
+        "investigation:read",
+        "investigation:write",
+        "intelligence:read",
+        "intelligence:export",
+        "system:admin",
+        "system:ingest",
+        "copilot:query",
+        "audit:read",
+        "geo:read",
+        "security:manage"
+    ],
     "ADMIN": [
         "investigation:read",
         "investigation:write",
@@ -53,6 +65,34 @@ ROLE_PERMISSIONS_MAP = {
         "system:ingest",
         "copilot:query",
         "audit:read",
+        "geo:read",
+        "security:manage"
+    ],
+    "CASE_SUPERVISOR": [
+        "investigation:read",
+        "investigation:write",
+        "intelligence:read",
+        "intelligence:export",
+        "copilot:query",
+        "audit:read",
+        "geo:read",
+        "cases:supervise"
+    ],
+    "SENIOR_INVESTIGATOR": [
+        "investigation:read",
+        "investigation:write",
+        "intelligence:read",
+        "intelligence:export",
+        "copilot:query",
+        "audit:read",
+        "geo:read"
+    ],
+    "INVESTIGATION_OFFICER": [
+        "investigation:read",
+        "investigation:write",
+        "intelligence:read",
+        "intelligence:export",
+        "copilot:query",
         "geo:read"
     ],
     "INVESTIGATOR": [
@@ -63,11 +103,31 @@ ROLE_PERMISSIONS_MAP = {
         "copilot:query",
         "geo:read"
     ],
+    "INTELLIGENCE_ANALYST": [
+        "investigation:read",
+        "intelligence:read",
+        "intelligence:export",
+        "copilot:query",
+        "geo:read"
+    ],
     "ANALYST": [
         "investigation:read",
         "intelligence:read",
         "intelligence:export",
         "copilot:query",
+        "geo:read"
+    ],
+    "FORENSIC_ANALYST": [
+        "investigation:read",
+        "investigation:write",
+        "intelligence:read",
+        "system:ingest",
+        "geo:read"
+    ],
+    "AUDITOR": [
+        "investigation:read",
+        "intelligence:read",
+        "audit:read",
         "geo:read"
     ],
     "VIEWER": [

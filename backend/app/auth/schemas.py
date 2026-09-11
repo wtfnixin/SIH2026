@@ -18,6 +18,10 @@ class UserProfileResponse(BaseModel):
     full_name: Optional[str] = None
     role: str
     permissions: List[str] = []
+    department: str = "Cyber Crime Division"
+    jurisdiction: str = "Bengaluru City"
+    clearance_level: str = "CONFIDENTIAL"
+    assigned_cases: List[str] = []
     is_active: bool
     is_locked: bool
     last_login_at: Optional[datetime] = None
@@ -45,13 +49,21 @@ class AdminCreateUserRequest(BaseModel):
     email: str = Field(..., description="Email address")
     password: str = Field(..., min_length=10, max_length=128)
     full_name: Optional[str] = Field(None, max_length=100)
-    role: str = Field("INVESTIGATOR", description="ADMIN, INVESTIGATOR, ANALYST, VIEWER")
+    role: str = Field("INVESTIGATION_OFFICER", description="Police role")
+    department: str = Field("Cyber Crime Division", max_length=100)
+    jurisdiction: str = Field("Bengaluru City", max_length=100)
+    clearance_level: str = Field("CONFIDENTIAL", description="INTERNAL, CONFIDENTIAL, RESTRICTED, HIGHLY_RESTRICTED")
+    assigned_cases: List[str] = Field(default_factory=list)
 
 
 class AdminUpdateUserRequest(BaseModel):
     email: Optional[str] = None
     full_name: Optional[str] = None
     role: Optional[str] = None
+    department: Optional[str] = None
+    jurisdiction: Optional[str] = None
+    clearance_level: Optional[str] = None
+    assigned_cases: Optional[List[str]] = None
     is_active: Optional[bool] = None
     is_locked: Optional[bool] = None
 

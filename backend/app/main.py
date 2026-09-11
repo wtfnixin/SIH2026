@@ -10,6 +10,7 @@ from app.api.v1.entity_routes import router as entity_router
 from app.api.v1.analytics_routes import router as analytics_router
 from app.api.v1.copilot_routes import router as copilot_router
 from app.api.v1.geo_routes import router as geo_router
+from app.api.v1.security_routes import router as security_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -33,6 +34,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 # Mount Authentication & Administration Routers
 app.include_router(auth_router, prefix=settings.API_V1_STR)
 app.include_router(admin_router, prefix=settings.API_V1_STR)
+app.include_router(security_router, prefix=settings.API_V1_STR)
 
 # Mount Existing Investigation API Routers
 app.include_router(ingest_router, prefix=settings.API_V1_STR)
