@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Shield,
-  Search,
-  Upload,
-  RefreshCw,
+import { 
+  Shield, 
+  Search, 
+  Upload, 
+  RefreshCw, 
   Sun,
   Moon,
   ArrowLeft,
-  Crown,
-  AlertTriangle,
-  PhoneOff,
-  Car,
-  User,
+  Crown, 
+  AlertTriangle, 
+  PhoneOff, 
+  Car, 
+  User, 
   Users,
-  X,
-  CheckCircle,
-  Share2,
+  X, 
+  CheckCircle, 
+  Share2, 
   Network,
   PanelLeftClose,
   PanelLeftOpen,
@@ -78,7 +78,7 @@ export default function App() {
   const [totalCriminals, setTotalCriminals] = useState(0);
   const [criminalFilter, setCriminalFilter] = useState('all');
   const [criminalSearch, setCriminalSearch] = useState('');
-
+  
   // Dossier Workspace State
   const [selectedDossierEntity, setSelectedDossierEntity] = useState(null);
   const [dossierData, setDossierData] = useState(null);
@@ -102,35 +102,6 @@ export default function App() {
   const [isFloatingMapOpen, setIsFloatingMapOpen] = useState(false);
   const [floatingMapEntity, setFloatingMapEntity] = useState(null);
   const [isFloatingMapMinimized, setIsFloatingMapMinimized] = useState(false);
-
-  // Sathi Copilot Shared Chat State (persists across drawer <-> fullscreen workspace)
-  const [sathiChatHistory, setSathiChatHistory] = useState(() => {
-    try {
-      const saved = localStorage.getItem('sathi_chat_history');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {
-      console.error('Failed to parse sathi_chat_history from localStorage', e);
-    }
-    return [
-      {
-        sender: 'ai',
-        text: "👋 Welcome Officer! I am Sathi, your AI Cyber Intelligence Copilot. Ask me to search suspects, analyze Hawala rings, or locate burner SIMs. I will guide you and open their network graph automatically.",
-        multipleMatches: [],
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }
-    ];
-  });
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('sathi_chat_history', JSON.stringify(sathiChatHistory));
-    } catch (e) {
-      console.error('Failed to save sathi_chat_history to localStorage', e);
-    }
-  }, [sathiChatHistory]);
 
   const fetchAllData = () => {
     setLoading(true);
@@ -319,11 +290,11 @@ export default function App() {
 
   return (
     <div className="app-container">
-
+      
       {/* Top Cyber Command Bar */}
       <header className="command-header">
         <div className="header-brand">
-          <button
+          <button 
             className="sidebar-toggle-btn"
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
@@ -331,9 +302,9 @@ export default function App() {
             {isSidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
           </button>
           <div className="brand-logo">
-            <img
-              src="/Emblem_of_India_no_text.svg"
-              alt="Government of India Emblem"
+            <img 
+              src="/Emblem_of_India_no_text.svg" 
+              alt="Government of India Emblem" 
               className="emblem-logo-img"
             />
           </div>
@@ -429,9 +400,9 @@ export default function App() {
 
         {/* Action Controls */}
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <button
+          <button 
             id="theme-toggle-btn"
-            className="theme-toggle-btn"
+            className="theme-toggle-btn" 
             onClick={toggleTheme}
             title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
             aria-label="Toggle theme"
@@ -452,12 +423,12 @@ export default function App() {
 
       {/* Main Grid Workspace */}
       <div className={`dashboard-grid ${isSidebarCollapsed ? 'sidebar-hidden' : ''}`}>
-
+        
         {/* Navigation Sidebar */}
         {!isSidebarCollapsed && (
           <aside className="standard-sidebar">
             <div className="sidebar-scrollable-content">
-
+              
               {/* SECTION: THREAT INTELLIGENCE */}
               <div className="sidebar-group">
                 <div className="sidebar-group-title">
@@ -466,12 +437,13 @@ export default function App() {
                 <div className="sidebar-nav-list">
                   {/* Parent Dropdown: Live Threat Feed */}
                   <div
-                    className={`sidebar-nav-item ${activeView === 'threats' && threatCategory === 'all'
+                    className={`sidebar-nav-item ${
+                      activeView === 'threats' && threatCategory === 'all'
                         ? 'active'
                         : activeView === 'threats'
-                          ? 'active-parent'
-                          : ''
-                      }`}
+                        ? 'active-parent'
+                        : ''
+                    }`}
                     onClick={() => {
                       setActiveView('threats');
                       if (activeView === 'threats' && threatCategory === 'all') {
@@ -646,7 +618,7 @@ export default function App() {
 
         {/* Main Stage: Dynamic View Switcher */}
         <div className="main-threat-stage">
-
+          
           {/* VIEW: EXECUTIVE COMMAND CENTER (DEFAULT LANDING VIEW) */}
           {activeView === 'threats' && (
             <div className="executive-dashboard-wrapper">
@@ -676,8 +648,6 @@ export default function App() {
               onOpenDossier={(id) => openDossier(id)}
               onOpenGeoMap={() => setActiveView('geo_map')}
               onBackToDashboard={() => setActiveView(previousView || 'threats')}
-              chatHistory={sathiChatHistory}
-              setChatHistory={setSathiChatHistory}
             />
           )}
 
@@ -717,6 +687,7 @@ export default function App() {
               <GeospatialMapCanvas
                 onSelectEntity={(id) => setFocusedEntityId(id)}
                 onOpenDossier={(id) => openDossier(id)}
+                initialVehiclePlate={null}
               />
             </div>
           )}
@@ -868,7 +839,7 @@ export default function App() {
           {/* VIEW: SUSPECT DOSSIERS WORKSPACE (DEDICATED FULL VIEW) */}
           {activeView === 'dossiers' && (
             <div className="dossier-workspace-layout">
-
+              
               {/* Middle: Dossier Detail Pane (or Search Landing when no suspect selected) */}
               <div className="dossier-detail-pane">
                 {loadingDossier ? (
@@ -1596,8 +1567,6 @@ export default function App() {
             }
           }}
           onOpenFullScreen={() => setActiveView('sathi')}
-          chatHistory={sathiChatHistory}
-          setChatHistory={setSathiChatHistory}
         />
       )}
     </div>
