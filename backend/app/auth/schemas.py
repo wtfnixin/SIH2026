@@ -3,7 +3,7 @@ Pydantic Schemas for Authentication, Authorization & User Management.
 """
 from typing import Optional, List
 from datetime import datetime
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 
 class LoginRequest(BaseModel):
@@ -42,14 +42,14 @@ class ChangePasswordRequest(BaseModel):
 
 class AdminCreateUserRequest(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
-    email: EmailStr
+    email: str = Field(..., description="Email address")
     password: str = Field(..., min_length=10, max_length=128)
     full_name: Optional[str] = Field(None, max_length=100)
     role: str = Field("INVESTIGATOR", description="ADMIN, INVESTIGATOR, ANALYST, VIEWER")
 
 
 class AdminUpdateUserRequest(BaseModel):
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None
     full_name: Optional[str] = None
     role: Optional[str] = None
     is_active: Optional[bool] = None

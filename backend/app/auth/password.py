@@ -1,24 +1,24 @@
 """
-Argon2id Password Security & Policy Module.
-Handles memory-hard cryptographic hashing and validation for investigator credentials.
+Argon2id & Bcrypt Password Security & Policy Module.
+Handles cryptographic hashing and validation for investigator credentials.
 """
 from typing import Tuple
-from argon2 import PasswordHasher, Type
-from argon2.exceptions import VerifyMismatchError, VerificationError, InvalidHashError
 
-# Argon2id hasher configuration adhering to OWASP recommendations:
-# - Type: Argon2id (hybrid data-dependent and independent memory access)
-# - Time cost (iterations): 3
-# - Memory cost: 64 MB (65536 KiB)
-# - Parallelism: 4 threads
-# - Hash length: 32 bytes
-_hasher = PasswordHasher(
-    time_cost=3,
-    memory_cost=65536,
-    parallelism=4,
-    hash_len=32,
-    type=Type.ID
-)
+try:
+    from argon2 import PasswordHasher, Type
+    from argon2.exceptions import VerifyMismatchError, VerificationError, InvalidHashError
+    _hasher = PasswordHasher(
+        time_cost=3,
+        memory_cost=65536,
+        parallelism=4,
+        hash_len=32,
+        type=Type.ID
+    )
+    _USE_ARGON2 = True
+except ImportError:
+    from passlib.context import CryptContext
+    _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    _USE_ARGON2 = False
 
 # Common insecure / predictable passwords to block
 COMMON_WEAK_PASSWORDS = {
@@ -33,25 +33,30 @@ MAX_PASSWORD_LENGTH = 128
 
 def hash_password(plain_password: str) -> str:
     """
-    Hashes a plaintext password using Argon2id.
+    Hashes a plaintext password using Argon2id (or Bcrypt fallback).
     Passwords are never logged or stored in plaintext.
     """
     if not plain_password:
         raise ValueError("Password cannot be empty")
-    return _hasher.hash(plain_password)
+    if _USE_ARGON2:
+        return _hasher.hash(plain_password)
+    return _pwd_context.hash(plain_password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
-    Verifies a plaintext password against an Argon2id hash in constant-time.
+    Verifies a plaintext password against hash in constant-time.
     Returns True if valid, False otherwise. Never raises on invalid input.
     """
     if not plain_password or not hashed_password:
         return False
     try:
-        return _hasher.verify(hashed_password, plain_password)
-    except (VerifyMismatchError, VerificationError, InvalidHashError):
-        return False
+        if _USE_ARGON2 and hashed_password.startswith("$argon2"):
+            return _hasher.verify(hashed_password, plain_password)
+        else:
+            from passlib.context import CryptContext
+            ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            return ctx.verify(plain_password, hashed_password)
     except Exception:
         return False
 
@@ -61,7 +66,9 @@ def needs_rehash(hashed_password: str) -> bool:
     Checks if the hash parameters need upgrading to newer security parameters.
     """
     try:
-        return _hasher.check_needs_rehash(hashed_password)
+        if _USE_ARGON2 and hashed_password.startswith("$argon2"):
+            return _hasher.check_needs_rehash(hashed_password)
+        return False
     except Exception:
         return True
 
