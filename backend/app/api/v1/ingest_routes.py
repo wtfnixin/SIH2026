@@ -10,6 +10,7 @@ import pandas as pd
 import json
 from app.ingestion.graph_loader import run_full_ingestion_pipeline
 from app.db.postgres_driver import get_db
+from app.db.neo4j_driver import get_neo4j_session
 from sqlalchemy.orm import Session
 from app.models.audit import User
 from app.auth.dependencies import get_current_user, require_permission

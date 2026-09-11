@@ -38,7 +38,7 @@ def get_visual_network(limit: int = 150) -> Dict[str, Any]:
         for rec in records:
             n = rec["n"]
             n_label = rec["n_label"]
-            n_id = n.get("name") or n.get("phone_number") or n.get("registration_number") or n.get("fir_no")
+            n_id = n.get("name") or n.get("phone_number") or n.get("registration_number") or n.get("fir_no") or n.get("fir_number") or n.get("title")
 
             if n_id and n_id not in added_nodes:
                 added_nodes.add(n_id)
@@ -53,7 +53,7 @@ def get_visual_network(limit: int = 150) -> Dict[str, Any]:
             m = rec["m"]
             if m:
                 m_label = rec["m_label"]
-                m_id = m.get("name") or m.get("phone_number") or m.get("registration_number") or m.get("fir_no")
+                m_id = m.get("name") or m.get("phone_number") or m.get("registration_number") or m.get("fir_no") or m.get("fir_number") or m.get("title")
                 if m_id and m_id not in added_nodes:
                     added_nodes.add(m_id)
                     elements.append({

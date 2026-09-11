@@ -90,7 +90,10 @@ def authenticate_user(
     a server-side session, and logs audit trails.
     Returns: (User, UserSession, access_token, raw_refresh_token)
     """
-    user = db.query(User).filter(User.username == username.strip()).first()
+    u_input = username.strip().lower()
+    user = db.query(User).filter(
+        (User.username.ilike(u_input)) | (User.email.ilike(u_input))
+    ).first()
     now = datetime.utcnow()
 
     # 1. Reject unknown user

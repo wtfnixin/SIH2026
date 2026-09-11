@@ -5,6 +5,7 @@ and candidate alias pairs.
 """
 from fastapi import APIRouter, Query, HTTPException, Depends
 from typing import Dict, Any, List, Optional
+from datetime import date, datetime
 from app.db.neo4j_driver import get_neo4j_session
 from app.entity_res.graph_merger import resolve_person_nodes_in_neo4j
 from app.auth.dependencies import require_permission
@@ -20,6 +21,19 @@ NOISE_WORDS = {
     'call', 'search', 'himself', 'driver', 'officers', 'investigation',
     'transactions', 'meetings', 'logs', 'communication', 'receipts', 'no'
 }
+
+
+def clean_neo4j_props(props: Any) -> Any:
+    """Recursively converts Neo4j DateTime/Date/Point objects to JSON serializable types."""
+    if isinstance(props, dict):
+        return {k: clean_neo4j_props(v) for k, v in props.items()}
+    elif isinstance(props, list):
+        return [clean_neo4j_props(v) for v in props]
+    elif hasattr(props, "isoformat"):
+        return props.isoformat()
+    elif hasattr(props, "__str__") and "DateTime" in type(props).__name__:
+        return str(props)
+    return props
 
 
 @router.get("/criminals")
@@ -103,7 +117,7 @@ def get_criminal_database(
                 "locations": locations,
                 "connection_count": connection_count,
                 "status": status,
-                "properties": r["properties"]
+                "properties": clean_neo4j_props(r["properties"])
             }
 
             # Filter logic
@@ -171,7 +185,7 @@ def search_entities(q: str = Query(...)) -> List[Dict[str, Any]]:
             results.append({
                 "entity_id": entity_id,
                 "type": r["type"],
-                "properties": dict(n)
+                "properties": clean_neo4j_props(dict(n))
             })
 
         return results
@@ -346,7 +360,7 @@ def get_entity_dossier(entity_id: str) -> Dict[str, Any]:
         return {
             "entity_id": entity_id,
             "entity_type": label,
-            "properties": dict(n),
+            "properties": clean_neo4j_props(dict(n)),
             "threat_level": threat_level,
             "threat_score": threat_score,
             "status": status,
@@ -425,7 +439,7 @@ def get_all_firs_directory(
             firs_list = []
             for r in records:
                 fir_no = r["fir_no"]
-                props = r.get("properties") or {}
+                props = clean_neo4j_props(r.get("properties") or {})
                 raw_suspects = [s for s in r["suspects"] if s and s.lower() not in NOISE_WORDS]
                 vehicles = [v for v in r["vehicles"] if v]
                 locations = [l for l in r["locations"] if l]
