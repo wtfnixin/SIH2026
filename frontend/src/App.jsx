@@ -103,6 +103,35 @@ export default function App() {
   const [floatingMapEntity, setFloatingMapEntity] = useState(null);
   const [isFloatingMapMinimized, setIsFloatingMapMinimized] = useState(false);
 
+  // Sathi Copilot Shared Chat State (persists across drawer <-> fullscreen workspace)
+  const [sathiChatHistory, setSathiChatHistory] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sathi_chat_history');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.error('Failed to parse sathi_chat_history from localStorage', e);
+    }
+    return [
+      {
+        sender: 'ai',
+        text: "👋 Welcome Officer! I am Sathi, your AI Cyber Intelligence Copilot. Ask me to search suspects, analyze Hawala rings, or locate burner SIMs. I will guide you and open their network graph automatically.",
+        multipleMatches: [],
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    ];
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('sathi_chat_history', JSON.stringify(sathiChatHistory));
+    } catch (e) {
+      console.error('Failed to save sathi_chat_history to localStorage', e);
+    }
+  }, [sathiChatHistory]);
+
   const fetchAllData = () => {
     setLoading(true);
     Promise.all([
@@ -647,6 +676,8 @@ export default function App() {
               onOpenDossier={(id) => openDossier(id)}
               onOpenGeoMap={() => setActiveView('geo_map')}
               onBackToDashboard={() => setActiveView(previousView || 'threats')}
+              chatHistory={sathiChatHistory}
+              setChatHistory={setSathiChatHistory}
             />
           )}
 
@@ -1565,6 +1596,8 @@ export default function App() {
             }
           }}
           onOpenFullScreen={() => setActiveView('sathi')}
+          chatHistory={sathiChatHistory}
+          setChatHistory={setSathiChatHistory}
         />
       )}
     </div>

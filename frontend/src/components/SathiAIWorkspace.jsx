@@ -36,7 +36,9 @@ export default function SathiAIWorkspace({
   onNavigateGraph,
   onOpenDossier,
   onOpenGeoMap,
-  onBackToDashboard
+  onBackToDashboard,
+  chatHistory: propChatHistory,
+  setChatHistory: propSetChatHistory
 }) {
   const [workspaceTheme, setWorkspaceTheme] = useState(theme || 'light');
 
@@ -57,7 +59,7 @@ export default function SathiAIWorkspace({
   const isLight = workspaceTheme === 'light';
   const [inputMsg, setInputMsg] = useState('');
   const [loading, setLoading] = useState(false);
-  const [chatHistory, setChatHistory] = useState([
+  const [internalChatHistory, setInternalChatHistory] = useState([
     {
       sender: 'ai',
       text: "Namaste Officer. Sathi is online and synchronized with the investigation graph and ANPR feeds. How can I assist your case today?",
@@ -65,6 +67,9 @@ export default function SathiAIWorkspace({
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
+
+  const chatHistory = propChatHistory || internalChatHistory;
+  const setChatHistory = propSetChatHistory || setInternalChatHistory;
 
   const messagesEndRef = useRef(null);
 
