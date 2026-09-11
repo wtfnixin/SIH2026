@@ -137,7 +137,7 @@ def get_criminal_database(
 @router.get("/search")
 def search_entities(q: str = Query(...)) -> List[Dict[str, Any]]:
     """
-    Searches suspect names, phone numbers, vehicle plates, or locations across the graph.
+    Searches suspect names, phone numbers, vehicle plates, locations, or FIR case numbers/titles across the graph.
     """
     cypher = """
     MATCH (n)
@@ -145,6 +145,11 @@ def search_entities(q: str = Query(...)) -> List[Dict[str, Any]]:
        OR (n:Phone AND n.phone_number CONTAINS $q)
        OR (n:Vehicle AND toLower(n.registration_number) CONTAINS toLower($q))
        OR (n:Location AND toLower(n.name) CONTAINS toLower($q))
+       OR (n:FIR AND (
+            (n.fir_no IS NOT NULL AND toLower(n.fir_no) CONTAINS toLower($q)) OR
+            (n.fir_number IS NOT NULL AND toLower(n.fir_number) CONTAINS toLower($q)) OR
+            (n.title IS NOT NULL AND toLower(n.title) CONTAINS toLower($q))
+          ))
     RETURN n, labels(n)[0] AS type
     LIMIT 20
     """
@@ -155,7 +160,14 @@ def search_entities(q: str = Query(...)) -> List[Dict[str, Any]]:
         results = []
         for r in records:
             n = r["n"]
-            entity_id = n.get("name") or n.get("phone_number") or n.get("registration_number")
+            entity_id = (
+                n.get("name") or 
+                n.get("phone_number") or 
+                n.get("registration_number") or 
+                n.get("fir_no") or 
+                n.get("fir_number") or 
+                n.get("title")
+            )
             results.append({
                 "entity_id": entity_id,
                 "type": r["type"],
@@ -175,7 +187,12 @@ def get_entity_dossier(entity_id: str) -> Dict[str, Any]:
     """
     cypher = """
     MATCH (n)
-    WHERE n.name = $id OR n.phone_number = $id OR n.registration_number = $id OR n.fir_no = $id
+    WHERE n.name = $id 
+       OR n.phone_number = $id 
+       OR n.registration_number = $id 
+       OR n.fir_no = $id 
+       OR n.fir_number = $id 
+       OR n.title = $id
     OPTIONAL MATCH (n)-[r]-(m)
     RETURN n, 
            labels(n)[0] AS label, 
@@ -184,7 +201,7 @@ def get_entity_dossier(entity_id: str) -> Dict[str, Any]:
                props: properties(r),
                is_outgoing: (startNode(r) = n),
                connected_entity: properties(m), 
-               connected_id: COALESCE(m.name, m.phone_number, m.registration_number, m.fir_no),
+               connected_id: COALESCE(m.name, m.phone_number, m.registration_number, m.fir_no, m.fir_number, m.title),
                connected_label: labels(m)[0]
            }) AS connections
     """
@@ -465,6 +482,8 @@ def get_all_firs_directory(
                         ql in ps.lower() or
                         ql in crime_cat.lower() or
                         ql in narrative.lower() or
+                        ql in str(props.get("title", "")).lower() or
+                        ql in str(props.get("notes", "")).lower() or
                         ql in str(reason).lower() or
                         ql in str(evidence).lower() or
                         any(ql in s.lower() for s in raw_suspects) or
