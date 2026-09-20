@@ -17,6 +17,19 @@ router = APIRouter(
 )
 
 
+def clean_neo4j_props(props: Any) -> Any:
+    """Recursively converts Neo4j DateTime/Date/Point objects to JSON serializable types."""
+    if isinstance(props, dict):
+        return {k: clean_neo4j_props(v) for k, v in props.items()}
+    elif isinstance(props, list):
+        return [clean_neo4j_props(v) for v in props]
+    elif hasattr(props, "isoformat"):
+        return props.isoformat()
+    elif hasattr(props, "__str__") and "DateTime" in type(props).__name__:
+        return str(props)
+    return props
+
+
 @router.get("/network")
 def get_visual_network(limit: int = 150) -> Dict[str, Any]:
     """
@@ -174,7 +187,7 @@ def get_suspect_dossier_network(entity_id: str) -> Dict[str, Any]:
                 "node_type": n_label,
                 "is_center": True,
                 "category": "center",
-                "properties": dict(n)
+                "properties": clean_neo4j_props(dict(n))
             }
         })
 
@@ -214,7 +227,7 @@ def get_suspect_dossier_network(entity_id: str) -> Dict[str, Any]:
                         "node_type": node_label,
                         "category": cat,
                         "is_center": False,
-                        "properties": dict(node_obj)
+                        "properties": clean_neo4j_props(dict(node_obj))
                     }
                 })
             return node_id
@@ -231,7 +244,7 @@ def get_suspect_dossier_network(entity_id: str) -> Dict[str, Any]:
                 breakdown["transfer_count"] += 1
             breakdown["total_connections"] += 1
 
-            rel_props = rel_props or {}
+            rel_props = clean_neo4j_props(rel_props or {})
             edge_label = rel_type
             if rel_type == "TRANSFERRED_FUNDS" and "amount" in rel_props:
                 amt = float(rel_props.get("amount", 0))

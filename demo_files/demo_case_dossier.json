@@ -1,0 +1,61 @@
+{
+  "fir_no": "FIR-2026-0891",
+  "title": "Cross-Border Hawala & Shell Logistics Syndicate",
+  "police_station": "Cyber & Economic Offences Police Station, Bengaluru",
+  "incident_date": "2026-08-14",
+  "crime_category": "MONEY LAUNDERING & HAWALA",
+  "sections": ["IPC 420", "IPC 120B", "PMLA SEC 3", "IT ACT 66D"],
+  "narrative": "Intelligence received regarding illegal structured cash and crypto transfers coordinated across Bengaluru and Delhi using shell trade entities and multiple burner phone lines.",
+  "suspects": [
+    {
+      "name": "Vikram Malhotra",
+      "phone": "+91 98112 34567",
+      "age": 38,
+      "occupation": "Logistics Director & Hawala Operator",
+      "location": "Indiranagar, Bengaluru",
+      "aliases": "Vicky Bhai, V. Malhotra",
+      "crime_category": "HAWALA NEXUS",
+      "vehicles": ["KA 03 HA 8899"]
+    },
+    {
+      "name": "Rohit Verma",
+      "phone": "+91 98223 45678",
+      "age": 34,
+      "occupation": "Shell Account Handler",
+      "location": "Whitefield, Bengaluru",
+      "aliases": "R. Verma",
+      "crime_category": "MONEY LAUNDERING",
+      "vehicles": ["DL 1C AB 4455"]
+    },
+    {
+      "name": "Ananya Sen",
+      "phone": "+91 98334 56789",
+      "age": 29,
+      "occupation": "Crypto Exchange Broker",
+      "location": "Koramangala, Bengaluru",
+      "aliases": "Ana",
+      "crime_category": "CRYPTO LAUNDERING"
+    }
+  ],
+  "vehicles": [
+    { "registration_number": "KA 03 HA 8899" },
+    { "registration_number": "DL 1C AB 4455" }
+  ],
+  "phones": [
+    { "phone_number": "+91 98112 34567" },
+    { "phone_number": "+91 98223 45678" },
+    { "phone_number": "+91 98334 56789" }
+  ],
+  "locations": [
+    { "name": "Indiranagar 100ft Road, Bengaluru" },
+    { "name": "Electronic City Toll Plaza, Bengaluru" }
+  ],
+  "transactions": [
+    { "sender": "Vikram Malhotra", "receiver": "Rohit Verma", "amount": 150000, "mode": "HAWALA / UPI", "timestamp": "2026-08-14T11:30:00Z" },
+    { "sender": "Rohit Verma", "receiver": "Ananya Sen", "amount": 280000, "mode": "RTGS TRANSFER", "timestamp": "2026-08-14T14:15:00Z" }
+  ],
+  "calls": [
+    { "caller": "+91 98112 34567", "receiver": "+91 98223 45678", "duration": 240, "timestamp": "2026-08-14T10:15:00Z" },
+    { "caller": "+91 98223 45678", "receiver": "+91 98334 56789", "duration": 180, "timestamp": "2026-08-14T12:00:00Z" }
+  ]
+}

@@ -978,7 +978,7 @@ export default function App() {
                           </div>
                           <div className="dossier-category-row">
                             <IndianRupee size={14} className="dossier-category-icon" />
-                            <span className="dossier-category-text">{dossierData.crime_category || 'Financial Smuggling'}</span>
+                            <span className="dossier-category-text">{dossierData.crime_category || 'Unclassified Investigation'}</span>
                           </div>
                         </div>
                       </div>
@@ -1012,7 +1012,7 @@ export default function App() {
                         <Phone size={18} className="dossier-meta-icon" />
                         <div className="dossier-meta-content">
                           <span className="dossier-meta-label">Phone</span>
-                          <span className="dossier-meta-val">{dossierData.phone || '+91 98765 43210'}</span>
+                          <span className="dossier-meta-val">{dossierData.phone || 'N/A'}</span>
                         </div>
                       </div>
 
@@ -1022,7 +1022,7 @@ export default function App() {
                         <MapPin size={18} className="dossier-meta-icon" />
                         <div className="dossier-meta-content">
                           <span className="dossier-meta-label">Location</span>
-                          <span className="dossier-meta-val">{dossierData.location || 'Delhi, DL'}</span>
+                          <span className="dossier-meta-val">{dossierData.location || 'N/A'}</span>
                         </div>
                       </div>
 
@@ -1032,7 +1032,7 @@ export default function App() {
                         <Clock size={18} className="dossier-meta-icon" />
                         <div className="dossier-meta-content">
                           <span className="dossier-meta-label">Last Seen</span>
-                          <span className="dossier-meta-val">{dossierData.last_seen || '2h ago'}</span>
+                          <span className="dossier-meta-val">{dossierData.last_seen || 'N/A'}</span>
                         </div>
                       </div>
                     </div>
@@ -1077,17 +1077,17 @@ export default function App() {
                             <div className="dossier-details-col">
                               <div className="dossier-field-group">
                                 <span className="dossier-field-label">Age</span>
-                                <span className="dossier-field-value">{dossierData.age || 32}</span>
+                                <span className="dossier-field-value">{dossierData.age ? `${dossierData.age} yrs` : 'N/A'}</span>
                               </div>
 
                               <div className="dossier-field-group">
                                 <span className="dossier-field-label">Occupation</span>
-                                <span className="dossier-field-value">{dossierData.occupation || 'Businessman'}</span>
+                                <span className="dossier-field-value">{dossierData.occupation || 'N/A'}</span>
                               </div>
 
                               <div className="dossier-field-group">
                                 <span className="dossier-field-label">Known Aliases</span>
-                                <span className="dossier-field-value">{dossierData.aliases || 'Rohit S., R. Gupta'}</span>
+                                <span className="dossier-field-value">{dossierData.aliases || 'None'}</span>
                               </div>
                             </div>
 
@@ -1102,7 +1102,7 @@ export default function App() {
                                   <span className="dossier-field-value font-mono">
                                     {dossierData.vehicles && dossierData.vehicles.length > 0
                                       ? dossierData.vehicles.map(v => v.registration_number).join(', ')
-                                      : (dossierData.properties?.registration_number || 'DL 3C AB 1234')}
+                                      : (dossierData.properties?.registration_number || 'None linked')}
                                   </span>
                                 </div>
                               </div>
@@ -1114,7 +1114,9 @@ export default function App() {
                                 <div className="dossier-field-group">
                                   <span className="dossier-field-label">Associated Accounts</span>
                                   <span className="dossier-field-value">
-                                    {dossierData.flagged_accounts_count || 3} (Flagged)
+                                    {dossierData.flagged_accounts_count !== undefined && dossierData.flagged_accounts_count !== null
+                                      ? `${dossierData.flagged_accounts_count} (Flagged)`
+                                      : (dossierData.transactions?.length ? `${dossierData.transactions.length} (Flagged)` : '0 (Flagged)')}
                                   </span>
                                 </div>
                               </div>
@@ -1127,7 +1129,7 @@ export default function App() {
                                   <span className="dossier-field-label">Risk Score</span>
                                   <div style={{ marginTop: '3px' }}>
                                     <span className="dossier-risk-badge">
-                                      {dossierData.threat_score || 92} / 100
+                                      {dossierData.threat_score !== undefined && dossierData.threat_score !== null ? dossierData.threat_score : 0} / 100
                                     </span>
                                   </div>
                                 </div>

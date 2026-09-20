@@ -36,9 +36,190 @@ def parse_and_link_evidence_file(file_path: Path, fir_ref: str, session):
     linked directly to the specified FIR case (fir_ref).
     """
     fname = file_path.name.lower()
+    ext = file_path.suffix.lower()
     
     try:
-        if file_path.suffix.lower() in ['.csv', '.txt']:
+        # 1. JSON FILE INGESTION (FIR documents, Suspect lists, Transactions, Logs)
+        if ext == '.json':
+            try:
+                with open(file_path, 'r', encoding='utf-8') as jf:
+                    data = json.load(jf)
+            except Exception as je:
+                print(f"Failed to parse JSON file {fname}: {je}")
+                return
+
+            records = data if isinstance(data, list) else [data]
+            for item in records:
+                if not isinstance(item, dict):
+                    continue
+
+                # FIR Case Details
+                fir_id = item.get("fir_no") or item.get("fir_number") or item.get("fir_id") or fir_ref
+                title = item.get("title") or item.get("case_name") or item.get("incident_type")
+                station = item.get("police_station") or item.get("station")
+                incident_date = item.get("incident_date") or item.get("date")
+                narrative = item.get("narrative") or item.get("description") or item.get("details") or item.get("statement") or item.get("notes")
+                sections = item.get("sections") or item.get("ipc_sections")
+                sections_str = ", ".join(str(s) for s in sections) if isinstance(sections, list) else (str(sections) if sections else None)
+
+                session.run("""
+                    MERGE (f:FIR {fir_number: $fir_id})
+                    ON CREATE SET f.fir_no = $fir_id, f.status = 'ACTIVE INVESTIGATION', f.created_at = datetime()
+                    SET f.fir_no = coalesce(f.fir_no, $fir_id),
+                        f.title = coalesce($title, f.title),
+                        f.police_station = coalesce($station, f.police_station),
+                        f.incident_date = coalesce($incident_date, f.incident_date),
+                        f.narrative = coalesce($narrative, f.narrative),
+                        f.ipc_sections = coalesce($sections_str, f.ipc_sections)
+                """, fir_id=fir_id, title=title, station=station, incident_date=incident_date, narrative=narrative, sections_str=sections_str)
+
+                # Suspects / Accused / Persons Mentioned
+                suspects_raw = item.get("suspects") or item.get("accused") or item.get("persons") or item.get("suspect_list") or []
+                if isinstance(suspects_raw, str):
+                    suspects_raw = [s.strip() for s in suspects_raw.split(",") if s.strip()]
+                elif isinstance(suspects_raw, dict):
+                    suspects_raw = [suspects_raw]
+
+                for p_entry in suspects_raw:
+                    if isinstance(p_entry, str):
+                        p_name = p_entry.strip()
+                        p_props = {}
+                    elif isinstance(p_entry, dict):
+                        p_name = p_entry.get("name") or p_entry.get("suspect_name") or p_entry.get("person_name")
+                        p_props = p_entry
+                    else:
+                        continue
+
+                    if p_name and p_name.lower() not in ['nan', 'null', 'none', '']:
+                        session.run("""
+                            MERGE (p:Person {name: $name})
+                            SET p.age = coalesce($age, p.age),
+                                p.phone_number = coalesce($phone, p.phone_number),
+                                p.occupation = coalesce($occupation, p.occupation),
+                                p.location = coalesce($location, p.location),
+                                p.aliases = coalesce($aliases, p.aliases),
+                                p.crime_category = coalesce($crime_category, p.crime_category),
+                                p.status = coalesce(p.status, 'IDENTIFIED')
+                            MERGE (f:FIR {fir_number: $fir_id})
+                            MERGE (p)-[:NAMED_IN_FIR]->(f)
+                        """,
+                        name=p_name,
+                        age=p_props.get("age"),
+                        phone=p_props.get("phone") or p_props.get("phone_number"),
+                        occupation=p_props.get("occupation"),
+                        location=p_props.get("location") or p_props.get("city"),
+                        aliases=p_props.get("aliases") or p_props.get("alias"),
+                        crime_category=p_props.get("crime_category") or p_props.get("crime"),
+                        fir_id=fir_id
+                        )
+
+                        if p_props.get("phone") or p_props.get("phone_number"):
+                            ph_val = str(p_props.get("phone") or p_props.get("phone_number")).strip()
+                            session.run("""
+                                MERGE (p:Person {name: $name})
+                                MERGE (ph:Phone {phone_number: $ph_val})
+                                MERGE (p)-[:USES_PHONE]->(ph)
+                                MERGE (f:FIR {fir_number: $fir_id})
+                                MERGE (ph)-[:MENTIONED_IN]->(f)
+                            """, name=p_name, ph_val=ph_val, fir_id=fir_id)
+
+                        p_vehs = p_props.get("vehicles") or []
+                        if isinstance(p_vehs, str):
+                            p_vehs = [v.strip() for v in p_vehs.split(",") if v.strip()]
+                        for pv in p_vehs:
+                            pv_plate = (pv.get("registration_number") or pv.get("plate") if isinstance(pv, dict) else str(pv)).strip().upper()
+                            if pv_plate and pv_plate not in ['NAN', 'NULL', 'NONE']:
+                                session.run("""
+                                    MERGE (p:Person {name: $name})
+                                    MERGE (v:Vehicle {registration_number: $plate})
+                                    MERGE (p)-[:DRIVES]->(v)
+                                    MERGE (f:FIR {fir_number: $fir_id})
+                                    MERGE (v)-[:INVOLVES_VEHICLE]->(f)
+                                """, name=p_name, plate=pv_plate, fir_id=fir_id)
+
+                # Vehicles
+                veh_raw = item.get("vehicles") or item.get("cars") or []
+                if isinstance(veh_raw, str):
+                    veh_raw = [v.strip() for v in veh_raw.split(",") if v.strip()]
+                for v_entry in veh_raw:
+                    plate = (v_entry.get("registration_number") or v_entry.get("plate") if isinstance(v_entry, dict) else str(v_entry)).strip().upper()
+                    if plate and plate not in ['NAN', 'NULL', 'NONE']:
+                        session.run("""
+                            MERGE (v:Vehicle {registration_number: $plate})
+                            MERGE (f:FIR {fir_number: $fir_id})
+                            MERGE (v)-[:INVOLVES_VEHICLE]->(f)
+                        """, plate=plate, fir_id=fir_id)
+
+                # Phones
+                phone_raw = item.get("phones") or item.get("phone_numbers") or []
+                if isinstance(phone_raw, str):
+                    phone_raw = [ph.strip() for ph in phone_raw.split(",") if ph.strip()]
+                for ph_entry in phone_raw:
+                    ph_num = (ph_entry.get("phone_number") or ph_entry.get("number") if isinstance(ph_entry, dict) else str(ph_entry)).strip()
+                    if ph_num and ph_num not in ['nan', 'null', 'none']:
+                        session.run("""
+                            MERGE (ph:Phone {phone_number: $ph_num})
+                            MERGE (f:FIR {fir_number: $fir_id})
+                            MERGE (ph)-[:MENTIONED_IN]->(f)
+                        """, ph_num=ph_num, fir_id=fir_id)
+
+                # Locations
+                loc_raw = item.get("locations") or []
+                if isinstance(loc_raw, str):
+                    loc_raw = [l.strip() for l in loc_raw.split(",") if l.strip()]
+                for l_entry in loc_raw:
+                    l_name = (l_entry.get("name") or l_entry.get("location") if isinstance(l_entry, dict) else str(l_entry)).strip()
+                    if l_name and l_name not in ['nan', 'null', 'none']:
+                        session.run("""
+                            MERGE (l:Location {name: $l_name})
+                            MERGE (f:FIR {fir_number: $fir_id})
+                            MERGE (l)-[:LOCATED_AT]->(f)
+                        """, l_name=l_name, fir_id=fir_id)
+
+                # Financial Transactions
+                tx_raw = item.get("transactions") or item.get("financial_records") or []
+                for t_entry in tx_raw:
+                    if isinstance(t_entry, dict):
+                        snd = t_entry.get("sender") or t_entry.get("from")
+                        rcv = t_entry.get("receiver") or t_entry.get("to")
+                        amt = t_entry.get("amount") or 0
+                        mode = t_entry.get("mode") or "TRANSFER"
+                        ts = t_entry.get("timestamp") or "2026-08-15T12:00:00Z"
+                        if snd and rcv:
+                            session.run("""
+                                MERGE (p1:Person {name: $snd})
+                                MERGE (p2:Person {name: $rcv})
+                                MERGE (f:FIR {fir_number: $fir_id})
+                                CREATE (p1)-[:TRANSFERRED_FUNDS {amount: $amt, mode: $mode, timestamp: $ts}]->(p2)
+                                MERGE (p1)-[:MENTIONED_IN]->(f)
+                                MERGE (p2)-[:MENTIONED_IN]->(f)
+                            """, snd=snd, rcv=rcv, amt=amt, mode=mode, ts=ts, fir_id=fir_id)
+
+                # Call logs
+                call_raw = item.get("calls") or item.get("call_logs") or []
+                for c_entry in call_raw:
+                    if isinstance(c_entry, dict):
+                        caller = c_entry.get("caller") or c_entry.get("from")
+                        receiver = c_entry.get("receiver") or c_entry.get("to")
+                        dur = c_entry.get("duration") or 60
+                        ts = c_entry.get("timestamp") or "2026-08-15T10:00:00Z"
+                        if caller and receiver:
+                            session.run("""
+                                MERGE (p1:Person {name: $caller})
+                                MERGE (ph1:Phone {phone_number: $caller})
+                                MERGE (p1)-[:USES_PHONE]->(ph1)
+                                MERGE (p2:Person {name: $receiver})
+                                MERGE (ph2:Phone {phone_number: $receiver})
+                                MERGE (p2)-[:USES_PHONE]->(ph2)
+                                MERGE (f:FIR {fir_number: $fir_id})
+                                MERGE (ph1)-[:CALLED {duration_seconds: $dur, timestamp: $ts}]->(ph2)
+                                MERGE (p1)-[:CALLED {duration_seconds: $dur, timestamp: $ts}]->(p2)
+                                MERGE (p1)-[:MENTIONED_IN]->(f)
+                                MERGE (p2)-[:MENTIONED_IN]->(f)
+                            """, caller=caller, receiver=receiver, dur=dur, ts=ts, fir_id=fir_id)
+
+        # 2. CSV / TXT TABULAR FILES
+        elif ext in ['.csv', '.txt']:
             try:
                 df = pd.read_csv(file_path)
             except Exception:
@@ -47,7 +228,7 @@ def parse_and_link_evidence_file(file_path: Path, fir_ref: str, session):
             cols = [c.lower().strip() for c in df.columns]
             df.columns = cols
 
-            # 1. TELECOM CALL LOGS (CDR)
+            # TELECOM CALL LOGS (CDR)
             is_calls = any(k in fname for k in ['call', 'cdr', 'phone', 'telecom']) or any(c in cols for c in ['caller', 'receiver', 'phone_a', 'phone_b', 'caller_number', 'receiver_number'])
             if is_calls:
                 caller_col = next((c for c in cols if 'caller' in c or 'phone_a' in c or 'from' in c or 'source' in c), cols[0] if len(cols)>0 else None)
@@ -88,7 +269,7 @@ def parse_and_link_evidence_file(file_path: Path, fir_ref: str, session):
                     if batch:
                         session.run(cypher_call, batch=batch, fir_ref=fir_ref)
 
-            # 2. FINANCIAL TRANSACTIONS / HAWALA LEDGERS
+            # FINANCIAL TRANSACTIONS / HAWALA LEDGERS
             is_tx = any(k in fname for k in ['tx', 'trans', 'hawala', 'bank', 'ledger', 'money', 'payment']) or any(c in cols for c in ['amount', 'money', 'sender', 'receiver', 'from_account', 'to_account'])
             if is_tx and not is_calls:
                 sender_col = next((c for c in cols if 'send' in c or 'from' in c or 'source' in c or 'payer' in c), cols[0] if len(cols)>0 else None)
@@ -126,7 +307,7 @@ def parse_and_link_evidence_file(file_path: Path, fir_ref: str, session):
                     if batch:
                         session.run(cypher_tx, batch=batch, fir_ref=fir_ref)
 
-            # 3. VEHICLE TOLLS / ANPR SIGHTINGS
+            # VEHICLE TOLLS / ANPR SIGHTINGS
             is_veh = any(k in fname for k in ['toll', 'convoy', 'vehicle', 'anpr']) or any(c in cols for c in ['plate', 'vehicle', 'gantry', 'location'])
             if is_veh and not is_calls and not is_tx:
                 plate_col = next((c for c in cols if 'plate' in c or 'reg' in c or 'veh' in c), cols[0] if len(cols)>0 else None)

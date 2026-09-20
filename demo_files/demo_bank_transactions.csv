@@ -1,0 +1,5 @@
+sender,receiver,amount,mode,timestamp
+Vikram Malhotra,Rohit Verma,150000,HAWALA / UPI,2026-08-14T11:30:00Z
+Rohit Verma,Ananya Sen,280000,RTGS TRANSFER,2026-08-14T14:15:00Z
+Ananya Sen,Rajesh Singhania,500000,ESCROW WALLET,2026-08-14T16:00:00Z
+Rajesh Singhania,Vikram Malhotra,420000,CASH SETTLEMENT,2026-08-14T18:30:00Z
